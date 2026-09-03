@@ -1,0 +1,46 @@
+corpus:
+  name: "FastAPI Documentation"
+  project: "FastAPI"
+
+  source:
+    repository: "https://github.com/fastapi/fastapi"
+    version: "0.141.0"
+    documentation_path: "docs/en/docs"
+    language: "en"
+
+  download:
+    method: "github_archive"
+    save_original_files: true
+    raw_directory: "data/raw"
+    processed_directory: "data/processed"
+
+  files:
+    allowed_extensions:
+      - ".md"
+
+    ignored_directories:
+      - "__pycache__"
+      - ".git"
+      - "node_modules"
+
+  preprocessing:
+    normalize_whitespace: true
+    remove_html_comments: true
+    preserve_code_blocks: true
+    preserve_headings: true
+    lowercase: false
+
+  chunking:
+    strategy: "markdown_sections"
+    max_tokens: 400
+    overlap_tokens: 60
+    min_tokens: 30
+    preserve_section_titles: true
+
+  metadata:
+    store_source_path: true
+    store_document_title: true
+    store_section_title: true
+    store_token_count: true
+    store_version: true
+    store_sha256: true

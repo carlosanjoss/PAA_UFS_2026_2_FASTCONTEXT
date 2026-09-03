@@ -1,0 +1,74 @@
+experiments:
+
+  reproducibility:
+    random_seed: 42
+
+  queries:
+    expected_count: 30
+    ground_truth_file: "data/ground_truth/ground_truth.json"
+
+  corpus_sizes:
+    - 0.25
+    - 0.50
+    - 0.75
+    - 1.00
+
+  repetitions: 5
+
+  warmup:
+    enabled: true
+    repetitions: 1
+    include_in_results: false
+
+  k_values:
+    - 1
+    - 3
+    - 5
+    - 10
+
+  algorithms:
+    - "linear"
+    - "indexed"
+    - "optimized"
+    - "semantic"
+
+  performance_metrics:
+    - "retrieval_time"
+    - "sorting_time"
+    - "index_build_time"
+    - "total_time"
+    - "peak_memory"
+    - "comparisons"
+    - "chunks_scored"
+    - "candidates_found"
+
+  retrieval_metrics:
+    - "precision"
+    - "recall"
+    - "mrr"
+    - "hit_rate"
+
+  statistics:
+    - "mean"
+    - "median"
+    - "std"
+    - "min"
+    - "max"
+
+  output:
+    raw_results: "experiments/raw_results/results.csv"
+    processed_results: "experiments/processed_results/summary.csv"
+
+  plots:
+    directory: "reports/figures"
+
+    generate:
+      corpus_size_vs_time: true
+      corpus_size_vs_memory: true
+      algorithm_vs_time: true
+      algorithm_vs_precision: true
+      k_vs_precision: true
+      k_vs_recall: true
+      lexical_vs_semantic: true
+      merge_vs_quick: true
+      comparisons_vs_corpus_size: true

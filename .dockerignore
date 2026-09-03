@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Ambiente Python local
+.venv
+venv
+
+# Cache Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Pytest
+.pytest_cache
+.coverage
+htmlcov
+
+# IDEs
+.vscode
+.idea
+
+# Variáveis sensíveis
+.env
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Resultados gerados
+experiments/raw_results/*
+experiments/processed_results/*
+
+# Dados baixados/gerados
+data/raw/*
+data/processed/*
+data/chunks/*
+
+# LaTeX temporário
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz

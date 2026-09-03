@@ -1,0 +1,23 @@
+services:
+
+  fastcontext:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: fastcontext
+
+    working_dir: /app
+
+    volumes:
+      - .:/app
+
+    environment:
+      PYTHONPATH: /app
+      FASTCONTEXT_ENV: development
+
+    ports:
+      - "8501:8501"
+
+    stdin_open: true
+    tty: true
