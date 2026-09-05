@@ -77,3 +77,47 @@ def test_indexed_retriever_search_and_ranking():
     # chunk_c nao deve ser pontuado nem retornado
     assert result.metrics.candidates_found == 2
     assert result.metrics.chunks_scored == 2
+
+
+from src.retrieval.optimized_retriever import OptimizedRetriever
+
+
+# --- Testes do OptimizedRetriever ---
+
+def test_optimized_retriever_name():
+    """Valida se o identificador canonico e exatamente 'optimized'."""
+    retriever = OptimizedRetriever([])
+    assert retriever.name == "optimized"
+
+
+def test_optimized_retriever_empty_query_and_corpus():
+    """Valida bordas com query vazia e corpus vazio."""
+    retriever_empty = OptimizedRetriever([])
+    assert retriever_empty.search("termo").is_empty()
+
+    corpus = [{"chunk_id": "c1", "content": "FastAPI security"}]
+    retriever = OptimizedRetriever(corpus)
+    result = retriever.search("", k=2)
+    assert result.is_empty()
+    assert result.retriever_name == "optimized"
+
+
+def test_optimized_retriever_search_and_ranking():
+    """Valida ordenacao correta e desempate deterministico no modo otimizado."""
+    corpus = [
+        {"chunk_id": "chunk_b", "content": "fastapi dependencies auth"},
+        {"chunk_id": "chunk_a", "content": "fastapi dependencies tutorial"},
+        {"chunk_id": "chunk_c", "content": "unrelated content"},
+    ]
+    retriever = OptimizedRetriever(corpus)
+    result = retriever.search("dependencies auth", k=2)
+
+    assert len(result.chunks) == 2
+    # chunk_b possui 2 termos em comum ("dependencies", "auth"), score = 2.0
+    assert result.chunks[0].chunk_id == "chunk_b"
+    assert result.chunks[0].score == 2.0
+    assert result.chunks[0].rank == 1
+    # chunk_a possui 1 termo ("dependencies"), score = 1.0
+    assert result.chunks[1].chunk_id == "chunk_a"
+    assert result.chunks[1].score == 1.0
+    assert result.chunks[1].rank == 2
