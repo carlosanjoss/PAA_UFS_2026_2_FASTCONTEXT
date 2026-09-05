@@ -4,10 +4,24 @@ from src.retrieval.models import (
     RetrievalResult,
     RetrievedChunk,
 )
+from src.retrieval.registry import (
+    InvalidRetrieverFactoryError,
+    RetrieverAlreadyRegisteredError,
+    RetrieverFactory,
+    RetrieverRegistry,
+    RetrieverRegistryError,
+    UnknownRetrieverError,
+)
 
 __all__ = [
+    "InvalidRetrieverFactoryError",
     "RetrievalMetrics",
     "RetrievalResult",
     "RetrievedChunk",
     "Retriever",
+    "RetrieverAlreadyRegisteredError",
+    "RetrieverFactory",
+    "RetrieverRegistry",
+    "RetrieverRegistryError",
+    "UnknownRetrieverError",
 ]
