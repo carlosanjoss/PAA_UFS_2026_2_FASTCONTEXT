@@ -1,10 +1,14 @@
 """
 tests/test_retrieval.py
-Testes unitarios para os contratos de retrieval e a baseline LinearRetriever.
+Testes unitarios para LinearRetriever e IndexedRetriever.
+Valida nomes canonicos, casos de borda e ordenacao com desempate deterministico.
 """
 
 from src.retrieval.linear_retriever import LinearRetriever
+from src.retrieval.indexed_retriever import IndexedRetriever
 
+
+# --- Testes do LinearRetriever ---
 
 def test_linear_retriever_name():
     """Valida se o identificador canonico e exatamente 'linear'."""
@@ -13,7 +17,7 @@ def test_linear_retriever_name():
 
 
 def test_linear_retriever_empty_query():
-    """Valida o tratamento de borda para consulta vazia."""
+    """Valida o tratamento de borda quando a busca recebe texto em branco."""
     corpus = [{"chunk_id": "c1", "content": "FastAPI security"}]
     retriever = LinearRetriever(corpus)
     result = retriever.search("", k=3)
@@ -22,7 +26,7 @@ def test_linear_retriever_empty_query():
 
 
 def test_linear_retriever_ranking_and_deterministic_tiebreak():
-    """Valida ordenacao por score decrescente e desempate deterministico por chunk_id crescente."""
+    """Valida ordenacao por score decrescente e desempate por chunk_id crescente."""
     corpus = [
         {"chunk_id": "chunk_b", "content": "fastapi dependencies auth"},
         {"chunk_id": "chunk_a", "content": "fastapi dependencies tutorial"},
@@ -31,8 +35,45 @@ def test_linear_retriever_ranking_and_deterministic_tiebreak():
     result = retriever.search("dependencies", k=2)
 
     assert len(result.chunks) == 2
-    # Ambos empatam em score; chunk_a deve vir antes de chunk_b alfabeticamente
     assert result.chunks[0].chunk_id == "chunk_a"
     assert result.chunks[0].rank == 1
     assert result.chunks[1].chunk_id == "chunk_b"
     assert result.chunks[1].rank == 2
+
+
+# --- Testes do IndexedRetriever ---
+
+def test_indexed_retriever_name():
+    """Valida se o identificador canonico e exatamente 'indexed'."""
+    retriever = IndexedRetriever([])
+    assert retriever.name == "indexed"
+
+
+def test_indexed_retriever_empty_query_and_corpus():
+    """Valida comportamento de borda com busca vazia e corpus vazio."""
+    retriever_empty = IndexedRetriever([])
+    assert retriever_empty.search("termo").is_empty()
+
+    corpus = [{"chunk_id": "c1", "content": "FastAPI security"}]
+    retriever = IndexedRetriever(corpus)
+    result = retriever.search("", k=2)
+    assert result.is_empty()
+    assert result.retriever_name == "indexed"
+
+
+def test_indexed_retriever_search_and_ranking():
+    """Valida busca filtrada por indice e desempate deterministico."""
+    corpus = [
+        {"chunk_id": "chunk_b", "content": "fastapi dependencies auth"},
+        {"chunk_id": "chunk_a", "content": "fastapi dependencies tutorial"},
+        {"chunk_id": "chunk_c", "content": "unrelated database schema"},
+    ]
+    retriever = IndexedRetriever(corpus)
+    result = retriever.search("dependencies", k=2)
+
+    assert len(result.chunks) == 2
+    assert result.chunks[0].chunk_id == "chunk_a"
+    assert result.chunks[1].chunk_id == "chunk_b"
+    # chunk_c nao deve ser pontuado nem retornado
+    assert result.metrics.candidates_found == 2
+    assert result.metrics.chunks_scored == 2
