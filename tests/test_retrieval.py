@@ -121,3 +121,41 @@ def test_optimized_retriever_search_and_ranking():
     assert result.chunks[1].chunk_id == "chunk_a"
     assert result.chunks[1].score == 1.0
     assert result.chunks[1].rank == 2
+
+
+# --- Validacao de Casos de Borda para k (Exigencia PAA) ---
+
+def test_retrievers_edge_cases_k_zero():
+    """Valida que nenhum chunk e retornado quando k = 0."""
+    corpus = [{"chunk_id": "c1", "content": "FastAPI security"}]
+
+    linear = LinearRetriever(corpus)
+    indexed = IndexedRetriever(corpus)
+    optimized = OptimizedRetriever(corpus)
+
+    assert linear.search("security", k=0).chunks == []
+    assert indexed.search("security", k=0).chunks == []
+    assert optimized.search("security", k=0).chunks == []
+
+
+def test_retrievers_edge_cases_k_greater_than_n():
+    """Valida retorno seguro quando k e maior que o total de chunks (k > N)."""
+    corpus = [
+        {"chunk_id": "c1", "content": "FastAPI middleware"},
+        {"chunk_id": "c2", "content": "FastAPI routing"},
+    ]
+
+    linear = LinearRetriever(corpus)
+    indexed = IndexedRetriever(corpus)
+    optimized = OptimizedRetriever(corpus)
+
+    # N = 2, k = 10
+    res_linear = linear.search("FastAPI", k=10)
+    res_indexed = indexed.search("FastAPI", k=10)
+    res_optimized = optimized.search("FastAPI", k=10)
+
+    assert len(res_linear.chunks) == 2
+    assert len(res_indexed.chunks) == 2
+    assert len(res_optimized.chunks) == 2
+
+
