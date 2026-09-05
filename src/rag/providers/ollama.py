@@ -54,6 +54,8 @@ class OllamaProvider(LLMProvider):
         prompt: str,
         config: GenerationConfig | None = None,
     ) -> LLMResponse:
+        """Generate a response using the configured Ollama model."""
+
         if not prompt.strip():
             raise ValueError("Prompt cannot be empty.")
 
@@ -75,14 +77,34 @@ class OllamaProvider(LLMProvider):
                 json=payload,
                 timeout=self.DEFAULT_TIMEOUT,
             )
-            response.raise_for_status()
+
+        except (
+            requests.ConnectionError,
+            requests.Timeout,
+        ) as exc:
+            raise LLMConnectionError(
+                f"Failed to connect to Ollama at "
+                f"{self._base_url}."
+            ) from exc
+
         except requests.RequestException as exc:
             raise LLMConnectionError(
-                f"Failed to communicate with Ollama at {self._base_url}."
+                "Unexpected error while communicating "
+                "with Ollama."
+            ) from exc
+
+        try:
+            response.raise_for_status()
+
+        except requests.HTTPError as exc:
+            raise LLMResponseError(
+                "Ollama rejected the generation request "
+                f"with HTTP status {response.status_code}."
             ) from exc
 
         try:
             data = response.json()
+
         except ValueError as exc:
             raise LLMResponseError(
                 "Ollama returned an invalid JSON response."
@@ -92,17 +114,26 @@ class OllamaProvider(LLMProvider):
 
         if not isinstance(generated_text, str):
             raise LLMResponseError(
-                "Ollama response does not contain a valid 'response' field."
+                "Ollama response does not contain "
+                "a valid 'response' field."
             )
 
         return LLMResponse(
             text=generated_text.strip(),
             model=self._model,
             provider=self.name,
-            metadata={
-                "total_duration": data.get("total_duration"),
-                "load_duration": data.get("load_duration"),
-                "prompt_eval_count": data.get("prompt_eval_count"),
-                "eval_count": data.get("eval_count"),
-            },
-        )
+        metadata={
+            "total_duration": data.get(
+                "total_duration"
+            ),
+            "load_duration": data.get(
+                "load_duration"
+            ),
+            "prompt_eval_count": data.get(
+                "prompt_eval_count"
+            ),
+            "eval_count": data.get(
+                "eval_count"
+            ),
+        },
+    )

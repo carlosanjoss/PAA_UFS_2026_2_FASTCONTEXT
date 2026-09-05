@@ -3,62 +3,47 @@ from typing import Any
 
 import yaml
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = PROJECT_ROOT / "config"
 
 
-def load_yaml(filename: str) -> dict[str, Any]:
-    """
-    Carrega um arquivo YAML localizado no diretório config/.
-
-    Parameters
-    ----------
-    filename:
-        Nome do arquivo YAML.
-
-    Returns
-    -------
-    dict
-        Conteúdo do arquivo convertido para dicionário.
-
-    Raises
-    ------
-    FileNotFoundError
-        Caso o arquivo solicitado não exista.
-
-    ValueError
-        Caso o YAML não tenha um objeto raiz válido.
-    """
-
-    path = CONFIG_DIR / filename
+def load_yaml(path: Path) -> dict[str, Any]:
+    """Load and validate a YAML configuration file."""
 
     if not path.exists():
-        raise FileNotFoundError(
-            f"Arquivo de configuração não encontrado: {path}"
-        )
+        raise FileNotFoundError(f"Configuration file not found: {path}")
 
     with path.open(
-        mode="r",
-        encoding="utf-8"
+        "r",
+        encoding="utf-8",
     ) as file:
         data = yaml.safe_load(file)
 
+    if data is None:
+        return {}
+
     if not isinstance(data, dict):
-        raise ValueError(
-            f"Configuração inválida em {path}"
-        )
+        raise TypeError(f"Expected a mapping in configuration file: {path}")
 
     return data
 
 
 def load_corpus_config() -> dict[str, Any]:
-    return load_yaml("corpus.yaml")["corpus"]
+    """Load the corpus configuration."""
+
+    data = load_yaml(CONFIG_DIR / "corpus.yaml")
+    return data["corpus"]
 
 
 def load_retrieval_config() -> dict[str, Any]:
-    return load_yaml("retrieval.yaml")["retrieval"]
+    """Load the retrieval configuration."""
+
+    data = load_yaml(CONFIG_DIR / "retrieval.yaml")
+    return data["retrieval"]
 
 
 def load_experiments_config() -> dict[str, Any]:
-    return load_yaml("experiments.yaml")["experiments"]
+    """Load the experiments configuration."""
+
+    data = load_yaml(CONFIG_DIR / "experiments.yaml")
+    return data["experiments"]

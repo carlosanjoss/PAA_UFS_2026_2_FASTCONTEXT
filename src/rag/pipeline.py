@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from time import perf_counter_ns
-from typing import Sequence
 
 from src.rag.prompt import ContextChunk, build_rag_prompt
 from src.rag.providers.base import (
