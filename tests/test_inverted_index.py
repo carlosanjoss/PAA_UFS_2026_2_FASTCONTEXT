@@ -56,3 +56,26 @@ def test_term_not_in_vocabulary():
 
     assert index.get_postings("inexistente") == {}
     assert index.get_candidate_chunk_ids("inexistente") == set()
+
+
+def test_inverted_index_binary_search_vocabulary():
+    """Valida a consulta de termos no vocabulario com contagem de comparacoes."""
+    corpus = [
+        {"chunk_id": "doc_1", "content": "zebra alpha monkey"},
+        {"chunk_id": "doc_2", "content": "banana dog cat"},
+    ]
+    index = InvertedIndex()
+    index.build(corpus)
+
+    # Verifica se a lista foi ordenada lexicograficamente
+    assert index.sorted_vocabulary == ["alpha", "banana", "cat", "dog", "monkey", "zebra"]
+
+    # Termo existente
+    exists, comp = index.contains_term("dog")
+    assert exists is True
+    assert comp > 0
+
+    # Termo ausente
+    exists_absent, comp_absent = index.contains_term("inexistente")
+    assert exists_absent is False
+    assert comp_absent > 0
