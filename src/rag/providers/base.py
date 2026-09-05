@@ -23,6 +23,7 @@ class GenerationConfig:
 
     temperature: float = 0.1
     max_tokens: int = 512
+    think: bool = False
 
 
 @dataclass(frozen=True, slots=True)
