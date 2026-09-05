@@ -1,3 +1,7 @@
+from src.rag.adapters import (
+    retrieval_result_to_context_chunks,
+    retrieved_chunk_to_context_chunk,
+)
 from src.rag.citations import (
     INSUFFICIENT_CONTEXT_RESPONSE,
     CitationValidationResult,
@@ -35,5 +39,7 @@ __all__ = [
     "create_llm_provider",
     "extract_citations",
     "load_rag_settings",
+    "retrieval_result_to_context_chunks",
+    "retrieved_chunk_to_context_chunk",
     "validate_citations",
 ]
