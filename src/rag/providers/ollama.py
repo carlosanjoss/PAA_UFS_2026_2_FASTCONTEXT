@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Any
 
 import requests
@@ -7,6 +8,7 @@ import requests
 from src.rag.providers.base import (
     GenerationConfig,
     LLMConnectionError,
+    LLMMessage,
     LLMProvider,
     LLMResponse,
     LLMResponseError,
@@ -24,40 +26,52 @@ class OllamaProvider(LLMProvider):
         base_url: str = "http://localhost:11434",
         session: requests.Session | None = None,
     ) -> None:
-        if not model.strip():
-            raise ValueError("Model name cannot be empty.")
+        normalized_model = model.strip()
 
-        if not base_url.strip():
-            raise ValueError("Base URL cannot be empty.")
+        if not normalized_model:
+            raise ValueError(
+                "Model name cannot be empty."
+            )
 
-        self._model = model.strip()
-        self._base_url = base_url.rstrip("/")
-        self._session = session or requests.Session()
+        normalized_base_url = base_url.strip()
+
+        if not normalized_base_url:
+            raise ValueError(
+                "Base URL cannot be empty."
+            )
+
+        self._model = normalized_model
+        self._base_url = (
+            normalized_base_url.rstrip("/")
+        )
+        self._session = (
+            session or requests.Session()
+        )
 
     @property
     def name(self) -> str:
-        """Return the provider name."""
-
         return "ollama"
 
     @property
     def model(self) -> str:
-        """Return the configured model name."""
-
         return self._model
 
     def is_available(self) -> bool:
-        """Return whether Ollama and the configured model are available."""
+        """Check whether Ollama and the model are available."""
 
         try:
             response = self._session.get(
                 f"{self._base_url}/api/tags",
                 timeout=5,
             )
+
             response.raise_for_status()
             data = response.json()
 
-        except (requests.RequestException, ValueError):
+        except (
+            requests.RequestException,
+            ValueError,
+        ):
             return False
 
         models = data.get("models")
@@ -72,42 +86,58 @@ class OllamaProvider(LLMProvider):
                 continue
 
             name = model.get("name")
-            model_identifier = model.get("model")
+            model_name = model.get("model")
 
             if isinstance(name, str):
                 installed_models.add(name)
 
-            if isinstance(model_identifier, str):
-                installed_models.add(model_identifier)
+            if isinstance(model_name, str):
+                installed_models.add(
+                    model_name
+                )
 
         return self._model in installed_models
 
     def generate(
         self,
-        prompt: str,
+        messages: Sequence[LLMMessage],
         config: GenerationConfig | None = None,
     ) -> LLMResponse:
-        """Generate a response using the configured Ollama model."""
+        """Generate a chat response using Ollama."""
 
-        if not prompt.strip():
-            raise ValueError("Prompt cannot be empty.")
+        if not messages:
+            raise ValueError(
+                "Messages cannot be empty."
+            )
 
-        generation_config = config or GenerationConfig()
+        generation_config = (
+            config or GenerationConfig()
+        )
 
         payload: dict[str, Any] = {
             "model": self._model,
-            "prompt": prompt,
+            "messages": [
+                {
+                    "role": message.role,
+                    "content": message.content,
+                }
+                for message in messages
+            ],
             "stream": False,
             "think": generation_config.think,
             "options": {
-                "temperature": generation_config.temperature,
-                "num_predict": generation_config.max_tokens,
+                "temperature": (
+                    generation_config.temperature
+                ),
+                "num_predict": (
+                    generation_config.max_tokens
+                ),
             },
         }
 
         try:
             response = self._session.post(
-                f"{self._base_url}/api/generate",
+                f"{self._base_url}/api/chat",
                 json=payload,
                 timeout=self.DEFAULT_TIMEOUT,
             )
@@ -117,12 +147,14 @@ class OllamaProvider(LLMProvider):
             requests.Timeout,
         ) as exc:
             raise LLMConnectionError(
-                f"Failed to connect to Ollama at {self._base_url}."
+                "Failed to connect to Ollama at "
+                f"{self._base_url}."
             ) from exc
 
         except requests.RequestException as exc:
             raise LLMConnectionError(
-                "Unexpected error while communicating with Ollama."
+                "Unexpected error while "
+                "communicating with Ollama."
             ) from exc
 
         try:
@@ -130,8 +162,9 @@ class OllamaProvider(LLMProvider):
 
         except requests.HTTPError as exc:
             raise LLMResponseError(
-                "Ollama rejected the generation request "
-                f"with HTTP status {response.status_code}."
+                "Ollama rejected the generation "
+                "request with HTTP status "
+                f"{response.status_code}."
             ) from exc
 
         try:
@@ -139,41 +172,60 @@ class OllamaProvider(LLMProvider):
 
         except ValueError as exc:
             raise LLMResponseError(
-                "Ollama returned an invalid JSON response."
+                "Ollama returned an invalid "
+                "JSON response."
             ) from exc
 
-        generated_text = data.get("response")
+        message = data.get("message")
 
-        if not isinstance(generated_text, str):
+        if not isinstance(message, dict):
             raise LLMResponseError(
                 "Ollama response does not contain "
-                "a valid 'response' field."
+                "a valid message."
             )
 
-        generated_text = generated_text.strip()
+        generated_text = message.get("content")
 
-        if not generated_text:
+        if not isinstance(
+            generated_text,
+            str,
+        ):
             raise LLMResponseError(
-                "Ollama returned an empty generated response."
+                "Ollama response does not contain "
+                "valid message content."
             )
-
-        metadata: dict[str, Any] = {
-            "total_duration": data.get("total_duration"),
-            "load_duration": data.get("load_duration"),
-            "prompt_eval_count": data.get("prompt_eval_count"),
-            "eval_count": data.get("eval_count"),
-            "done_reason": data.get("done_reason"),
-            "thinking_enabled": generation_config.think,
-        }
-
-        thinking = data.get("thinking")
-
-        if isinstance(thinking, str) and thinking.strip():
-            metadata["thinking"] = thinking.strip()
 
         return LLMResponse(
-            text=generated_text,
+            text=generated_text.strip(),
             model=self._model,
             provider=self.name,
-            metadata=metadata,
+            metadata={
+                "done_reason": data.get(
+                    "done_reason"
+                ),
+                "total_duration": data.get(
+                    "total_duration"
+                ),
+                "load_duration": data.get(
+                    "load_duration"
+                ),
+                "prompt_eval_count": data.get(
+                    "prompt_eval_count"
+                ),
+                "prompt_eval_duration": data.get(
+                    "prompt_eval_duration"
+                ),
+                "eval_count": data.get(
+                    "eval_count"
+                ),
+                "eval_duration": data.get(
+                    "eval_duration"
+                ),
+                "thinking_enabled": (
+                    generation_config.think
+                ),
+                "requested_max_tokens": (
+                    generation_config.max_tokens
+                ),
+            },
         )

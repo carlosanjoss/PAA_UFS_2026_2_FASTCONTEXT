@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 from src.rag.providers.base import (
     GenerationConfig,
+    LLMMessage,
     LLMProvider,
     LLMProviderError,
     LLMResponse,
@@ -42,12 +45,14 @@ class FallbackLLMProvider(LLMProvider):
 
     def generate(
         self,
-        prompt: str,
+        messages: Sequence[LLMMessage],
         config: GenerationConfig | None = None,
     ) -> LLMResponse:
+        """Generate with primary or fallback provider."""
+
         try:
             response = self._primary.generate(
-                prompt=prompt,
+                messages=messages,
                 config=config,
             )
 
@@ -58,7 +63,7 @@ class FallbackLLMProvider(LLMProvider):
 
         except LLMProviderError as primary_error:
             response = self._fallback.generate(
-                prompt=prompt,
+                messages=messages,
                 config=config,
             )
 
@@ -68,22 +73,26 @@ class FallbackLLMProvider(LLMProvider):
                 primary_error=primary_error,
             )
 
+    @staticmethod
     def _with_fallback_metadata(
-        self,
         response: LLMResponse,
         fallback_used: bool,
         primary_error: Exception | None = None,
     ) -> LLMResponse:
-        """Attach fallback information to a provider response."""
+        """Attach fallback information to the response."""
 
-        metadata = dict(response.metadata or {})
+        metadata = dict(
+            response.metadata or {}
+        )
 
-        metadata["fallback_used"] = fallback_used
+        metadata["fallback_used"] = (
+            fallback_used
+        )
 
         if primary_error is not None:
-            metadata["primary_error_type"] = type(
-                primary_error
-            ).__name__
+            metadata["primary_error_type"] = (
+                type(primary_error).__name__
+            )
 
         return LLMResponse(
             text=response.text,
