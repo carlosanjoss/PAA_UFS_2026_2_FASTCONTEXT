@@ -27,7 +27,10 @@ def print_optional_duration(
 ) -> None:
     """Print an Ollama duration in milliseconds."""
 
-    if not isinstance(value, int):
+    if not isinstance(
+        value,
+        int,
+    ):
         return
 
     milliseconds = (
@@ -49,7 +52,9 @@ def print_generation_metadata(
 ) -> None:
     """Print generation metadata."""
 
-    metadata = result.metadata or {}
+    metadata = (
+        result.metadata or {}
+    )
 
     fallback_used = metadata.get(
         "fallback_used",
@@ -87,8 +92,12 @@ def print_generation_metadata(
     )
 
     print()
-    print("Generation metadata")
-    print("-" * 60)
+    print(
+        "Generation metadata"
+    )
+    print(
+        "-" * 60
+    )
 
     print(
         f"Fallback used: {fallback_used}"
@@ -155,16 +164,20 @@ def print_citation_validation(
     """Print citation validation information."""
 
     print()
-    print("Citation validation")
-    print("-" * 60)
+    print(
+        "Citation validation"
+    )
+    print(
+        "-" * 60
+    )
 
     print(
-        f"Citation valid: "
+        "Citation valid: "
         f"{result.citation_valid}"
     )
 
     print(
-        f"Citation count: "
+        "Citation count: "
         f"{result.citation_count}"
     )
 
@@ -173,19 +186,21 @@ def print_citation_validation(
         f"{result.citation_retry_count}"
     )
 
-    if result.valid_citations:
-        valid = ", ".join(
+    valid = (
+        ", ".join(
             result.valid_citations
         )
-    else:
-        valid = "None"
+        if result.valid_citations
+        else "None"
+    )
 
-    if result.invalid_citations:
-        invalid = ", ".join(
+    invalid = (
+        ", ".join(
             result.invalid_citations
         )
-    else:
-        invalid = "None"
+        if result.invalid_citations
+        else "None"
+    )
 
     print(
         f"Valid citations: {valid}"
@@ -250,16 +265,19 @@ def print_retrieved_context(
     """Print chunks used by the RAG pipeline."""
 
     print()
-    print("Retrieved context")
-    print("-" * 60)
+    print(
+        "Retrieved context"
+    )
+    print(
+        "-" * 60
+    )
 
     for chunk in chunks:
-        if chunk.score is None:
-            score_text = "N/A"
-        else:
-            score_text = (
-                f"{chunk.score:.4f}"
-            )
+        score_text = (
+            "N/A"
+            if chunk.score is None
+            else f"{chunk.score:.4f}"
+        )
 
         print(
             f"{chunk.chunk_id} | "
@@ -278,8 +296,12 @@ def main() -> None:
     """Run a local FastContext RAG demonstration."""
 
     print()
-    print("FastContext RAG Demo")
-    print("=" * 60)
+    print(
+        "FastContext RAG Demo"
+    )
+    print(
+        "=" * 60
+    )
 
     provider = (
         create_llm_provider()
@@ -292,7 +314,9 @@ def main() -> None:
         max_citation_retries=1,
     )
 
-    chunks = build_demo_chunks()
+    chunks = (
+        build_demo_chunks()
+    )
 
     try:
         result = pipeline.answer(
@@ -315,16 +339,28 @@ def main() -> None:
         LLMTruncatedResponseError
     ) as exc:
         print()
-        print("Generation failed")
-        print("-" * 60)
-        print(str(exc))
+        print(
+            "Generation failed"
+        )
+        print(
+            "-" * 60
+        )
+        print(
+            str(exc)
+        )
         return
 
     except LLMProviderError as exc:
         print()
-        print("Provider error")
-        print("-" * 60)
-        print(str(exc))
+        print(
+            "Provider error"
+        )
+        print(
+            "-" * 60
+        )
+        print(
+            str(exc)
+        )
         return
 
     generation_time_ms = (
@@ -355,9 +391,15 @@ def main() -> None:
     )
 
     print()
-    print("Answer")
-    print("-" * 60)
-    print(result.answer)
+    print(
+        "Answer"
+    )
+    print(
+        "-" * 60
+    )
+    print(
+        result.answer
+    )
 
     print_retrieved_context(
         result.context_chunks
