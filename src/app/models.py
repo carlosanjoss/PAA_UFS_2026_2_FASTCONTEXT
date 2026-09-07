@@ -40,7 +40,10 @@ class ApplicationHealthReport:
     """Aggregated health report for FastContext."""
 
     status: HealthState
-    components: tuple[ComponentHealth, ...]
+    components: tuple[
+        ComponentHealth,
+        ...,
+    ]
 
     @property
     def is_healthy(self) -> bool:
@@ -57,3 +60,13 @@ class ApplicationContainer:
     registry: RetrieverRegistry
     provider: LLMProvider
     rag_pipeline: RAGPipeline
+    corpus_size: int | None = None
+
+    def __post_init__(self) -> None:
+        if (
+            self.corpus_size is not None
+            and self.corpus_size < 0
+        ):
+            raise ValueError(
+                "corpus_size cannot be negative."
+            )

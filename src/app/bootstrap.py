@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from src.app.models import ApplicationContainer
 from src.rag.factory import create_llm_provider
@@ -10,6 +11,9 @@ from src.rag.settings import (
     RAGSettings,
     load_rag_settings,
 )
+from src.retrieval.indexed_retriever import IndexedRetriever
+from src.retrieval.linear_retriever import LinearRetriever
+from src.retrieval.optimized_retriever import OptimizedRetriever
 from src.retrieval.registry import (
     RetrieverFactory,
     RetrieverRegistry,
@@ -39,11 +43,47 @@ def build_retriever_registry(
     return registry
 
 
+def build_default_retriever_registry(
+    corpus_chunks: Sequence[
+        Mapping[str, Any]
+    ]
+    | None = None,
+) -> RetrieverRegistry:
+    """Create the standard FastContext retrieval registry."""
+
+    chunks = _copy_corpus_chunks(
+        corpus_chunks
+    )
+
+    registrations: dict[
+        str,
+        RetrieverFactory,
+    ] = {
+        "linear": lambda: LinearRetriever(
+            list(chunks)
+        ),
+        "indexed": lambda: IndexedRetriever(
+            list(chunks)
+        ),
+        "optimized": lambda: OptimizedRetriever(
+            list(chunks)
+        ),
+    }
+
+    return build_retriever_registry(
+        registrations
+    )
+
+
 def create_application(
     *,
     settings: RAGSettings | None = None,
     registry: RetrieverRegistry | None = None,
     provider: LLMProvider | None = None,
+    corpus_chunks: Sequence[
+        Mapping[str, Any]
+    ]
+    | None = None,
 ) -> ApplicationContainer:
     """Build the FastContext application dependency container."""
 
@@ -53,11 +93,25 @@ def create_application(
         else load_rag_settings()
     )
 
-    resolved_registry = (
-        registry
-        if registry is not None
-        else build_retriever_registry()
-    )
+    if registry is not None:
+        resolved_registry = registry
+        corpus_size: int | None = None
+    else:
+        normalized_chunks = (
+            _copy_corpus_chunks(
+                corpus_chunks
+            )
+        )
+
+        resolved_registry = (
+            build_default_retriever_registry(
+                normalized_chunks
+            )
+        )
+
+        corpus_size = len(
+            normalized_chunks
+        )
 
     resolved_provider = (
         provider
@@ -79,4 +133,22 @@ def create_application(
         registry=resolved_registry,
         provider=resolved_provider,
         rag_pipeline=rag_pipeline,
+        corpus_size=corpus_size,
     )
+
+
+def _copy_corpus_chunks(
+    corpus_chunks: Sequence[
+        Mapping[str, Any]
+    ]
+    | None,
+) -> list[dict[str, Any]]:
+    """Create an isolated mutable copy of corpus chunks."""
+
+    if corpus_chunks is None:
+        return []
+
+    return [
+        dict(chunk)
+        for chunk in corpus_chunks
+    ]

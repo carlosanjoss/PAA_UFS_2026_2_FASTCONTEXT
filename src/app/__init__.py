@@ -1,4 +1,5 @@
 from src.app.bootstrap import (
+    build_default_retriever_registry,
     build_retriever_registry,
     create_application,
 )
@@ -23,6 +24,7 @@ __all__ = [
     "ApplicationHealthReport",
     "ComponentHealth",
     "HealthState",
+    "build_default_retriever_registry",
     "build_health_rows",
     "build_retrieval_rows",
     "build_retriever_registry",

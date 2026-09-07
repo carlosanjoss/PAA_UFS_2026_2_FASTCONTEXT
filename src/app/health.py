@@ -38,18 +38,39 @@ def check_application_health(
 def _check_retrieval_health(
     application: ApplicationContainer,
 ) -> ComponentHealth:
-    """Check whether retrieval algorithms are registered."""
+    """Check retrieval registration and corpus availability."""
 
     algorithms = (
         application.registry
         .available_names()
     )
 
-    if algorithms:
-        algorithm_names = ", ".join(
-            algorithms
+    if not algorithms:
+        return ComponentHealth(
+            name="Retrieval",
+            status="degraded",
+            message=(
+                "No retrieval algorithms are "
+                "currently registered."
+            ),
         )
 
+    algorithm_names = ", ".join(
+        algorithms
+    )
+
+    if application.corpus_size == 0:
+        return ComponentHealth(
+            name="Retrieval",
+            status="degraded",
+            message=(
+                "Available algorithms: "
+                f"{algorithm_names}. "
+                "No corpus chunks are loaded."
+            ),
+        )
+
+    if application.corpus_size is None:
         return ComponentHealth(
             name="Retrieval",
             status="healthy",
@@ -61,10 +82,12 @@ def _check_retrieval_health(
 
     return ComponentHealth(
         name="Retrieval",
-        status="degraded",
+        status="healthy",
         message=(
-            "No retrieval algorithms are "
-            "currently registered."
+            "Available algorithms: "
+            f"{algorithm_names}. "
+            "Corpus chunks: "
+            f"{application.corpus_size}"
         ),
     )
 
