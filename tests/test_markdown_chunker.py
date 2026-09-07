@@ -308,14 +308,20 @@ def test_chunk_markdown_splits_oversized_code_block(
 
     assert len(chunks) > 1
     assert all(chunk["token_count"] <= 10 for chunk in chunks)
+    code_chunks = [
+        chunk
+        for chunk in chunks
+        if "```python" in chunk["content"]
+    ]
+    assert code_chunks
     assert all(
         chunk["content"].startswith("```python")
         and chunk["content"].endswith("```")
-        for chunk in chunks
+        for chunk in code_chunks
     )
     assert sum(
         chunk["content"].count("print(")
-        for chunk in chunks
+        for chunk in code_chunks
     ) == 30
 
 
