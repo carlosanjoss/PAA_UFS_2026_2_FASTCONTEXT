@@ -19,7 +19,6 @@ ausente, coleção vazia e coleção de um elemento.
 from src.algorithms.binary_search import binary_search
 from src.algorithms.linear_search import linear_search
 
-
 VOCAB = ["auth", "cors", "fastapi", "jwt", "security"]  # ordenado
 
 
