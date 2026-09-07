@@ -59,6 +59,8 @@ htmlcov/
 # Dados gerados
 # ============================================================
 
+data/manifest.json
+data/corpus_statistics.json
 data/raw/*
 data/processed/*
 data/chunks/*
