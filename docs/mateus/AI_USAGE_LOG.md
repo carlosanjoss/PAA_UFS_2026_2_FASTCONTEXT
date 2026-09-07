@@ -28,6 +28,26 @@ acadêmico: algoritmos implementados manualmente, analisáveis e testados.
    Wilson, integração de ranking, cobertura.
 7. **Fase 6 — fechamento:** organização de commits, PRs e handoffs.
 
+## Prompts representativos (literais)
+
+Amostra de até 5 instruções reais dadas ao Kiro (resumidas ao essencial,
+preservando o teor):
+
+1. "Leia integralmente KIRO_MATEUS_FASTCONTEXT.md. Execute apenas a Fase 0 —
+   auditoria. Não altere nenhum código ainda. Me mostre o estado atual,
+   divergências, dependências disponíveis, riscos e o plano exato para concluir
+   feature/classical-algorithms e feature/tests."
+2. "Inicie a Fase 1 — Merge Sort conforme KIRO_MATEUS_FASTCONTEXT.md. Gere ao
+   final docs/mateus/01_MERGE_SORT_RESULT.md e pare para minha revisão antes de
+   iniciar Quick Sort."
+3. "Mantenha a estratégia de pivô por mediana de três e deixe explícito que ela
+   reduz casos triviais de degeneração, mas o pior caso continua sendo O(N²)."
+4. "Fase 3 — Top-k com min-heap: heap implementada manualmente, sem heapq
+   escondendo a lógica; tratar k=0, k=1, k>N, vazio e empates; saída final em
+   score DESC / chunk_id ASC; documentar O(N log k) e espaço O(k)."
+5. "Faça somente o git push das duas branches para o remoto; use -u se
+   necessário; não abra PR, não faça merge e não altere a main."
+
 ## Instruções/prompts principais dadas por Mateus
 
 - Executar cada fase somente após aprovação humana explícita.
