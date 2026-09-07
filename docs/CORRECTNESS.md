@@ -140,8 +140,13 @@ subintervalo, e o pivô é contado exatamente uma vez.
 
 - Vazio/unitário: caso base.
 - Empates de score: `precedes` desempata por chunk_id ASC; o resultado é
-  determinístico. Muitas chaves iguais degradam o balanceamento (ver
-  complexidade) mas não a corretude.
+  determinístico.
+- Entradas adversariais que produzem partições desbalanceadas: uma sequência
+  construída de modo que a mediana de três selecione repetidamente um dos
+  extremos gera partições de tamanhos 0 e `m-1` a cada nível, levando à
+  degeneração de desempenho (ver complexidade). Isso afeta apenas o custo, não a
+  corretude — o particionamento continua permutando o subintervalo e posicionando
+  o pivô corretamente.
 - Scores negativos/zero: comparação numérica direta em `precedes`.
 
 ---
