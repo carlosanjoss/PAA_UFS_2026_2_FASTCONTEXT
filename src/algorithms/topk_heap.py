@@ -17,7 +17,8 @@ Ideia central:
 
 Complexidade:
     - Tempo: O(N log k)  (N inserções/comparações, cada operação de heap O(log k)).
-    - Espaço: O(k)       (a heap nunca excede k elementos).
+    - Espaço: O(min(N, k)) efetivo, com O(k) como limite superior
+      (a heap nunca contém mais que min(N, k) elementos).
 
 Requisitos acadêmicos:
     - lógica de min-heap (sift-up / sift-down) escrita à mão; NÃO se usa ``heapq``;

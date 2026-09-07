@@ -80,7 +80,11 @@ que o retrieval espera.
 | Métrica | Custo | Justificativa |
 |---|---|---|
 | Tempo | O(N log k) | N itens; cada operação de heap custa O(log k) |
-| Espaço | O(k) | a heap nunca excede k elementos |
+| Espaço | O(min(N, k)) | memória efetiva; O(k) é o limite superior |
+
+Observação sobre memória: a heap nunca contém mais que `min(N, k)` elementos.
+Portanto a memória efetiva é **O(min(N, k))**, com **O(k)** como limite superior
+(atingido quando `N >= k`). Quando `k > N`, a heap guarda apenas os `N` itens.
 
 Por que não é preciso ordenar todos os N: quando `k << N`, manter apenas os `k`
 melhores numa heap de tamanho `k` evita o custo O(N log N) da ordenação integral;

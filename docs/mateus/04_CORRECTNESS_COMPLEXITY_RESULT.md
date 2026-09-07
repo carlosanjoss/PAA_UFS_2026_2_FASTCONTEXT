@@ -92,7 +92,7 @@ Arquivo: `src/algorithms/topk_heap.py`.
   | Métrica | Custo |
   |---|---|
   | Tempo | O(N log k) |
-  | Espaço | O(k) |
+  | Espaço | O(min(N, k)) — limite superior O(k) |
 
 - **Por que não é preciso ordenar todos os N:** mantém-se uma heap de tamanho no
   máximo `k`. Cada item é processado em O(log k): ou entra (enquanto há espaço)
@@ -100,7 +100,8 @@ Arquivo: `src/algorithms/topk_heap.py`.
   são O(N) operações de O(log k), portanto **O(N log k)**. Quando `k << N`, isso
   é assintoticamente melhor que ordenar tudo (O(N log N)).
 - **Justificativa da heap de tamanho k:** guardar apenas os `k` melhores limita a
-  memória a **O(k)** e o custo por operação a O(log k). A raiz "pior no topo"
+  memória a **O(min(N, k))** (limite superior **O(k)**) e o custo por operação a
+  O(log k). A raiz "pior no topo"
   permite decidir em uma comparação se um novo item pode melhorar o conjunto.
 - **Relação teoria ↔ código:** `_sift_up`/`_sift_down` custam O(log k);
   `max_heap_size` confirma empiricamente o limite `k`; `replacements`/`insertions`
@@ -137,7 +138,7 @@ Arquivo: `src/algorithms/binary_search.py`. Análise ligada ao código real.
 |---|---:|---:|---:|---:|---|
 | Merge Sort | Θ(N log N) | Θ(N log N) | Θ(N log N) | Θ(N) + Θ(log N) pilha | ordenação estável e previsível de candidatos |
 | Quick Sort | Θ(N log N) | Θ(N log N) | Θ(N²) | O(log N)–O(N) pilha | comparação clássica; in-place |
-| Top-k Heap | O(N log k) | O(N log k) | O(N log k) | O(k) | seleção dos k melhores (config. otimizada) |
+| Top-k Heap | O(N log k) | O(N log k) | O(N log k) | O(min(N,k)) ≤ O(k) | seleção dos k melhores (config. otimizada) |
 | Busca binária | Θ(1) | Θ(log N) | Θ(log N) | O(1) | localizar termo no vocabulário ordenado |
 
 ### Diferenças teóricas relevantes
