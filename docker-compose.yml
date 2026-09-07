@@ -7,6 +7,10 @@ services:
 
     container_name: fastcontext
 
+    depends_on:
+      tests:
+        condition: service_completed_successfully
+
     working_dir: /app
 
     volumes:
@@ -21,3 +25,20 @@ services:
 
     stdin_open: true
     tty: true
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    working_dir: /app
+
+    volumes:
+      - .:/app
+
+    environment:
+      PYTHONPATH: /app
+      FASTCONTEXT_ENV: test
+
+    command: ["python", "-m", "pytest", "-v"]
+    restart: "no"
