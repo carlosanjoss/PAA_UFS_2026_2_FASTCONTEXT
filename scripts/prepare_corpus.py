@@ -211,13 +211,13 @@ def _create_record(
         "chunk_id": (
             f"{relative_path.with_suffix('').as_posix()}-{index}"
         ),
-        "documento": relative_path.as_posix(),
-        "secao": chunk["section"],
-        "titulo": chunk["title"],
-        "conteudo": chunk["content"],
+        "document": relative_path.as_posix(),
+        "section": chunk["section"],
+        "title": chunk["title"],
+        "content": chunk["content"],
         "token_count": chunk["token_count"],
         "source_path": relative_path.as_posix(),
-        "versao": version,
+        "version": version,
     }
 
 

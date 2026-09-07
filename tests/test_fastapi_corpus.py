@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from scripts.download_corpus import _clear_raw_directory
 from src.ingestion.fastapi_corpus import (
     build_manifest,
     build_statistics,
@@ -28,6 +29,23 @@ def test_find_documents_ignores_gitkeep_placeholder(
     document.write_text("# FastAPI", encoding="utf-8")
 
     assert find_documents(tmp_path) == [document]
+
+
+def test_clear_raw_directory_preserves_gitkeep(
+    tmp_path: Path,
+) -> None:
+    gitkeep = tmp_path / ".gitkeep"
+    gitkeep.write_text("", encoding="utf-8")
+    (tmp_path / "old.md").write_text("# old", encoding="utf-8")
+    nested = tmp_path / "nested"
+    nested.mkdir()
+    (nested / "old.md").write_text("# old", encoding="utf-8")
+
+    _clear_raw_directory(tmp_path)
+
+    assert gitkeep.exists()
+    assert not (tmp_path / "old.md").exists()
+    assert not nested.exists()
 
 
 def test_find_documents_ignores_configured_files(

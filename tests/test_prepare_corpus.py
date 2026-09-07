@@ -82,13 +82,13 @@ def test_create_record_contains_required_metadata(
 
     assert record == {
         "chunk_id": "security/oauth2-0",
-        "documento": "security/oauth2.md",
-        "secao": "Security > OAuth2",
-        "titulo": "OAuth2",
-        "conteudo": "OAuth2 content.",
+        "document": "security/oauth2.md",
+        "section": "Security > OAuth2",
+        "title": "OAuth2",
+        "content": "OAuth2 content.",
         "token_count": 3,
         "source_path": "security/oauth2.md",
-        "versao": "0.141.0",
+        "version": "0.141.0",
     }
 
 
@@ -204,13 +204,13 @@ def test_prepare_corpus_creates_jsonl_and_statistics(
 
     assert records[0] == {
         "chunk_id": "security-0",
-        "documento": "security.md",
-        "secao": "Security",
-        "titulo": "Security",
-        "conteudo": "Security content.",
+        "document": "security.md",
+        "section": "Security",
+        "title": "Security",
+        "content": "Security content.",
         "token_count": 3,
         "source_path": "security.md",
-        "versao": "0.141.0",
+        "version": "0.141.0",
     }
 
     assert records[1]["chunk_id"] == "security-1"

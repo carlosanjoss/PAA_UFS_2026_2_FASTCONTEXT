@@ -56,9 +56,7 @@ def download_corpus() -> None:
                 f"Documentation not found: {documentation_path}"
             )
 
-        if raw_directory.exists():
-            shutil.rmtree(raw_directory)
-        raw_directory.mkdir(parents=True, exist_ok=True)
+        _clear_raw_directory(raw_directory)
         print(f"[3/5] Copying Markdown files to {raw_directory}...")
 
         copied_files = 0
@@ -92,6 +90,20 @@ def download_corpus() -> None:
             encoding="utf-8",
         )
     print(f"[5/5] Corpus ready: {len(documents)} documents.")
+
+
+def _clear_raw_directory(raw_directory: Path) -> None:
+    """Remove downloaded files while preserving the Git directory marker."""
+    raw_directory.mkdir(parents=True, exist_ok=True)
+
+    for path in raw_directory.iterdir():
+        if path.name == ".gitkeep":
+            continue
+
+        if path.is_dir():
+            shutil.rmtree(path)
+        else:
+            path.unlink()
 
 
 if __name__ == "__main__":
