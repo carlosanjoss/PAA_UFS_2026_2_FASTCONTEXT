@@ -7,25 +7,16 @@ from src.app.models import ApplicationContainer
 from src.rag.factory import create_llm_provider
 from src.rag.pipeline import RAGPipeline
 from src.rag.providers.base import LLMProvider
-from src.rag.settings import (
-    RAGSettings,
-    load_rag_settings,
-)
+from src.rag.settings import RAGSettings, load_rag_settings
 from src.retrieval.indexed_retriever import IndexedRetriever
 from src.retrieval.linear_retriever import LinearRetriever
 from src.retrieval.optimized_retriever import OptimizedRetriever
-from src.retrieval.registry import (
-    RetrieverFactory,
-    RetrieverRegistry,
-)
+from src.retrieval.registry import RetrieverFactory, RetrieverRegistry
+from src.retrieval.semantic_retriever import SemanticRetriever
 
 
 def build_retriever_registry(
-    registrations: Mapping[
-        str,
-        RetrieverFactory,
-    ]
-    | None = None,
+    registrations: Mapping[str, RetrieverFactory] | None = None,
 ) -> RetrieverRegistry:
     """Create a retriever registry from optional registrations."""
 
@@ -44,10 +35,7 @@ def build_retriever_registry(
 
 
 def build_default_retriever_registry(
-    corpus_chunks: Sequence[
-        Mapping[str, Any]
-    ]
-    | None = None,
+    corpus_chunks: Sequence[Mapping[str, Any]] | None = None,
 ) -> RetrieverRegistry:
     """Create the standard FastContext retrieval registry."""
 
@@ -68,6 +56,9 @@ def build_default_retriever_registry(
         "optimized": lambda: OptimizedRetriever(
             list(chunks)
         ),
+        "semantic": lambda: SemanticRetriever(
+            list(chunks)
+        ),
     }
 
     return build_retriever_registry(
@@ -80,10 +71,7 @@ def create_application(
     settings: RAGSettings | None = None,
     registry: RetrieverRegistry | None = None,
     provider: LLMProvider | None = None,
-    corpus_chunks: Sequence[
-        Mapping[str, Any]
-    ]
-    | None = None,
+    corpus_chunks: Sequence[Mapping[str, Any]] | None = None,
 ) -> ApplicationContainer:
     """Build the FastContext application dependency container."""
 
@@ -138,10 +126,7 @@ def create_application(
 
 
 def _copy_corpus_chunks(
-    corpus_chunks: Sequence[
-        Mapping[str, Any]
-    ]
-    | None,
+    corpus_chunks: Sequence[Mapping[str, Any]] | None,
 ) -> list[dict[str, Any]]:
     """Create an isolated mutable copy of corpus chunks."""
 

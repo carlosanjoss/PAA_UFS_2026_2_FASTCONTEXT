@@ -12,6 +12,11 @@ from src.retrieval.registry import (
     RetrieverRegistryError,
     UnknownRetrieverError,
 )
+from src.retrieval.semantic_retriever import (
+    SemanticIndexMappingError,
+    SemanticRetriever,
+    SemanticRetrieverError,
+)
 
 __all__ = [
     "InvalidRetrieverFactoryError",
@@ -23,5 +28,8 @@ __all__ = [
     "RetrieverFactory",
     "RetrieverRegistry",
     "RetrieverRegistryError",
+    "SemanticIndexMappingError",
+    "SemanticRetriever",
+    "SemanticRetrieverError",
     "UnknownRetrieverError",
 ]

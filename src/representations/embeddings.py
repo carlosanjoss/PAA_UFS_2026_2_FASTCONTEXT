@@ -43,9 +43,6 @@ class SentenceEncoder(Protocol):
     ) -> Any:
         """Encode a sequence of texts."""
 
-    def get_sentence_embedding_dimension(self) -> int | None:
-        """Return the embedding vector dimension."""
-
 
 @dataclass(frozen=True, slots=True)
 class EmbeddingConfig:
@@ -106,21 +103,15 @@ class EmbeddingEncoder:
     def dimension(self) -> int:
         """Return the model embedding dimension."""
 
-        dimension = (
-            self._model
-            .get_sentence_embedding_dimension()
-        )
+        dimension = self._read_embedding_dimension()
 
-        if (
-            dimension is None
-            or dimension <= 0
-        ):
+        if dimension <= 0:
             raise EmbeddingOutputError(
                 "The embedding model did not report "
                 "a valid dimension."
             )
 
-        return int(dimension)
+        return dimension
 
     def encode_documents(
         self,
@@ -128,10 +119,8 @@ class EmbeddingEncoder:
     ) -> FloatMatrix:
         """Encode corpus documents or chunks into dense vectors."""
 
-        normalized_texts = (
-            self._validate_texts(
-                texts
-            )
+        normalized_texts = self._validate_texts(
+            texts
         )
 
         if not normalized_texts:
@@ -158,16 +147,13 @@ class EmbeddingEncoder:
     ) -> FloatVector:
         """Encode one retrieval query into a dense vector."""
 
-        normalized_query = (
-            self._validate_text(
-                query,
-                field_name="query",
-            )
+        normalized_query = self._validate_text(
+            query,
+            field_name="query",
         )
 
         query_instruction = (
-            self._config
-            .query_instruction
+            self._config.query_instruction
         )
 
         if query_instruction:
@@ -176,9 +162,7 @@ class EmbeddingEncoder:
                 f"{normalized_query}"
             )
         else:
-            prepared_query = (
-                normalized_query
-            )
+            prepared_query = normalized_query
 
         embeddings = self._encode(
             [prepared_query]
@@ -197,17 +181,12 @@ class EmbeddingEncoder:
     ) -> FloatMatrix:
         """Run the model and validate its output matrix."""
 
-        raw_embeddings = (
-            self._model.encode(
-                texts,
-                batch_size=(
-                    self._config
-                    .batch_size
-                ),
-                show_progress_bar=False,
-                convert_to_numpy=True,
-                normalize_embeddings=False,
-            )
+        raw_embeddings = self._model.encode(
+            texts,
+            batch_size=self._config.batch_size,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            normalize_embeddings=False,
         )
 
         raw_array = np.asarray(
@@ -237,10 +216,7 @@ class EmbeddingEncoder:
                 "a two-dimensional matrix."
             )
 
-        if (
-            embeddings.shape[0]
-            != len(texts)
-        ):
+        if embeddings.shape[0] != len(texts):
             raise EmbeddingOutputError(
                 "Embedding output row count does "
                 "not match input text count."
@@ -262,14 +238,9 @@ class EmbeddingEncoder:
                 "non-finite values."
             )
 
-        if (
-            self._config
-            .normalize_embeddings
-        ):
-            embeddings = (
-                self._normalize_rows(
-                    embeddings
-                )
+        if self._config.normalize_embeddings:
+            embeddings = self._normalize_rows(
+                embeddings
             )
 
         float_embeddings = np.asarray(
@@ -363,6 +334,50 @@ class EmbeddingEncoder:
             )
 
         return normalized_text
+
+    def _read_embedding_dimension(
+        self,
+    ) -> int:
+        """Read the embedding dimension across model API versions."""
+
+        new_method = getattr(
+            self._model,
+            "get_embedding_dimension",
+            None,
+        )
+
+        if callable(new_method):
+            dimension = new_method()
+
+            if dimension is None:
+                raise EmbeddingOutputError(
+                    "The embedding model did not report "
+                    "a valid dimension."
+                )
+
+            return int(dimension)
+
+        legacy_method = getattr(
+            self._model,
+            "get_sentence_embedding_dimension",
+            None,
+        )
+
+        if callable(legacy_method):
+            dimension = legacy_method()
+
+            if dimension is None:
+                raise EmbeddingOutputError(
+                    "The embedding model did not report "
+                    "a valid dimension."
+                )
+
+            return int(dimension)
+
+        raise EmbeddingOutputError(
+            "The embedding model does not expose "
+            "an embedding dimension method."
+        )
 
     def _load_model(
         self,
