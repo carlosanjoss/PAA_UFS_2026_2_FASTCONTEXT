@@ -27,7 +27,7 @@ O algoritmo é puro e agnóstico: não importa contratos de retrieval nem de RAG
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any
 
 from src.algorithms.ordering import KeyFunc, SortKey, default_key, precedes
 
@@ -43,9 +43,9 @@ class QuickSortStats:
 
 
 def quick_sort(
-    items: List[Any],
+    items: list[Any],
     key: KeyFunc = default_key,
-) -> tuple[List[Any], QuickSortStats]:
+) -> tuple[list[Any], QuickSortStats]:
     """
     Ordena ``items`` usando Quick Sort manual (mediana de três).
 
@@ -64,7 +64,7 @@ def quick_sort(
     stats = QuickSortStats()
 
     # Pré-computa chaves emparelhadas com os itens; ordena a cópia in-place.
-    pairs: List[tuple[SortKey, Any]] = [(key(item), item) for item in items]
+    pairs: list[tuple[SortKey, Any]] = [(key(item), item) for item in items]
 
     _quick_sort_recursive(pairs, 0, len(pairs) - 1, stats, depth=1)
 
@@ -72,7 +72,7 @@ def quick_sort(
 
 
 def _quick_sort_recursive(
-    pairs: List[tuple[SortKey, Any]],
+    pairs: list[tuple[SortKey, Any]],
     low: int,
     high: int,
     stats: QuickSortStats,
@@ -93,7 +93,7 @@ def _quick_sort_recursive(
 
 
 def _partition(
-    pairs: List[tuple[SortKey, Any]],
+    pairs: list[tuple[SortKey, Any]],
     low: int,
     high: int,
     stats: QuickSortStats,
@@ -131,7 +131,7 @@ def _partition(
 
 
 def _median_of_three(
-    pairs: List[tuple[SortKey, Any]],
+    pairs: list[tuple[SortKey, Any]],
     low: int,
     high: int,
     stats: QuickSortStats,
@@ -169,7 +169,7 @@ def _median_of_three(
 
 
 def _swap(
-    pairs: List[tuple[SortKey, Any]],
+    pairs: list[tuple[SortKey, Any]],
     i: int,
     j: int,
     stats: QuickSortStats,
@@ -182,8 +182,8 @@ def _swap(
 
 
 def quick_sort_keys(
-    keys: List[SortKey],
-) -> tuple[List[SortKey], QuickSortStats]:
+    keys: list[SortKey],
+) -> tuple[list[SortKey], QuickSortStats]:
     """
     Variante utilitária que ordena diretamente uma lista de chaves
     ``(score, chunk_id)``. Útil em testes e para uso isolado do algoritmo.

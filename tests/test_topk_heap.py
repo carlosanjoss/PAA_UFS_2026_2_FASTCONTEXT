@@ -8,8 +8,8 @@ avaliada (src/algorithms/topk_heap.py) não usa ordenação pronta nem heapq.
 
 import random
 
-from src.algorithms.topk_heap import top_k
 from src.algorithms.ordering import default_key
+from src.algorithms.topk_heap import top_k
 
 
 def reference_topk(items, k):
@@ -133,7 +133,9 @@ def test_selects_actual_best_random():
         ]
         result, _ = top_k(items, k)
         expected = reference_topk(items, k)
-        assert [default_key(it) for it in result] == [default_key(it) for it in expected]
+        assert [default_key(it) for it in result] == [
+            default_key(it) for it in expected
+        ]
 
 
 def test_result_size_capped_at_k():
@@ -169,6 +171,6 @@ def test_max_heap_size_bounded_by_k():
 def test_instrumentation_counts():
     items = [make_item(random.random(), f"c{i:03d}") for i in range(30)]
     _, stats = top_k(items, 5)
-    assert stats.insertions == 5           # preenche a heap até k
+    assert stats.insertions == 5  # preenche a heap até k
     assert stats.replacements >= 0
     assert stats.comparisons > 0

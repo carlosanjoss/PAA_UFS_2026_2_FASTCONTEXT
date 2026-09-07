@@ -5,9 +5,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from src.observability.models import (
-    RunRecord,
-)
+from src.observability.models import RunRecord
 
 
 class JsonlRunWriter:
@@ -58,6 +56,7 @@ class JsonlRunWriter:
             file.write(
                 serialized
             )
+
             file.write(
                 "\n"
             )
@@ -98,7 +97,7 @@ def read_jsonl(
                 value,
                 dict,
             ):
-                raise ValueError(
+                raise TypeError(
                     "Expected a JSON object "
                     f"at line {line_number}."
                 )

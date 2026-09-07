@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from src.observability.models import (
     ExperimentContext,
+    RunMode,
     RunRecord,
 )
 from src.retrieval.models import RetrievalResult
@@ -47,26 +48,14 @@ def create_retrieval_record(
         query=result.query,
         algorithm=result.algorithm,
         top_k=result.top_k,
-        retrieval_time_ns=(
-            metrics.retrieval_time_ns
-        ),
-        sorting_time_ns=(
-            metrics.sorting_time_ns
-        ),
-        index_build_time_ns=(
-            metrics.index_build_time_ns
-        ),
+        retrieval_time_ns=metrics.retrieval_time_ns,
+        sorting_time_ns=metrics.sorting_time_ns,
+        index_build_time_ns=metrics.index_build_time_ns,
         comparisons=metrics.comparisons,
         chunks_scored=metrics.chunks_scored,
-        candidates_found=(
-            metrics.candidates_found
-        ),
-        peak_memory_mb=(
-            metrics.peak_memory_mb
-        ),
-        returned_chunks=len(
-            result.chunks
-        ),
+        candidates_found=metrics.candidates_found,
+        peak_memory_mb=metrics.peak_memory_mb,
+        returned_chunks=len(result.chunks),
         chunk_ids=tuple(
             chunk.chunk_id
             for chunk in result.chunks
@@ -102,23 +91,17 @@ def create_rag_record(
     )
 
     retrieval = result.retrieval
-    retrieval_metrics = (
-        retrieval.metrics
-    )
+    metrics = retrieval.metrics
     rag = result.rag
 
-    combined_metadata = (
-        _merge_metadata(
-            retrieval.metadata,
-            metadata,
-        )
+    combined_metadata = _merge_metadata(
+        retrieval.metadata,
+        metadata,
     )
 
-    combined_metadata = (
-        _merge_metadata(
-            combined_metadata,
-            rag.metadata,
-        )
+    combined_metadata = _merge_metadata(
+        combined_metadata,
+        rag.metadata,
     )
 
     return RunRecord(
@@ -130,64 +113,27 @@ def create_rag_record(
         query=result.query,
         algorithm=retrieval.algorithm,
         top_k=retrieval.top_k,
-        retrieval_time_ns=(
-            retrieval_metrics
-            .retrieval_time_ns
-        ),
-        sorting_time_ns=(
-            retrieval_metrics
-            .sorting_time_ns
-        ),
-        index_build_time_ns=(
-            retrieval_metrics
-            .index_build_time_ns
-        ),
-        comparisons=(
-            retrieval_metrics
-            .comparisons
-        ),
-        chunks_scored=(
-            retrieval_metrics
-            .chunks_scored
-        ),
-        candidates_found=(
-            retrieval_metrics
-            .candidates_found
-        ),
-        peak_memory_mb=(
-            retrieval_metrics
-            .peak_memory_mb
-        ),
-        returned_chunks=len(
-            retrieval.chunks
-        ),
+        retrieval_time_ns=metrics.retrieval_time_ns,
+        sorting_time_ns=metrics.sorting_time_ns,
+        index_build_time_ns=metrics.index_build_time_ns,
+        comparisons=metrics.comparisons,
+        chunks_scored=metrics.chunks_scored,
+        candidates_found=metrics.candidates_found,
+        peak_memory_mb=metrics.peak_memory_mb,
+        returned_chunks=len(retrieval.chunks),
         chunk_ids=tuple(
             chunk.chunk_id
             for chunk in retrieval.chunks
         ),
-        generation_time_ns=(
-            rag.generation_time_ns
-        ),
-        end_to_end_time_ns=(
-            result.end_to_end_time_ns
-        ),
+        generation_time_ns=rag.generation_time_ns,
+        end_to_end_time_ns=result.end_to_end_time_ns,
         provider=rag.provider,
         model=rag.model,
-        citation_valid=(
-            rag.citation_valid
-        ),
-        citation_count=(
-            rag.citation_count
-        ),
-        citation_retry_count=(
-            rag.citation_retry_count
-        ),
-        valid_citations=(
-            rag.valid_citations
-        ),
-        invalid_citations=(
-            rag.invalid_citations
-        ),
+        citation_valid=rag.citation_valid,
+        citation_count=rag.citation_count,
+        citation_retry_count=rag.citation_retry_count,
+        valid_citations=rag.valid_citations,
+        invalid_citations=rag.invalid_citations,
         experiment=experiment,
         metadata=combined_metadata,
     )
@@ -215,11 +161,22 @@ def create_error_record(
             "mode must be 'retrieval' or 'rag'."
         )
 
+    normalized_mode: RunMode = (
+        "retrieval"
+        if mode == "retrieval"
+        else "rag"
+    )
+
     normalized_query = query.strip()
 
     if not normalized_query:
         raise ValueError(
             "query cannot be empty."
+        )
+
+    if top_k is not None and top_k < 0:
+        raise ValueError(
+            "top_k must be greater than or equal to zero."
         )
 
     resolved_run_id = (
@@ -238,7 +195,7 @@ def create_error_record(
         schema_version=SCHEMA_VERSION,
         run_id=resolved_run_id,
         timestamp_utc=resolved_timestamp,
-        mode=mode,
+        mode=normalized_mode,
         status="error",
         query=normalized_query,
         algorithm=algorithm,
@@ -262,20 +219,15 @@ def create_error_record(
 def _create_run_id() -> str:
     """Create a globally unique run identifier."""
 
-    return str(
-        uuid4()
-    )
+    return str(uuid4())
 
 
 def _create_timestamp() -> str:
     """Create an ISO 8601 UTC timestamp."""
 
-    return (
-        datetime.now(
-            UTC
-        )
-        .isoformat()
-    )
+    return datetime.now(
+        UTC
+    ).isoformat()
 
 
 def _merge_metadata(
@@ -290,13 +242,9 @@ def _merge_metadata(
     merged: dict[str, Any] = {}
 
     if first is not None:
-        merged.update(
-            first
-        )
+        merged.update(first)
 
     if second is not None:
-        merged.update(
-            second
-        )
+        merged.update(second)
 
     return merged

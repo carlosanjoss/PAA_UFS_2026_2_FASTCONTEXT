@@ -27,13 +27,14 @@ class ExperimentContext:
     seed: int | None = None
 
     def __post_init__(self) -> None:
-        if self.corpus_fraction is not None:
-            if not 0 < self.corpus_fraction <= 1:
-                raise ValueError(
-                    "corpus_fraction must be "
-                    "greater than zero and "
-                    "less than or equal to one."
-                )
+        if (
+            self.corpus_fraction is not None
+            and not 0 < self.corpus_fraction <= 1
+        ):
+            raise ValueError(
+                "corpus_fraction must be greater than zero "
+                "and less than or equal to one."
+            )
 
         if (
             self.repetition is not None
@@ -125,10 +126,10 @@ class RunRecord:
 
         if (
             self.top_k is not None
-            and self.top_k <= 0
+            and self.top_k < 0
         ):
             raise ValueError(
-                "top_k must be greater than zero."
+                "top_k must be greater than or equal to zero."
             )
 
         if (
@@ -152,8 +153,7 @@ class RunRecord:
 
             if self.retrieval_time_ns is None:
                 raise ValueError(
-                    "Successful runs must have "
-                    "retrieval_time_ns."
+                    "Successful runs must have retrieval_time_ns."
                 )
 
         if self.status == "error":
