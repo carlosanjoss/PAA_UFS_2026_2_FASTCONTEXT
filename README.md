@@ -44,10 +44,6 @@ https://github.com/fastapi/fastapi
 
 ## Ambiente Docker e testes
 
-O Dockerfile define a imagem do projeto. O Compose separa a aplicação (`fastcontext`)
-dos testes (`tests`), usando a mesma imagem. Ao iniciar `fastcontext`, os testes
-são executados primeiro.
-
 ### Aplicação
 
 ```bash
@@ -60,13 +56,26 @@ Acesse <http://localhost:8501> ou execute scripts manualmente:
 docker compose exec fastcontext python scripts/prepare_corpus.py
 ```
 
+### Corpus
+
+O download e a preparação do corpus são etapas independentes:
+
+```bash
+python -m scripts.download_corpus
+python -m scripts.prepare_corpus
+```
+
+O primeiro comando baixa e valida a documentação oficial do FastAPI. O segundo
+normaliza os arquivos Markdown e gera os chunks em `data/chunks/chunks.jsonl`.
+
 ### Testes
 
 ```bash
 docker compose run --rm tests
 ```
 
-Executa `python -m pytest -v`, aguarda o término e remove o container.
+O serviço instala as dependências e executa `python -m pytest -v` no container,
+aguarda o término e remove o container.
 
 Parar a aplicação:
 

@@ -7,10 +7,6 @@ services:
 
     container_name: fastcontext
 
-    depends_on:
-      tests:
-        condition: service_completed_successfully
-
     working_dir: /app
 
     volumes:
@@ -27,9 +23,7 @@ services:
     tty: true
 
   tests:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: python:3.11-slim
 
     working_dir: /app
 
@@ -40,5 +34,10 @@ services:
       PYTHONPATH: /app
       FASTCONTEXT_ENV: test
 
-    command: ["python", "-m", "pytest", "-v"]
+    command:
+      - sh
+      - -c
+      - python -m pip install --no-cache-dir -r requirements.txt
+        && python -m pytest -v
+
     restart: "no"
