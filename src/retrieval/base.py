@@ -2,18 +2,18 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from src.retrieval.models import (
-    RetrievalResult,
-)
+from src.retrieval.models import RetrievalResult
 
 
 class Retriever(ABC):
-    """Common interface implemented by all retrieval strategies."""
+    """Base contract for all FastContext retrievers."""
 
     @property
     @abstractmethod
     def name(self) -> str:
-        """Return the unique name of the retrieval strategy."""
+        """Return the canonical retriever identifier."""
+
+        raise NotImplementedError
 
     @abstractmethod
     def retrieve(
@@ -21,4 +21,6 @@ class Retriever(ABC):
         query: str,
         top_k: int = 5,
     ) -> RetrievalResult:
-        """Retrieve the highest-ranked chunks for a query."""
+        """Retrieve the most relevant chunks for a query."""
+
+        raise NotImplementedError
