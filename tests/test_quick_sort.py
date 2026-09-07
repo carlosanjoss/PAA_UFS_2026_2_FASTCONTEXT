@@ -130,14 +130,24 @@ def test_input_not_mutated():
 # Comportamento com o pivô e casos propensos ao pior caso
 # ---------------------------------------------------------------------------
 def test_sorted_input_is_handled_efficiently():
-    # Mediana de três evita a degeneração em entradas já ordenadas:
-    # a profundidade deve ficar bem abaixo de N.
+    # Mediana de três evita a degeneração em entradas já ordenadas: a
+    # profundidade deve ficar próxima de log2(N), não de N. Usamos um limite
+    # generoso (múltiplo de log2(N)) para o teste não ficar frágil, mas ainda
+    # capaz de detectar uma regressão para comportamento linear.
+    import math
+
     n = 128
     items = [make_item(float(n - i), f"c{i:04d}") for i in range(n)]  # score DESC
     ordered, stats = quick_sort(items)
     expected = reference_sort(items)
     assert [default_key(it) for it in ordered] == [default_key(it) for it in expected]
-    assert stats.max_depth < n  # não degenerou para profundidade linear cheia
+
+    log_n = math.log2(n)  # = 7 para n=128
+    # Entrada ordenada com mediana de três tende a particionar de forma
+    # balanceada; a profundidade deve ser no máximo alguns múltiplos de log2(N),
+    # e claramente sublinear.
+    assert stats.max_depth <= 4 * log_n
+    assert stats.max_depth < n // 4
 
 
 def test_reverse_sorted_input():
