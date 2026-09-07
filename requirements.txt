@@ -2,6 +2,7 @@ numpy>=1.26,<3.0
 pandas>=2.2,<3.0
 scikit-learn>=1.5,<2.0
 PyYAML>=6.0,<7.0
+types-PyYAML
 psutil>=6.0,<8.0
 tqdm>=4.66,<5.0
 requests>=2.32,<3.0
