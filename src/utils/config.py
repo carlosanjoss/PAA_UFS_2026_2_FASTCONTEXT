@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, cast
 
+
 import yaml
 
 PROJECT_ROOT = Path(
@@ -14,9 +15,7 @@ CONFIG_DIR = (
 )
 
 
-def load_yaml(
-    path: Path,
-) -> dict[str, Any]:
+def load_yaml( path: Path,) -> dict[str, Any]:
     """Load and validate a YAML configuration file."""
 
     if not path.exists():
@@ -24,10 +23,7 @@ def load_yaml(
             f"Configuration file not found: {path}"
         )
 
-    with path.open(
-        "r",
-        encoding="utf-8",
-    ) as file:
+    with path.open("r", encoding="utf-8", ) as file:
         data = yaml.safe_load(
             file
         )
