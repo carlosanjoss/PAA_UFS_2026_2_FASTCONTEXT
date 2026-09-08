@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from pathlib import Path
 from typing import Any
 
 from src.app.models import ApplicationContainer
+from src.ingestion.chunk_loader import (
+    DEFAULT_CHUNKS_PATH,
+    load_chunks_jsonl,
+)
 from src.rag.factory import create_llm_provider
 from src.rag.pipeline import RAGPipeline
 from src.rag.providers.base import LLMProvider
@@ -19,7 +24,6 @@ def build_retriever_registry(
     registrations: Mapping[str, RetrieverFactory] | None = None,
 ) -> RetrieverRegistry:
     """Create a retriever registry from optional registrations."""
-
     registry = RetrieverRegistry()
 
     if registrations is None:
@@ -38,7 +42,6 @@ def build_default_retriever_registry(
     corpus_chunks: Sequence[Mapping[str, Any]] | None = None,
 ) -> RetrieverRegistry:
     """Create the standard FastContext retrieval registry."""
-
     chunks = _copy_corpus_chunks(
         corpus_chunks
     )
@@ -72,9 +75,15 @@ def create_application(
     registry: RetrieverRegistry | None = None,
     provider: LLMProvider | None = None,
     corpus_chunks: Sequence[Mapping[str, Any]] | None = None,
+    corpus_path: str | Path | None = DEFAULT_CHUNKS_PATH,
 ) -> ApplicationContainer:
-    """Build the FastContext application dependency container."""
+    """Build the FastContext application dependency container.
 
+    Explicit ``corpus_chunks`` take precedence over a corpus file. When no
+    chunks are injected and ``corpus_path`` is provided, prepared chunks are
+    loaded from JSONL. A missing default corpus produces an empty retrieval
+    corpus so health reporting can expose the degraded state.
+    """
     resolved_settings = (
         settings
         if settings is not None
@@ -86,8 +95,9 @@ def create_application(
         corpus_size: int | None = None
     else:
         normalized_chunks = (
-            _copy_corpus_chunks(
-                corpus_chunks
+            _resolve_corpus_chunks(
+                corpus_chunks=corpus_chunks,
+                corpus_path=corpus_path,
             )
         )
 
@@ -125,11 +135,30 @@ def create_application(
     )
 
 
+def _resolve_corpus_chunks(
+    *,
+    corpus_chunks: Sequence[Mapping[str, Any]] | None,
+    corpus_path: str | Path | None,
+) -> list[dict[str, Any]]:
+    """Resolve explicitly injected chunks or load the prepared corpus."""
+    if corpus_chunks is not None:
+        return _copy_corpus_chunks(
+            corpus_chunks
+        )
+
+    if corpus_path is None:
+        return []
+
+    return load_chunks_jsonl(
+        corpus_path,
+        missing_ok=True,
+    )
+
+
 def _copy_corpus_chunks(
     corpus_chunks: Sequence[Mapping[str, Any]] | None,
 ) -> list[dict[str, Any]]:
     """Create an isolated mutable copy of corpus chunks."""
-
     if corpus_chunks is None:
         return []
 
