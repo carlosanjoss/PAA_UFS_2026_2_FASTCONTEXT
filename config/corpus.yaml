@@ -23,8 +23,10 @@ corpus:
       - "__pycache__"
       - ".git"
       - "node_modules"
+
     ignored_files:
       - "_llm-test.md"
+      - "release-notes.md"
 
   preprocessing:
     normalize_whitespace: true
