@@ -542,7 +542,7 @@ def _get_overlap_blocks(
     if overlap_tokens == 0:
         return []
 
-    overlap_blocks = []
+    overlap_blocks: list[str] = []
     token_count = 0
 
     for block in reversed(blocks):

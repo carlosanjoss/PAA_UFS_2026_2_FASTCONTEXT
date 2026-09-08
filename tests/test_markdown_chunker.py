@@ -394,29 +394,29 @@ def test_chunk_markdown_includes_token_count() -> None:
 def test_chunk_markdown_rejects_non_positive_max_tokens() -> None:
     markdown = normalize_markdown("FastAPI.")
 
-    try:
+    with pytest.raises(
+        ValueError,
+        match=r"^max_tokens must be greater than zero\.$",
+    ):
         chunk_markdown(
             markdown,
             max_tokens=0,
             overlap_tokens=60,
         )
-        assert False
-    except ValueError as error:
-        assert str(error) == "max_tokens must be greater than zero."
 
 
 def test_chunk_markdown_rejects_negative_overlap() -> None:
     markdown = normalize_markdown("FastAPI.")
 
-    try:
+    with pytest.raises(
+        ValueError,
+        match=r"^overlap_tokens cannot be negative\.$",
+    ):
         chunk_markdown(
             markdown,
             max_tokens=400,
             overlap_tokens=-1,
         )
-        assert False
-    except ValueError as error:
-        assert str(error) == "overlap_tokens cannot be negative."
 
 
 def test_chunk_markdown_rejects_overlap_equal_to_limit() -> None:

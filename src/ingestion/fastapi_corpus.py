@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -112,7 +112,7 @@ def build_manifest(
     corpus_directory: Path,
     version: str,
 ) -> list[dict]:
-    acquisition_date = datetime.now(timezone.utc).isoformat()
+    acquisition_date = datetime.now(UTC).isoformat()
 
     manifest = []
 
@@ -135,7 +135,7 @@ def build_manifest(
 def build_statistics(
     documents: list[Path],
 ) -> dict:
-    extensions = {}
+    extensions: dict[str, int] = {}
 
     for document in documents:
         extension = document.suffix

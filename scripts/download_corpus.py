@@ -1,8 +1,8 @@
 """Download, validate, and catalog the configured FastAPI documentation."""
 
 import json
-from pathlib import Path
 import shutil
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
 from zipfile import ZipFile

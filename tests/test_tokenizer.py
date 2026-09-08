@@ -74,5 +74,5 @@ def test_count_tokens_handles_whitespace() -> None:
 
 
 def test_count_tokens_rejects_non_string() -> None:
-    with pytest.raises(Exception):
-        count_tokens(None) 
+    with pytest.raises(TypeError):
+        count_tokens(None)

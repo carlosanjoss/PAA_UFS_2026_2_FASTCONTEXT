@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 
-
 _MARKDOWN = MarkdownIt()
 
 
