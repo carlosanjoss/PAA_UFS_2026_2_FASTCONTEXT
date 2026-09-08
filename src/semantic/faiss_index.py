@@ -62,13 +62,11 @@ class FaissIndex:
     @property
     def dimension(self) -> int:
         """Return the vector dimension expected by the index."""
-
         return self._dimension
 
     @property
     def size(self) -> int:
         """Return the number of indexed vectors."""
-
         return len(
             self._chunk_ids
         )
@@ -76,7 +74,6 @@ class FaissIndex:
     @property
     def is_empty(self) -> bool:
         """Return whether the index contains no vectors."""
-
         return self.size == 0
 
     def build(
@@ -85,7 +82,6 @@ class FaissIndex:
         chunk_ids: list[str],
     ) -> None:
         """Build the FAISS index from chunk embeddings."""
-
         vectors = self._validate_matrix(
             embeddings
         )
@@ -115,7 +111,6 @@ class FaissIndex:
         top_k: int,
     ) -> tuple[FaissSearchResult, ...]:
         """Return the top-k chunk identifiers by inner product."""
-
         if top_k < 0:
             raise ValueError(
                 "top_k cannot be negative."
@@ -175,8 +170,12 @@ class FaissIndex:
         index_path: str | Path,
         mapping_path: str | Path,
     ) -> None:
-        """Persist the FAISS index and chunk identifier mapping."""
+        """Persist the FAISS index and chunk identifier mapping.
 
+        The index is serialized in memory first and written with pathlib.
+        This avoids FAISS native file-path limitations with Unicode paths
+        on Windows.
+        """
         index_file = Path(
             index_path
         )
@@ -195,9 +194,24 @@ class FaissIndex:
             exist_ok=True,
         )
 
-        self._faiss.write_index(
-            self._index,
-            str(index_file),
+        serialized_index = (
+            self._faiss.serialize_index(
+                self._index
+            )
+        )
+
+        serialized_array = np.asarray(
+            serialized_index,
+            dtype=np.uint8,
+        )
+
+        if serialized_array.size == 0:
+            raise FaissIndexError(
+                "FAISS produced an empty serialized index."
+            )
+
+        index_file.write_bytes(
+            serialized_array.tobytes()
         )
 
         mapping_file.write_text(
@@ -212,8 +226,11 @@ class FaissIndex:
         index_path: str | Path,
         mapping_path: str | Path,
     ) -> None:
-        """Load a persisted FAISS index and chunk identifier mapping."""
+        """Load a persisted FAISS index and chunk identifier mapping.
 
+        Index bytes are read by pathlib and deserialized in memory so
+        Unicode filesystem paths work reliably on Windows.
+        """
         index_file = Path(
             index_path
         )
@@ -232,9 +249,23 @@ class FaissIndex:
                 f"FAISS mapping file not found: {mapping_file}"
             )
 
+        index_bytes = (
+            index_file.read_bytes()
+        )
+
+        if not index_bytes:
+            raise FaissIndexError(
+                "Persisted FAISS index file is empty."
+            )
+
+        serialized_index = np.frombuffer(
+            index_bytes,
+            dtype=np.uint8,
+        ).copy()
+
         loaded_index = (
-            self._faiss.read_index(
-                str(index_file)
+            self._faiss.deserialize_index(
+                serialized_index
             )
         )
 
@@ -260,13 +291,10 @@ class FaissIndex:
             loaded_index.ntotal
         )
 
-        if vector_count != len(
-            chunk_ids
-        ):
-            raise FaissIndexError(
-                "FAISS vector count does not match "
-                "the persisted chunk mapping."
-            )
+        self._validate_chunk_ids(
+            chunk_ids,
+            expected_count=vector_count,
+        )
 
         self._index = loaded_index
         self._chunk_ids = chunk_ids
@@ -275,7 +303,6 @@ class FaissIndex:
         self,
     ) -> Any:
         """Create the configured flat inner-product index."""
-
         return self._faiss.IndexFlatIP(
             self._dimension
         )
@@ -285,7 +312,6 @@ class FaissIndex:
         embeddings: FloatMatrix,
     ) -> FloatMatrix:
         """Validate an embedding matrix before indexing."""
-
         vectors = np.asarray(
             embeddings,
             dtype=np.float32,
@@ -327,7 +353,6 @@ class FaissIndex:
         query_embedding: FloatVector,
     ) -> FloatMatrix:
         """Validate and reshape one query embedding."""
-
         query = np.asarray(
             query_embedding,
             dtype=np.float32,
@@ -373,7 +398,6 @@ class FaissIndex:
         expected_count: int,
     ) -> None:
         """Validate the chunk identifier mapping."""
-
         if len(chunk_ids) != expected_count:
             raise ValueError(
                 "chunk_ids count must match "
@@ -404,7 +428,6 @@ class FaissIndex:
     @staticmethod
     def _load_faiss() -> Any:
         """Import FAISS without requiring it at module import time."""
-
         try:
             return import_module(
                 "faiss"

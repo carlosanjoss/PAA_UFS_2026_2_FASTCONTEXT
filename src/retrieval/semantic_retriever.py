@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import Any
 
-from src.representations.embeddings import (
-    EmbeddingEncoder,
-)
+from src.representations.embeddings import EmbeddingEncoder
 from src.retrieval.base import Retriever
 from src.retrieval.models import (
     RetrievalMetrics,
@@ -14,10 +13,29 @@ from src.retrieval.models import (
 )
 from src.semantic.faiss_index import (
     FaissIndex,
+    FaissIndexError,
     FaissSearchResult,
 )
+from src.semantic.persistence import (
+    SemanticPersistenceError,
+    load_semantic_index_metadata,
+    validate_semantic_index_metadata,
+)
+from src.utils.config import PROJECT_ROOT
 
 CorpusChunk = dict[str, Any]
+
+DEFAULT_SEMANTIC_DIRECTORY = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "semantic"
+)
+
+INDEX_FILENAME = "index.faiss"
+MAPPING_FILENAME = "chunk_ids.txt"
+METADATA_FILENAME = "metadata.json"
+FAISS_INDEX_TYPE = "IndexFlatIP"
 
 
 class SemanticRetrieverError(RuntimeError):
@@ -36,7 +54,6 @@ class SemanticRetriever(Retriever):
     @property
     def name(self) -> str:
         """Return the canonical retriever identifier."""
-
         return "semantic"
 
     def __init__(
@@ -45,6 +62,10 @@ class SemanticRetriever(Retriever):
         *,
         encoder: EmbeddingEncoder | None = None,
         index: FaissIndex | None = None,
+        persistence_directory: str | Path | None = (
+            DEFAULT_SEMANTIC_DIRECTORY
+        ),
+        use_persisted_index: bool | None = None,
     ) -> None:
         self._corpus = list(
             corpus_chunks
@@ -79,16 +100,55 @@ class SemanticRetriever(Retriever):
                 "the embedding dimension."
             )
 
+        self._persistence_directory = (
+            self._resolve_persistence_directory(
+                persistence_directory
+            )
+        )
+
+        if use_persisted_index is None:
+            self._use_persisted_index = (
+                encoder is None
+                and index is None
+                and self._persistence_directory
+                is not None
+            )
+        else:
+            self._use_persisted_index = (
+                use_persisted_index
+            )
+
         self._embedding_build_time_ns = 0
         self._faiss_build_time_ns = 0
         self._index_build_time_ns = 0
+        self._index_load_time_ns = 0
 
-        self._build_index()
+        self._persisted_embedding_build_time_ns: (
+            int | None
+        ) = None
+
+        self._persisted_faiss_build_time_ns: (
+            int | None
+        ) = None
+
+        self._index_source = "built"
+
+        self._persistence_status = (
+            "not_loaded"
+            if self._use_persisted_index
+            else "disabled"
+        )
+
+        loaded = (
+            self._try_load_persisted_index()
+        )
+
+        if not loaded:
+            self._build_index()
 
     @property
     def corpus_size(self) -> int:
         """Return the number of corpus chunks."""
-
         return len(
             self._corpus
         )
@@ -96,14 +156,27 @@ class SemanticRetriever(Retriever):
     @property
     def embedding_dimension(self) -> int:
         """Return the semantic embedding dimension."""
-
         return self._encoder.dimension
 
     @property
     def index_size(self) -> int:
         """Return the number of vectors stored in FAISS."""
-
         return self._index.size
+
+    @property
+    def index_source(self) -> str:
+        """Return whether the current index was loaded or built."""
+        return self._index_source
+
+    @property
+    def index_load_time_ns(self) -> int:
+        """Return the persisted index loading time."""
+        return self._index_load_time_ns
+
+    @property
+    def persistence_status(self) -> str:
+        """Return the semantic persistence status."""
+        return self._persistence_status
 
     def retrieve(
         self,
@@ -111,7 +184,6 @@ class SemanticRetriever(Retriever):
         top_k: int = 5,
     ) -> RetrievalResult:
         """Retrieve semantic Top-k chunks using BGE and FAISS."""
-
         normalized_query = (
             self._validate_request(
                 query,
@@ -213,48 +285,149 @@ class SemanticRetriever(Retriever):
             top_k=top_k,
             chunks=chunks,
             metrics=metrics,
-            metadata={
-                "representation": "bge_embeddings",
-                "model": (
+            metadata=(
+                self._build_metadata(
+                    query_embedding_time_ns=(
+                        query_embedding_time_ns
+                    ),
+                    faiss_search_time_ns=(
+                        faiss_search_time_ns
+                    ),
+                )
+            ),
+        )
+
+    def _try_load_persisted_index(
+        self,
+    ) -> bool:
+        """Load a compatible persisted semantic index when available."""
+        if not self._use_persisted_index:
+            return False
+
+        directory = (
+            self._persistence_directory
+        )
+
+        if directory is None:
+            self._persistence_status = (
+                "disabled"
+            )
+            return False
+
+        index_path = (
+            directory
+            / INDEX_FILENAME
+        )
+
+        mapping_path = (
+            directory
+            / MAPPING_FILENAME
+        )
+
+        metadata_path = (
+            directory
+            / METADATA_FILENAME
+        )
+
+        if not (
+            index_path.is_file()
+            and mapping_path.is_file()
+            and metadata_path.is_file()
+        ):
+            self._persistence_status = (
+                "missing"
+            )
+            return False
+
+        try:
+            metadata = (
+                load_semantic_index_metadata(
+                    metadata_path
+                )
+            )
+
+            validate_semantic_index_metadata(
+                metadata,
+                self._corpus,
+                model_name=(
                     self._encoder.model_name
                 ),
-                "embedding_dimension": (
+                embedding_dimension=(
                     self._encoder.dimension
                 ),
-                "normalize_embeddings": (
+                normalize_embeddings=(
                     self._encoder
                     .config
                     .normalize_embeddings
                 ),
-                "similarity": (
-                    "inner_product_on_l2_normalized_vectors"
+                faiss_index_type=(
+                    FAISS_INDEX_TYPE
                 ),
-                "candidate_strategy": (
-                    "faiss_index_flat_ip"
-                ),
-                "ranking_strategy": (
-                    "faiss_top_k_with_chunk_id_tie_break"
-                ),
-                "embedding_build_time_ns": (
-                    self._embedding_build_time_ns
-                ),
-                "faiss_build_time_ns": (
-                    self._faiss_build_time_ns
-                ),
-                "query_embedding_time_ns": (
-                    query_embedding_time_ns
-                ),
-                "faiss_search_time_ns": (
-                    faiss_search_time_ns
-                ),
-            },
+            )
+
+            load_start = (
+                time.perf_counter_ns()
+            )
+
+            self._index.load(
+                index_path=index_path,
+                mapping_path=mapping_path,
+            )
+
+            self._index_load_time_ns = (
+                time.perf_counter_ns()
+                - load_start
+            )
+
+            self._validate_loaded_index_size()
+
+        except (
+            FileNotFoundError,
+            SemanticPersistenceError,
+            FaissIndexError,
+            SemanticIndexMappingError,
+            ValueError,
+        ):
+            self._persistence_status = (
+                "incompatible"
+            )
+
+            return False
+
+        self._embedding_build_time_ns = 0
+        self._faiss_build_time_ns = 0
+        self._index_build_time_ns = 0
+
+        self._persisted_embedding_build_time_ns = (
+            metadata.embedding_build_time_ns
         )
+
+        self._persisted_faiss_build_time_ns = (
+            metadata.faiss_build_time_ns
+        )
+
+        self._index_source = "persisted"
+        self._persistence_status = "loaded"
+
+        return True
+
+    def _validate_loaded_index_size(
+        self,
+    ) -> None:
+        """Validate persisted FAISS index size against the current corpus."""
+        if (
+            self._index.size
+            != len(self._corpus)
+        ):
+            raise SemanticIndexMappingError(
+                "Persisted semantic index size "
+                "does not match the current corpus."
+            )
 
     def _build_index(
         self,
     ) -> None:
         """Generate corpus embeddings and build the FAISS index."""
-
         build_start = (
             time.perf_counter_ns()
         )
@@ -310,11 +483,12 @@ class SemanticRetriever(Retriever):
             - build_start
         )
 
+        self._index_source = "built"
+
     def _build_corpus_map(
         self,
     ) -> dict[str, CorpusChunk]:
         """Build and validate the semantic chunk lookup table."""
-
         corpus_map: dict[
             str,
             CorpusChunk,
@@ -361,11 +535,15 @@ class SemanticRetriever(Retriever):
 
     def _build_retrieved_chunks(
         self,
-        results: list[FaissSearchResult]
-        | tuple[FaissSearchResult, ...],
+        results: (
+            list[FaissSearchResult]
+            | tuple[
+                FaissSearchResult,
+                ...,
+            ]
+        ),
     ) -> tuple[RetrievedChunk, ...]:
         """Convert FAISS results into canonical retrieval chunks."""
-
         retrieved: list[
             RetrievedChunk
         ] = []
@@ -454,6 +632,66 @@ class SemanticRetriever(Retriever):
             retrieved
         )
 
+    def _build_metadata(
+        self,
+        *,
+        query_embedding_time_ns: int | None = None,
+        faiss_search_time_ns: int | None = None,
+    ) -> dict[str, Any]:
+        """Build semantic retrieval metadata."""
+        return {
+            "representation": (
+                "bge_embeddings"
+            ),
+            "model": (
+                self._encoder.model_name
+            ),
+            "embedding_dimension": (
+                self._encoder.dimension
+            ),
+            "normalize_embeddings": (
+                self._encoder
+                .config
+                .normalize_embeddings
+            ),
+            "similarity": (
+                "inner_product_on_l2_normalized_vectors"
+            ),
+            "candidate_strategy": (
+                "faiss_index_flat_ip"
+            ),
+            "ranking_strategy": (
+                "faiss_top_k_with_chunk_id_tie_break"
+            ),
+            "index_source": (
+                self._index_source
+            ),
+            "persistence_status": (
+                self._persistence_status
+            ),
+            "index_load_time_ns": (
+                self._index_load_time_ns
+            ),
+            "embedding_build_time_ns": (
+                self._embedding_build_time_ns
+            ),
+            "faiss_build_time_ns": (
+                self._faiss_build_time_ns
+            ),
+            "persisted_embedding_build_time_ns": (
+                self._persisted_embedding_build_time_ns
+            ),
+            "persisted_faiss_build_time_ns": (
+                self._persisted_faiss_build_time_ns
+            ),
+            "query_embedding_time_ns": (
+                query_embedding_time_ns
+            ),
+            "faiss_search_time_ns": (
+                faiss_search_time_ns
+            ),
+        }
+
     def _empty_result(
         self,
         *,
@@ -462,7 +700,6 @@ class SemanticRetriever(Retriever):
         start_time: int,
     ) -> RetrievalResult:
         """Create an empty semantic retrieval result."""
-
         return RetrievalResult(
             query=query,
             algorithm=self.name,
@@ -481,35 +718,27 @@ class SemanticRetriever(Retriever):
                 chunks_scored=0,
                 candidates_found=0,
             ),
-            metadata={
-                "representation": (
-                    "bge_embeddings"
-                ),
-                "model": (
-                    self._encoder.model_name
-                ),
-                "embedding_dimension": (
-                    self._encoder.dimension
-                ),
-                "normalize_embeddings": (
-                    self._encoder
-                    .config
-                    .normalize_embeddings
-                ),
-                "similarity": (
-                    "inner_product_on_l2_normalized_vectors"
-                ),
-                "candidate_strategy": (
-                    "faiss_index_flat_ip"
-                ),
-                "ranking_strategy": (
-                    "faiss_top_k_with_chunk_id_tie_break"
-                ),
-                "embedding_build_time_ns": (
-                    self._embedding_build_time_ns
-                ),
-                "faiss_build_time_ns": (
-                    self._faiss_build_time_ns
-                ),
-            },
+            metadata=(
+                self._build_metadata()
+            ),
         )
+
+    @staticmethod
+    def _resolve_persistence_directory(
+        directory: str | Path | None,
+    ) -> Path | None:
+        """Resolve an optional semantic persistence directory."""
+        if directory is None:
+            return None
+
+        path = Path(
+            directory
+        )
+
+        if path.is_absolute():
+            return path
+
+        return (
+            PROJECT_ROOT
+            / path
+        ).resolve()

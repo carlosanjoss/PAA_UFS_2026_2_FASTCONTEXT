@@ -70,6 +70,13 @@ retrieval:
     faiss:
       index_type: "IndexFlatIP"
 
+    persistence:
+      enabled: true
+      directory: "data/processed/semantic"
+      index_file: "index.faiss"
+      mapping_file: "chunk_ids.txt"
+      metadata_file: "metadata.json"
+
   rag:
     enabled: true
     default_provider: "ollama"
