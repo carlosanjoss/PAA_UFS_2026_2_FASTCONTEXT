@@ -1,5 +1,4 @@
 retrieval:
-
   defaults:
     top_k: 5
 
@@ -23,12 +22,12 @@ retrieval:
       sublinear_tf: true
       norm: "l2"
       stop_words: "english"
+
       ngram_range:
         min: 1
         max: 2
 
   algorithms:
-
     linear:
       enabled: true
       name: "Linear Search"
@@ -46,7 +45,6 @@ retrieval:
       name: "FAISS Semantic Search"
 
   sorting:
-
     primary:
       algorithm: "merge_sort"
 
@@ -62,7 +60,6 @@ retrieval:
     algorithm: "min_heap"
 
   semantic:
-
     model:
       name: "BAAI/bge-small-en-v1.5"
 
@@ -74,13 +71,11 @@ retrieval:
       index_type: "IndexFlatIP"
 
   rag:
-
     enabled: true
-
     default_provider: "ollama"
 
     ollama:
-      model: "qwen3:4b"
+      model: "qwen2.5:3b"
       fallback_model: "qwen3:1.7b"
       base_url: "http://localhost:11434"
 

@@ -1,29 +1,25 @@
-"""
-src/algorithms/linear_search.py
-Implementacao manual da Busca Linear com contagem de comparacoes para PAA.
-"""
+from __future__ import annotations
 
-from typing import List, Any, Tuple, Optional
+from collections.abc import Sequence
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
-def linear_search(elements: List[Any], target: Any) -> Tuple[Optional[int], int]:
-    """
-    Executa busca linear manual sobre uma sequencia de elementos.
+def linear_search(
+    elements: Sequence[T],
+    target: T,
+) -> tuple[int | None, int]:
+    """Perform manual linear search and count key comparisons."""
 
-    Args:
-        elements: Lista de elementos (nao precisa estar ordenada).
-        target: Elemento a ser localizado.
-
-    Returns:
-        Tuple[Optional[int], int]:
-            - Indice onde o elemento foi encontrado pela primeira vez (ou None se ausente).
-            - Quantidade de comparacoes de chave realizadas.
-    """
     comparisons = 0
 
-    for idx, item in enumerate(elements):
+    for index, item in enumerate(
+        elements
+    ):
         comparisons += 1
+
         if item == target:
-            return idx, comparisons
+            return index, comparisons
 
     return None, comparisons

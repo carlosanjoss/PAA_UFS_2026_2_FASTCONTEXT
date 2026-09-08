@@ -8,8 +8,8 @@ avaliada (src/algorithms/quick_sort.py) não usa ordenação pronta.
 
 import random
 
-from src.algorithms.quick_sort import quick_sort, quick_sort_keys
 from src.algorithms.ordering import default_key
+from src.algorithms.quick_sort import quick_sort, quick_sort_keys
 
 
 def reference_sort(items):
@@ -95,7 +95,9 @@ def test_equivalence_with_reference_random():
         ]
         ordered, _ = quick_sort(items)
         expected = reference_sort(items)
-        assert [default_key(it) for it in ordered] == [default_key(it) for it in expected]
+        assert [default_key(it) for it in ordered] == [
+            default_key(it) for it in expected
+        ]
 
 
 def test_preserves_all_elements():

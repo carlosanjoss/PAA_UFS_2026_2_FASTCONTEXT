@@ -3,10 +3,10 @@ src/algorithms/binary_search.py
 Implementacao manual da Busca Binaria com contagem de comparacoes para PAA.
 """
 
-from typing import List, Any, Tuple, Optional
+from typing import Any
 
 
-def binary_search(elements: List[Any], target: Any) -> Tuple[Optional[int], int]:
+def binary_search(elements: list[Any], target: Any) -> tuple[int | None, int]:
     """
     Executa busca binaria manual sobre uma lista ordenada.
 

@@ -68,7 +68,14 @@ def test_inverted_index_binary_search_vocabulary():
     index.build(corpus)
 
     # Verifica se a lista foi ordenada lexicograficamente
-    assert index.sorted_vocabulary == ["alpha", "banana", "cat", "dog", "monkey", "zebra"]
+    assert index.sorted_vocabulary == [
+        "alpha",
+        "banana",
+        "cat",
+        "dog",
+        "monkey",
+        "zebra",
+    ]
 
     # Termo existente
     exists, comp = index.contains_term("dog")

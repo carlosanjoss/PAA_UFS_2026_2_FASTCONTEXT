@@ -21,3 +21,23 @@ services:
 
     stdin_open: true
     tty: true
+
+  tests:
+    image: python:3.11-slim
+
+    working_dir: /app
+
+    volumes:
+      - .:/app
+
+    environment:
+      PYTHONPATH: /app
+      FASTCONTEXT_ENV: test
+
+    command:
+      - sh
+      - -c
+      - python -m pip install --no-cache-dir -r requirements.txt
+        && python -m pytest -v
+
+    restart: "no"

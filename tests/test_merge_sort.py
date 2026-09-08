@@ -8,8 +8,6 @@ avaliada (src/algorithms/merge_sort.py) não usa ordenação pronta.
 
 import random
 
-import pytest
-
 from src.algorithms.merge_sort import merge_sort, merge_sort_keys
 from src.algorithms.ordering import default_key
 
@@ -101,7 +99,9 @@ def test_equivalence_with_reference_random():
         ]
         ordered, _ = merge_sort(items)
         expected = reference_sort(items)
-        assert [default_key(it) for it in ordered] == [default_key(it) for it in expected]
+        assert [default_key(it) for it in ordered] == [
+            default_key(it) for it in expected
+        ]
 
 
 def test_preserves_all_elements():

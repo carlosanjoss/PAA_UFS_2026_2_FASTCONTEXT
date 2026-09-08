@@ -1,73 +1,57 @@
-"""
-src/retrieval/base.py
-Contrato oficial entre Retrieval, Algoritmos Classicos e RAG.
-Define RetrievedChunk, RetrievalMetrics, RetrievalResult e a classe base Retriever.
-"""
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
 
-
-@dataclass(frozen=True)
-class RetrievedChunk:
-    """
-    Representa a informacao de um trecho individual posicionado no ranking.
-    """
-    chunk_id: str
-    score: float
-    rank: int
-    source_path: str
-    section_title: str
-    content: str
-    token_count: Optional[int] = 0
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class RetrievalMetrics:
-    """
-    Metricas de desempenho e instrumentacao algoritmica para PAA.
-    """
-    retrieval_time_ns: int = 0
-    sorting_time_ns: int = 0
-    index_build_time_ns: int = 0
-    peak_memory_mb: float = 0.0
-    comparisons: int = 0
-    chunks_scored: int = 0
-    candidates_found: int = 0
-
-
-@dataclass
-class RetrievalResult:
-    """
-    Objeto de retorno padrao entregue pelo Retriever ao pipeline de RAG e interface.
-    """
-    query: str
-    k: int
-    retriever_name: str
-    chunks: List[RetrievedChunk]
-    metrics: RetrievalMetrics = field(default_factory=RetrievalMetrics)
-
-    def is_empty(self) -> bool:
-        """Indica se a busca nao retornou nenhum trecho."""
-        return len(self.chunks) == 0
+from src.retrieval.models import RetrievalResult
 
 
 class Retriever(ABC):
-    """
-    Classe base abstrata para todos os recuperadores.
-    Exige o atributo 'name' ('linear', 'indexed', 'optimized' ou 'semantic')
-    e o metodo 'search(query, k)'.
-    """
+    """Base contract for every FastContext retriever."""
 
     @property
     @abstractmethod
     def name(self) -> str:
-        """Identificador textual exato do recuperador."""
-        pass
+        """Return the canonical retriever identifier."""
+
+        raise NotImplementedError
 
     @abstractmethod
-    def search(self, query: str, k: int = 5) -> RetrievalResult:
-        """Executa a busca e retorna os k itens mais relevantes."""
-        pass
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 5,
+    ) -> RetrievalResult:
+        """Retrieve the most relevant chunks for a query."""
+
+        raise NotImplementedError
+
+    def search(
+        self,
+        query: str,
+        k: int = 5,
+    ) -> RetrievalResult:
+        """Provide backward compatibility with the original search API."""
+
+        return self.retrieve(
+            query=query,
+            top_k=k,
+        )
+
+    @staticmethod
+    def _validate_request(
+        query: str,
+        top_k: int,
+    ) -> str:
+        """Validate and normalize common retrieval parameters."""
+
+        normalized_query = query.strip()
+
+        if not normalized_query:
+            raise ValueError("query cannot be empty.")
+
+        if top_k < 0:
+            raise ValueError(
+                "top_k must be greater than or equal to zero."
+            )
+
+        return normalized_query

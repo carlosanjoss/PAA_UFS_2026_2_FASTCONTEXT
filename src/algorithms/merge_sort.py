@@ -19,7 +19,7 @@ O algoritmo é puro e agnóstico: não importa contratos de retrieval nem de RAG
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import Any
 
 from src.algorithms.ordering import KeyFunc, SortKey, default_key, precedes
 
@@ -34,9 +34,9 @@ class MergeSortStats:
 
 
 def merge_sort(
-    items: List[Any],
+    items: list[Any],
     key: KeyFunc = default_key,
-) -> tuple[List[Any], MergeSortStats]:
+) -> tuple[list[Any], MergeSortStats]:
     """
     Ordena ``items`` de forma estável usando Merge Sort manual.
 
@@ -58,7 +58,7 @@ def merge_sort(
 
     # Pré-computa as chaves uma única vez para não recalcular durante a recursão
     # e para manter a contagem de comparações restrita à comparação de chaves.
-    indexed: List[tuple[SortKey, Any]] = [(key(item), item) for item in items]
+    indexed: list[tuple[SortKey, Any]] = [(key(item), item) for item in items]
 
     ordered_pairs = _merge_sort_recursive(indexed, stats)
 
@@ -66,9 +66,9 @@ def merge_sort(
 
 
 def _merge_sort_recursive(
-    pairs: List[tuple[SortKey, Any]],
+    pairs: list[tuple[SortKey, Any]],
     stats: MergeSortStats,
-) -> List[tuple[SortKey, Any]]:
+) -> list[tuple[SortKey, Any]]:
     """Recursão principal: divide, ordena metades e faz o merge."""
     n = len(pairs)
 
@@ -86,10 +86,10 @@ def _merge_sort_recursive(
 
 
 def _merge(
-    left: List[tuple[SortKey, Any]],
-    right: List[tuple[SortKey, Any]],
+    left: list[tuple[SortKey, Any]],
+    right: list[tuple[SortKey, Any]],
     stats: MergeSortStats,
-) -> List[tuple[SortKey, Any]]:
+) -> list[tuple[SortKey, Any]]:
     """
     Intercala duas listas já ordenadas preservando o critério canônico.
 
@@ -100,7 +100,7 @@ def _merge(
     """
     stats.merges += 1
 
-    merged: List[tuple[SortKey, Any]] = []
+    merged: list[tuple[SortKey, Any]] = []
     i = 0
     j = 0
 
@@ -135,8 +135,8 @@ def _merge(
 
 
 def merge_sort_keys(
-    keys: List[SortKey],
-) -> tuple[List[SortKey], MergeSortStats]:
+    keys: list[SortKey],
+) -> tuple[list[SortKey], MergeSortStats]:
     """
     Variante utilitária que ordena diretamente uma lista de chaves
     ``(score, chunk_id)``. Útil em testes e para uso isolado do algoritmo.

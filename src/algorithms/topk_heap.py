@@ -31,7 +31,7 @@ O algoritmo é puro e agnóstico: não importa contratos de retrieval nem de RAG
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any
 
 from src.algorithms.ordering import KeyFunc, SortKey, default_key, precedes
 
@@ -47,10 +47,10 @@ class TopKStats:
 
 
 def top_k(
-    items: List[Any],
+    items: list[Any],
     k: int,
     key: KeyFunc = default_key,
-) -> tuple[List[Any], TopKStats]:
+) -> tuple[list[Any], TopKStats]:
     """
     Retorna os ``k`` melhores itens de ``items`` em ordem final de ranking.
 
@@ -78,7 +78,7 @@ def top_k(
         return [], stats
 
     # Heap de pares (chave, item). A raiz (índice 0) é o PIOR dos k melhores.
-    heap: List[tuple[SortKey, Any]] = []
+    heap: list[tuple[SortKey, Any]] = []
 
     for item in items:
         entry = (key(item), item)
@@ -121,7 +121,7 @@ def _worse(key_a: SortKey, key_b: SortKey, stats: TopKStats) -> bool:
     return precedes(key_b, key_a)
 
 
-def _sift_up(heap: List[tuple[SortKey, Any]], idx: int, stats: TopKStats) -> None:
+def _sift_up(heap: list[tuple[SortKey, Any]], idx: int, stats: TopKStats) -> None:
     """Sobe o elemento em ``idx`` enquanto for pior que seu pai."""
     while idx > 0:
         parent = (idx - 1) // 2
@@ -134,7 +134,7 @@ def _sift_up(heap: List[tuple[SortKey, Any]], idx: int, stats: TopKStats) -> Non
             break
 
 
-def _sift_down(heap: List[tuple[SortKey, Any]], idx: int, stats: TopKStats) -> None:
+def _sift_down(heap: list[tuple[SortKey, Any]], idx: int, stats: TopKStats) -> None:
     """Desce a raiz/elemento em ``idx`` restaurando a propriedade de min-heap."""
     n = len(heap)
     while True:
@@ -155,9 +155,9 @@ def _sift_down(heap: List[tuple[SortKey, Any]], idx: int, stats: TopKStats) -> N
 
 
 def _heap_to_sorted(
-    heap: List[tuple[SortKey, Any]],
+    heap: list[tuple[SortKey, Any]],
     stats: TopKStats,
-) -> List[tuple[SortKey, Any]]:
+) -> list[tuple[SortKey, Any]]:
     """
     Converte a heap (não ordenada) na ordem final de ranking:
     score DESC / chunk_id ASC.
@@ -166,7 +166,7 @@ def _heap_to_sorted(
     equivalente a um heapsort ascendente-em-pior, produzindo a ordem desejada.
     """
     working = list(heap)
-    ordered_worst_first: List[tuple[SortKey, Any]] = []
+    ordered_worst_first: list[tuple[SortKey, Any]] = []
 
     while working:
         # A raiz é o pior; move-a para o fim removendo-a da heap.

@@ -1,0 +1,89 @@
+[build-system]
+requires = [
+    "setuptools>=75",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "fastcontext"
+version = "0.1.0"
+description = "Algorithmic context retrieval for generative AI."
+readme = "README.md"
+requires-python = ">=3.11"
+
+authors = [
+    { name = "FastContext Team" },
+]
+
+dependencies = [
+    "faiss-cpu>=1.10,<2.0",
+    "numpy>=1.26,<3.0",
+    "python-dotenv>=1.0,<2.0",
+    "PyYAML>=6.0,<7.0",
+    "requests>=2.32,<3.0",
+    "sentence-transformers>=5.0,<6.0",
+    "streamlit>=1.40,<2.0",
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.14,<2.0",
+    "pytest>=8.0,<10.0",
+    "pytest-cov>=5.0,<8.0",
+    "ruff>=0.9,<1.0",
+]
+
+
+[project.scripts]
+fastcontext = "src.cli:main"
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "src",
+    "src.*",
+]
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+markers = [
+    "integration: tests requiring external services such as Ollama",
+]
+
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "SIM",
+    "TRY",
+]
+
+ignore = [
+    "TRY003",
+]
+
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true

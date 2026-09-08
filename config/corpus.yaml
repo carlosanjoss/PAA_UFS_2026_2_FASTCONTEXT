@@ -12,7 +12,8 @@ corpus:
     method: "github_archive"
     save_original_files: true
     raw_directory: "data/raw"
-    processed_directory: "data/processed"
+    manifest_path: "data/manifest.json"
+    statistics_path: "data/corpus_statistics.json"
 
   files:
     allowed_extensions:
@@ -22,6 +23,8 @@ corpus:
       - "__pycache__"
       - ".git"
       - "node_modules"
+    ignored_files:
+      - "_llm-test.md"
 
   preprocessing:
     normalize_whitespace: true
@@ -34,8 +37,8 @@ corpus:
     strategy: "markdown_sections"
     max_tokens: 400
     overlap_tokens: 60
-    min_tokens: 30
     preserve_section_titles: true
+    output: "data/chunks/chunks.jsonl"
 
   metadata:
     store_source_path: true

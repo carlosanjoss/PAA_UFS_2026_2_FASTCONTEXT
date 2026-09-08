@@ -1,134 +1,377 @@
-"""
-src/retrieval/indexed_retriever.py
-Implementacao do IndexedRetriever com indice invertido, busca binaria instrumentada,
-TF-IDF com similaridade de cosseno e Merge Sort manual integrado para PAA.
-"""
+from __future__ import annotations
 
 import time
-from typing import List, Dict, Any, Set
-from src.retrieval.base import Retriever, RetrievedChunk, RetrievalResult, RetrievalMetrics
+from typing import Any
+
 from src.algorithms.inverted_index import InvertedIndex
-from src.representations.tfidf import TFIDFVectorizer
 from src.algorithms.merge_sort import merge_sort
+from src.representations.tfidf import (
+    SparseVector,
+    TFIDFVectorizer,
+)
+from src.retrieval.base import Retriever
+from src.retrieval.models import (
+    RetrievalMetrics,
+    RetrievalResult,
+    RetrievedChunk,
+)
+
+CorpusChunk = dict[str, Any]
+Candidate = tuple[float, CorpusChunk]
 
 
 class IndexedRetriever(Retriever):
-    """
-    Recuperador Indexado (Configuracao B):
-    Utiliza InvertedIndex com busca binaria para selecionar candidatos,
-    calcula TF-IDF e cosseno apenas nos candidatos filtrados e
-    ordena usando Merge Sort manual (Theta(C log C)).
-    """
+    """Retrieve indexed candidates and rank them with Merge Sort."""
 
-    name: str = "indexed"
+    @property
+    def name(self) -> str:
+        """Return the canonical retriever identifier."""
 
-    def __init__(self, corpus_chunks: List[Dict[str, Any]]):
-        self.corpus_map: Dict[str, Dict[str, Any]] = {
-            chunk["chunk_id"]: chunk for chunk in corpus_chunks
-        }
-        
-        self.index = InvertedIndex()
-        self.index.build(corpus_chunks)
-        self.index_build_time_ns = self.index.build_time_ns
+        return "indexed"
 
-        self.vectorizer = TFIDFVectorizer()
-        self.vectorizer.fit(corpus_chunks)
-        self.doc_vectors: Dict[str, Dict[str, float]] = {
-            chunk["chunk_id"]: self.vectorizer.transform(chunk.get("content", ""))
-            for chunk in corpus_chunks
-        }
+    def __init__(
+        self,
+        corpus_chunks: list[CorpusChunk],
+    ) -> None:
+        self._corpus = list(
+            corpus_chunks
+        )
 
-    def search(self, query: str, k: int = 5) -> RetrievalResult:
-        start_time = time.perf_counter_ns()
-        metrics = RetrievalMetrics(index_build_time_ns=self.index_build_time_ns)
+        self._corpus_map = (
+            self._build_corpus_map()
+        )
 
-        if not self.corpus_map or k <= 0 or not query.strip():
-            metrics.retrieval_time_ns = time.perf_counter_ns() - start_time
-            return RetrievalResult(
-                query=query,
-                k=k,
-                retriever_name=self.name,
-                chunks=[],
-                metrics=metrics,
+        self._index = InvertedIndex()
+        self._index.build(
+            self._corpus
+        )
+
+        self._index_build_time_ns = (
+            self._index.build_time_ns
+        )
+
+        self._vectorizer = (
+            TFIDFVectorizer()
+            .fit(
+                self._corpus
+            )
+        )
+
+        self._document_vectors = (
+            self._build_document_vectors()
+        )
+
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 5,
+    ) -> RetrievalResult:
+        """Filter through the index and rank candidates with Merge Sort."""
+
+        normalized_query = (
+            self._validate_request(
+                query,
+                top_k,
+            )
+        )
+
+        start_time = (
+            time.perf_counter_ns()
+        )
+
+        if top_k == 0:
+            return self._empty_result(
+                query=normalized_query,
+                top_k=top_k,
+                start_time=start_time,
             )
 
-        query_tokens = self.index.tokenize(query)
-        if not query_tokens:
-            metrics.retrieval_time_ns = time.perf_counter_ns() - start_time
-            return RetrievalResult(
-                query=query,
-                k=k,
-                retriever_name=self.name,
-                chunks=[],
-                metrics=metrics,
+        candidate_ids, binary_comparisons = (
+            self._index
+            .get_candidate_chunk_ids_with_comparisons(
+                normalized_query
             )
+        )
 
-        # 1. Filtra candidatos pelo indice e conta comparacoes da busca binaria
-        candidate_ids: Set[str] = set()
-        total_binary_comparisons = 0
-
-        for token in query_tokens:
-            exists, comps = self.index.contains_term(token)
-            total_binary_comparisons += comps
-            if exists:
-                postings = self.index.get_postings(token)
-                candidate_ids.update(postings.keys())
-
-        metrics.chunks_scored = len(candidate_ids)
-
-        if not candidate_ids:
-            metrics.comparisons = total_binary_comparisons
-            metrics.retrieval_time_ns = time.perf_counter_ns() - start_time
-            return RetrievalResult(
-                query=query,
-                k=k,
-                retriever_name=self.name,
-                chunks=[],
-                metrics=metrics,
+        query_vector = (
+            self._vectorizer.transform(
+                normalized_query
             )
+        )
 
-        # 2. Calcula TF-IDF e cosseno apenas nos candidatos filtrados
-        query_vec = self.vectorizer.transform(query)
-        candidates = []
+        candidates: list[
+            Candidate
+        ] = []
 
         for chunk_id in candidate_ids:
-            chunk = self.corpus_map[chunk_id]
-            chunk_vec = self.doc_vectors.get(chunk_id, {})
-            score = self.vectorizer.cosine_similarity(query_vec, chunk_vec)
-            if score > 0.0:
-                candidates.append((score, chunk))
+            chunk = self._corpus_map[
+                chunk_id
+            ]
 
-        metrics.candidates_found = len(candidates)
-
-        # 3. Ordenacao com Merge Sort manual (Theta(C log C))
-        sort_start = time.perf_counter_ns()
-        sorted_candidates, sort_stats = merge_sort(candidates)
-        metrics.sorting_time_ns = time.perf_counter_ns() - sort_start
-
-        sort_comps = sort_stats.comparisons if hasattr(sort_stats, "comparisons") else int(sort_stats or 0)
-        metrics.comparisons = total_binary_comparisons + sort_comps
-
-        top_k = sorted_candidates[:k]
-
-        retrieved_chunks = [
-            RetrievedChunk(
-                chunk_id=item[1]["chunk_id"],
-                score=float(item[0]),
-                rank=idx + 1,
-                source_path=item[1].get("source_path", ""),
-                section_title=item[1].get("section_title", ""),
-                content=item[1].get("content", ""),
-                token_count=item[1].get("token_count", 0),
+            score = (
+                self._vectorizer
+                .cosine_similarity(
+                    query_vector,
+                    self._document_vectors[
+                        chunk_id
+                    ],
+                )
             )
-            for idx, item in enumerate(top_k)
-        ]
 
-        metrics.retrieval_time_ns = time.perf_counter_ns() - start_time
+            if score > 0.0:
+                candidates.append(
+                    (
+                        score,
+                        chunk,
+                    )
+                )
+
+        sort_start = (
+            time.perf_counter_ns()
+        )
+
+        ordered_candidates, sort_stats = (
+            merge_sort(
+                candidates
+            )
+        )
+
+        sorting_time_ns = (
+            time.perf_counter_ns()
+            - sort_start
+        )
+
+        selected = (
+            ordered_candidates[
+                :top_k
+            ]
+        )
+
+        chunks = (
+            self._build_retrieved_chunks(
+                selected
+            )
+        )
+
+        metrics = RetrievalMetrics(
+            retrieval_time_ns=(
+                time.perf_counter_ns()
+                - start_time
+            ),
+            sorting_time_ns=(
+                sorting_time_ns
+            ),
+            index_build_time_ns=(
+                self._index_build_time_ns
+            ),
+            comparisons=(
+                binary_comparisons
+                + sort_stats.comparisons
+            ),
+            chunks_scored=len(
+                candidate_ids
+            ),
+            candidates_found=len(
+                candidates
+            ),
+        )
+
+        return RetrievalResult(
+            query=normalized_query,
+            algorithm=self.name,
+            top_k=top_k,
+            chunks=chunks,
+            metrics=metrics,
+            metadata={
+                "representation": "tfidf",
+                "similarity": "cosine",
+                "candidate_strategy": (
+                    "inverted_index_binary_search"
+                ),
+                "ranking_strategy": "merge_sort",
+                "binary_search_comparisons": (
+                    binary_comparisons
+                ),
+                "ranking_comparisons": (
+                    sort_stats.comparisons
+                ),
+            },
+        )
+
+    def _empty_result(
+        self,
+        *,
+        query: str,
+        top_k: int,
+        start_time: int,
+    ) -> RetrievalResult:
+        """Create an empty indexed result."""
 
         return RetrievalResult(
             query=query,
-            k=k,
-            retriever_name=self.name,
-            chunks=retrieved_chunks,
-            metrics=metrics,
+            algorithm=self.name,
+            top_k=top_k,
+            chunks=(),
+            metrics=RetrievalMetrics(
+                retrieval_time_ns=(
+                    time.perf_counter_ns()
+                    - start_time
+                ),
+                sorting_time_ns=0,
+                index_build_time_ns=(
+                    self._index_build_time_ns
+                ),
+                comparisons=0,
+                chunks_scored=0,
+                candidates_found=0,
+            ),
+            metadata={
+                "representation": "tfidf",
+                "similarity": "cosine",
+                "candidate_strategy": (
+                    "inverted_index_binary_search"
+                ),
+                "ranking_strategy": "merge_sort",
+            },
+        )
+
+    def _build_corpus_map(
+        self,
+    ) -> dict[str, CorpusChunk]:
+        """Build and validate the chunk lookup table."""
+
+        corpus_map: dict[
+            str,
+            CorpusChunk,
+        ] = {}
+
+        for chunk in self._corpus:
+            chunk_id = str(
+                chunk.get(
+                    "chunk_id",
+                    "",
+                )
+            ).strip()
+
+            if not chunk_id:
+                raise ValueError(
+                    "Every corpus chunk must have a non-empty chunk_id."
+                )
+
+            if chunk_id in corpus_map:
+                raise ValueError(
+                    "Corpus chunk identifiers must be unique."
+                )
+
+            corpus_map[
+                chunk_id
+            ] = chunk
+
+        return corpus_map
+
+    def _build_document_vectors(
+        self,
+    ) -> dict[str, SparseVector]:
+        """Precompute TF-IDF vectors."""
+
+        return {
+            chunk_id: (
+                self._vectorizer.transform(
+                    str(
+                        chunk.get(
+                            "content",
+                            "",
+                        )
+                    )
+                )
+            )
+            for chunk_id, chunk
+            in self._corpus_map.items()
+        }
+
+    @staticmethod
+    def _build_retrieved_chunks(
+        candidates: list[Candidate],
+    ) -> tuple[RetrievedChunk, ...]:
+        """Convert candidate tuples to canonical chunks."""
+
+        retrieved: list[
+            RetrievedChunk
+        ] = []
+
+        for rank, (
+            score,
+            chunk,
+        ) in enumerate(
+            candidates,
+            start=1,
+        ):
+            raw_metadata = (
+                chunk.get(
+                    "metadata"
+                )
+            )
+
+            metadata = (
+                raw_metadata
+                if isinstance(
+                    raw_metadata,
+                    dict,
+                )
+                else None
+            )
+
+            raw_token_count = (
+                chunk.get(
+                    "token_count"
+                )
+            )
+
+            token_count = (
+                raw_token_count
+                if isinstance(
+                    raw_token_count,
+                    int,
+                )
+                else None
+            )
+
+            retrieved.append(
+                RetrievedChunk(
+                    chunk_id=str(
+                        chunk[
+                            "chunk_id"
+                        ]
+                    ),
+                    content=str(
+                        chunk.get(
+                            "content",
+                            "",
+                        )
+                    ),
+                    source_path=str(
+                        chunk.get(
+                            "source_path"
+                        )
+                        or "unknown"
+                    ),
+                    section_title=str(
+                        chunk.get(
+                            "section_title"
+                        )
+                        or "Untitled"
+                    ),
+                    score=float(
+                        score
+                    ),
+                    rank=rank,
+                    token_count=(
+                        token_count
+                    ),
+                    metadata=metadata,
+                )
+            )
+
+        return tuple(
+            retrieved
         )

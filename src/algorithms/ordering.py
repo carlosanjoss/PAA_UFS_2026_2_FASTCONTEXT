@@ -14,10 +14,11 @@ os algoritmos clássicos totalmente desacoplados do restante do projeto.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Tuple
+from collections.abc import Callable
+from typing import Any
 
 # Uma chave de ordenação é um par (score, chunk_id).
-SortKey = Tuple[float, str]
+SortKey = tuple[float, str]
 
 # Um extrator transforma um item arbitrário em sua chave de ordenação.
 KeyFunc = Callable[[Any], SortKey]
