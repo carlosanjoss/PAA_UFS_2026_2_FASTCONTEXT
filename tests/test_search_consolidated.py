@@ -1,119 +1,220 @@
 """
-tests/test_search_consolidated.py
-Consolidação de testes de busca linear e binária.
+Consolidated tests for manual linear and binary search implementations.
 
-IMPORTANTE (autoria): as implementações `binary_search` e `linear_search` são de
-autoria do Wilson (`feature/retrieval`). Estes testes exercitam as ASSINATURAS
-REAIS dessas funções:
+The implementations under test are the real project functions:
 
     binary_search(elements, target) -> (index | None, comparisons)
     linear_search(elements, target) -> (index | None, comparisons)
 
-onde `elements` é uma lista simples de valores comparáveis e, para a busca
-binária, ordenada em ordem não decrescente.
+For binary search, ``elements`` must be sorted in non-decreasing order.
 
-Os testes cobrem os casos exigidos pelo escopo: termo no início, meio, fim,
-ausente, coleção vazia e coleção de um elemento.
+The tests cover the main required cases:
+
+- empty collection;
+- single-element collection;
+- first element;
+- middle element;
+- last element;
+- missing value;
+- comparison-count behavior.
 """
+
+import math
 
 from src.algorithms.binary_search import binary_search
 from src.algorithms.linear_search import linear_search
 
-VOCAB = ["auth", "cors", "fastapi", "jwt", "security"]  # ordenado
+VOCAB = [
+    "auth",
+    "cors",
+    "fastapi",
+    "jwt",
+    "security",
+]
 
 
 # ---------------------------------------------------------------------------
-# Busca binária
+# Binary search
 # ---------------------------------------------------------------------------
-def test_binary_empty_collection():
-    index, comparisons = binary_search([], "fastapi")
+def test_binary_empty_collection() -> None:
+    """An empty collection returns no index and performs no comparisons."""
+    index, comparisons = binary_search(
+        [],
+        "fastapi",
+    )
+
     assert index is None
     assert comparisons == 0
 
 
-def test_binary_single_element_found():
-    index, comparisons = binary_search(["fastapi"], "fastapi")
+def test_binary_single_element_found() -> None:
+    """A matching single element is found with one equality comparison."""
+    index, comparisons = binary_search(
+        ["fastapi"],
+        "fastapi",
+    )
+
     assert index == 0
     assert comparisons == 1
 
 
-def test_binary_single_element_absent():
-    index, comparisons = binary_search(["fastapi"], "auth")
+def test_binary_single_element_absent() -> None:
+    """A missing single element requires equality and ordering comparisons."""
+    index, comparisons = binary_search(
+        ["fastapi"],
+        "auth",
+    )
+
     assert index is None
-    assert comparisons >= 1
+    assert comparisons == 2
 
 
-def test_binary_found_start():
-    index, comparisons = binary_search(VOCAB, "auth")
+def test_binary_found_start() -> None:
+    """Binary search finds the first element."""
+    index, comparisons = binary_search(
+        VOCAB,
+        "auth",
+    )
+
     assert index == 0
     assert comparisons > 0
 
 
-def test_binary_found_middle():
-    index, comparisons = binary_search(VOCAB, "fastapi")
+def test_binary_found_middle() -> None:
+    """The middle element is found on the first equality comparison."""
+    index, comparisons = binary_search(
+        VOCAB,
+        "fastapi",
+    )
+
     assert index == 2
-    assert comparisons == 1  # meio exato na primeira comparação
+    assert comparisons == 1
 
 
-def test_binary_found_end():
-    index, comparisons = binary_search(VOCAB, "security")
+def test_binary_found_end() -> None:
+    """Binary search finds the final element."""
+    index, comparisons = binary_search(
+        VOCAB,
+        "security",
+    )
+
     assert index == 4
     assert comparisons > 0
 
 
-def test_binary_absent():
-    index, comparisons = binary_search(VOCAB, "database")
+def test_binary_absent() -> None:
+    """A missing value returns no index."""
+    index, comparisons = binary_search(
+        VOCAB,
+        "database",
+    )
+
     assert index is None
     assert comparisons > 0
 
 
-def test_binary_comparisons_logarithmic():
-    # Para 5 elementos, o número de comparações no pior caso é pequeno (<= 3).
-    _, comparisons = binary_search(VOCAB, "database")
-    assert comparisons <= 3
+def test_binary_comparisons_logarithmic() -> None:
+    """Binary-search key comparisons remain logarithmically bounded."""
+    _, comparisons = binary_search(
+        VOCAB,
+        "database",
+    )
+
+    max_iterations = math.ceil(
+        math.log2(
+            len(VOCAB) + 1
+        )
+    )
+
+    max_key_comparisons = (
+        2 * max_iterations
+    )
+
+    assert comparisons <= max_key_comparisons
 
 
 # ---------------------------------------------------------------------------
-# Busca linear
+# Linear search
 # ---------------------------------------------------------------------------
-def test_linear_empty_collection():
-    index, comparisons = linear_search([], "fastapi")
+def test_linear_empty_collection() -> None:
+    """An empty linear search performs no comparisons."""
+    index, comparisons = linear_search(
+        [],
+        "fastapi",
+    )
+
     assert index is None
     assert comparisons == 0
 
 
-def test_linear_single_element_found():
-    index, comparisons = linear_search(["fastapi"], "fastapi")
+def test_linear_single_element_found() -> None:
+    """Linear search finds a matching single element immediately."""
+    index, comparisons = linear_search(
+        ["fastapi"],
+        "fastapi",
+    )
+
     assert index == 0
     assert comparisons == 1
 
 
-def test_linear_found_start():
-    index, comparisons = linear_search(VOCAB, "auth")
+def test_linear_found_start() -> None:
+    """Linear search finds the first item with one comparison."""
+    index, comparisons = linear_search(
+        VOCAB,
+        "auth",
+    )
+
     assert index == 0
-    assert comparisons == 1  # encontra na primeira posição
+    assert comparisons == 1
 
 
-def test_linear_found_middle():
-    index, comparisons = linear_search(VOCAB, "fastapi")
+def test_linear_found_middle() -> None:
+    """Linear search examines elements sequentially until the middle."""
+    index, comparisons = linear_search(
+        VOCAB,
+        "fastapi",
+    )
+
     assert index == 2
-    assert comparisons == 3  # percorre até a 3ª posição
+    assert comparisons == 3
 
 
-def test_linear_found_end():
-    index, comparisons = linear_search(VOCAB, "security")
+def test_linear_found_end() -> None:
+    """Linear search examines the complete prefix up to the last element."""
+    index, comparisons = linear_search(
+        VOCAB,
+        "security",
+    )
+
     assert index == 4
-    assert comparisons == 5  # percorre toda a lista
+    assert comparisons == 5
 
 
-def test_linear_absent():
-    index, comparisons = linear_search(VOCAB, "database")
+def test_linear_absent() -> None:
+    """Linear search checks every element when the target is absent."""
+    index, comparisons = linear_search(
+        VOCAB,
+        "database",
+    )
+
     assert index is None
-    assert comparisons == len(VOCAB)  # verifica todos os elementos
+    assert comparisons == len(VOCAB)
 
 
-def test_linear_first_occurrence():
-    # Retorna o primeiro índice em caso de duplicatas.
-    index, comparisons = linear_search(["a", "b", "b", "c"], "b")
+def test_linear_first_occurrence() -> None:
+    """Linear search returns the first occurrence of a duplicated value."""
+    elements = [
+        "a",
+        "b",
+        "b",
+        "c",
+    ]
+
+    index, comparisons = linear_search(
+        elements,
+        "b",
+    )
+
     assert index == 1
     assert comparisons == 2
