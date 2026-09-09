@@ -1,0 +1,232 @@
+{
+  "metadata": {
+    "schema_version": 1,
+    "corpus": "FastAPI Documentation",
+    "corpus_version": "0.141.0",
+    "corpus_chunk_count": 1305,
+    "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+    "language": "en",
+    "relevance_type": "binary",
+    "annotation_status": "pending"
+  },
+  "queries": [
+    {
+      "query_id": "q01",
+      "category": "tutorial",
+      "question": "How do I create a basic FastAPI application and define my first path operation?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q02",
+      "category": "tutorial",
+      "question": "How can I declare and validate query parameters in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q03",
+      "category": "tutorial",
+      "question": "How do I define a request body using a Pydantic model in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q04",
+      "category": "tutorial",
+      "question": "How can I customize the response status code of a FastAPI endpoint?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q05",
+      "category": "tutorial",
+      "question": "How should I handle errors and raise HTTP exceptions in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q06",
+      "category": "dependencies",
+      "question": "How do I declare a reusable dependency with Depends in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q07",
+      "category": "dependencies",
+      "question": "How can one FastAPI dependency depend on another dependency?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q08",
+      "category": "dependencies",
+      "question": "How do I add dependencies to a path operation decorator when I do not need their return values?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q09",
+      "category": "dependencies",
+      "question": "How can I apply a dependency to every path operation in a FastAPI application?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q10",
+      "category": "security",
+      "question": "How do I implement OAuth2 password authentication with bearer tokens in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q11",
+      "category": "security",
+      "question": "How can I create and validate JWT access tokens in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q12",
+      "category": "security",
+      "question": "How do OAuth2 scopes work with FastAPI Security dependencies?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q13",
+      "category": "security",
+      "question": "How can I protect an endpoint using an API key in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q14",
+      "category": "middleware_cors",
+      "question": "How do I configure CORS to allow requests from specific origins in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q15",
+      "category": "middleware_cors",
+      "question": "How do I add middleware to a FastAPI application?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q16",
+      "category": "middleware_cors",
+      "question": "How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q17",
+      "category": "background_tasks",
+      "question": "How can I run work after returning a response using BackgroundTasks in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q18",
+      "category": "background_tasks",
+      "question": "Can FastAPI dependencies add tasks to the same BackgroundTasks object?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q19",
+      "category": "websockets",
+      "question": "How do I create a WebSocket endpoint in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q20",
+      "category": "websockets",
+      "question": "How can a FastAPI application manage multiple WebSocket clients and disconnected connections?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q21",
+      "category": "deployment",
+      "question": "How can I deploy a FastAPI application in a Docker container?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q22",
+      "category": "deployment",
+      "question": "What are workers and when should I use multiple worker processes to run FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q23",
+      "category": "deployment",
+      "question": "What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q24",
+      "category": "deployment",
+      "question": "How should FastAPI be configured when it runs behind a proxy that adds a path prefix?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q25",
+      "category": "testing",
+      "question": "How do I test FastAPI endpoints using TestClient?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q26",
+      "category": "testing",
+      "question": "How can I override dependencies during FastAPI tests?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+
+    {
+      "query_id": "q27",
+      "category": "advanced",
+      "question": "How can I use lifespan events to initialize and clean up shared resources in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q28",
+      "category": "advanced",
+      "question": "How can I create a custom exception handler in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q29",
+      "category": "advanced",
+      "question": "How do I include and organize APIRouter instances in a larger FastAPI application?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    },
+    {
+      "query_id": "q30",
+      "category": "advanced",
+      "question": "How can I customize or extend the generated OpenAPI schema in FastAPI?",
+      "relevant_chunks": [],
+      "annotation_notes": ""
+    }
+  ]
+}

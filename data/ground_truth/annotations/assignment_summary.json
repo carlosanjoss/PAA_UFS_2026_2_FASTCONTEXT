@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "annotation_policy": {
+    "relevance": {
+      "0": "not_relevant",
+      "1": "relevant"
+    },
+    "annotators_per_query": 2,
+    "adjudication": "third_annotator_on_disagreement"
+  },
+  "annotators": {
+    "carlos": {
+      "query_count": 12,
+      "judgment_count": 389,
+      "query_ids": [
+        "q01",
+        "q02",
+        "q03",
+        "q04",
+        "q05",
+        "q06",
+        "q07",
+        "q08",
+        "q09",
+        "q10",
+        "q11",
+        "q12"
+      ],
+      "file": "annotation_carlos.csv"
+    },
+    "yann": {
+      "query_count": 12,
+      "judgment_count": 400,
+      "query_ids": [
+        "q01",
+        "q02",
+        "q03",
+        "q13",
+        "q14",
+        "q15",
+        "q16",
+        "q17",
+        "q18",
+        "q19",
+        "q20",
+        "q21"
+      ],
+      "file": "annotation_yann.csv"
+    },
+    "wilson": {
+      "query_count": 12,
+      "judgment_count": 382,
+      "query_ids": [
+        "q04",
+        "q05",
+        "q06",
+        "q13",
+        "q14",
+        "q15",
+        "q22",
+        "q23",
+        "q24",
+        "q25",
+        "q26",
+        "q27"
+      ],
+      "file": "annotation_wilson.csv"
+    },
+    "matheus": {
+      "query_count": 12,
+      "judgment_count": 370,
+      "query_ids": [
+        "q07",
+        "q08",
+        "q09",
+        "q16",
+        "q17",
+        "q18",
+        "q22",
+        "q23",
+        "q24",
+        "q28",
+        "q29",
+        "q30"
+      ],
+      "file": "annotation_matheus.csv"
+    },
+    "gabriela": {
+      "query_count": 12,
+      "judgment_count": 385,
+      "query_ids": [
+        "q10",
+        "q11",
+        "q12",
+        "q19",
+        "q20",
+        "q21",
+        "q25",
+        "q26",
+        "q27",
+        "q28",
+        "q29",
+        "q30"
+      ],
+      "file": "annotation_gabriela.csv"
+    }
+  },
+  "query_assignments": {
+    "q01": [
+      "carlos",
+      "yann"
+    ],
+    "q02": [
+      "carlos",
+      "yann"
+    ],
+    "q03": [
+      "carlos",
+      "yann"
+    ],
+    "q04": [
+      "carlos",
+      "wilson"
+    ],
+    "q05": [
+      "carlos",
+      "wilson"
+    ],
+    "q06": [
+      "carlos",
+      "wilson"
+    ],
+    "q07": [
+      "carlos",
+      "matheus"
+    ],
+    "q08": [
+      "carlos",
+      "matheus"
+    ],
+    "q09": [
+      "carlos",
+      "matheus"
+    ],
+    "q10": [
+      "carlos",
+      "gabriela"
+    ],
+    "q11": [
+      "carlos",
+      "gabriela"
+    ],
+    "q12": [
+      "carlos",
+      "gabriela"
+    ],
+    "q13": [
+      "yann",
+      "wilson"
+    ],
+    "q14": [
+      "yann",
+      "wilson"
+    ],
+    "q15": [
+      "yann",
+      "wilson"
+    ],
+    "q16": [
+      "yann",
+      "matheus"
+    ],
+    "q17": [
+      "yann",
+      "matheus"
+    ],
+    "q18": [
+      "yann",
+      "matheus"
+    ],
+    "q19": [
+      "yann",
+      "gabriela"
+    ],
+    "q20": [
+      "yann",
+      "gabriela"
+    ],
+    "q21": [
+      "yann",
+      "gabriela"
+    ],
+    "q22": [
+      "wilson",
+      "matheus"
+    ],
+    "q23": [
+      "wilson",
+      "matheus"
+    ],
+    "q24": [
+      "wilson",
+      "matheus"
+    ],
+    "q25": [
+      "wilson",
+      "gabriela"
+    ],
+    "q26": [
+      "wilson",
+      "gabriela"
+    ],
+    "q27": [
+      "wilson",
+      "gabriela"
+    ],
+    "q28": [
+      "matheus",
+      "gabriela"
+    ],
+    "q29": [
+      "matheus",
+      "gabriela"
+    ],
+    "q30": [
+      "matheus",
+      "gabriela"
+    ]
+  }
+}
