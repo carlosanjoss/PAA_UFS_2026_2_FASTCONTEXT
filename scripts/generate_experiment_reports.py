@@ -7,7 +7,11 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
-import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt  # noqa: E402
 
 from src.evaluation.reporting import (
     PERFORMANCE_TABLE_FIELDS,
