@@ -1,0 +1,37 @@
+sorting_experiment:
+  reproducibility:
+    random_seed: 42
+
+  algorithms:
+    - "merge"
+    - "quick"
+
+  input_sizes:
+    - 100
+    - 250
+    - 500
+    - 1000
+    - 1305
+
+  scenarios:
+    - "random"
+    - "already_sorted"
+    - "reverse_sorted"
+    - "many_ties"
+
+  repetitions: 5
+
+  warmup:
+    enabled: true
+    repetitions: 1
+
+  output:
+    raw_results: "experiments/raw_results/sorting_results.csv"
+    summary: "experiments/processed_results/sorting_summary.csv"
+    table: "reports/tables/sorting_comparison.csv"
+    figures_directory: "reports/figures"
+
+  plots:
+    merge_vs_quick_time: "merge_vs_quick_time.png"
+    merge_vs_quick_comparisons: "merge_vs_quick_comparisons.png"
+    quick_input_sensitivity: "quick_sort_input_sensitivity.png"
