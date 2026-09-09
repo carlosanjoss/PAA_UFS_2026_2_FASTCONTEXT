@@ -1,166 +1,282 @@
 # Relatório 4 — Corretude e Complexidade
 
-Fase 4 do escopo de Mateus Almeida. Síntese teórica ligada ao código real em
-`src/algorithms/`. Provas detalhadas em `docs/CORRECTNESS.md`.
+Síntese teórica dos algoritmos clássicos do FastContext, vinculada ao código real em `src/algorithms/`.
 
-## Critério de ordenação (comum aos três algoritmos)
+Provas detalhadas:
 
-Definido em `src/algorithms/ordering.py` (`precedes`): score decrescente; em
-empate, chunk_id crescente. Operação elementar analisada: **comparação de
-chave** via `precedes`.
+```text
+docs/CORRECTNESS.md
+```
 
 ---
 
-## 1. Merge Sort
+## 1. Critério de ordenação
+
+Ordem canônica:
+
+1. score decrescente;
+2. em empate, `chunk_id` crescente.
+
+---
+
+## 2. Merge Sort
 
 Arquivo: `src/algorithms/merge_sort.py`.
 
-- **Modelo de entrada:** lista de candidatos convertidos em chaves
-  `(score, chunk_id)`.
-- **Operação elementar:** comparação de chave no merge (`stats.comparisons`).
-- **Recorrência:**
+Recorrência:
 
-  ```text
-  T(N) = 2 T(N/2) + Θ(N)
-  ```
+```text
+T(N) = 2T(N/2) + Θ(N)
+```
 
-  O termo linear é o custo do merge. Pelo Teorema Mestre (caso 2, a=2, b=2,
-  f(N)=Θ(N), N^{log_b a}=N): **T(N) = Θ(N log N)**.
+Pelo Teorema Mestre:
 
-- **Casos:**
+```text
+T(N) = Θ(N log N)
+```
 
-  | Caso | Tempo |
-  |---|---|
-  | Melhor | Θ(N log N) |
-  | Médio | Θ(N log N) |
-  | Pior | Θ(N log N) |
+| Caso | Tempo |
+|---|---:|
+| Melhor | `Θ(N log N)` |
+| Médio | `Θ(N log N)` |
+| Pior | `Θ(N log N)` |
 
-  A divisão é sempre ao meio, independente da entrada, logo os três casos
-  coincidem.
-
-- **Espaço:** Θ(N) auxiliar (listas intermediárias do merge) + Θ(log N) de pilha
-  recursiva.
-- **Relação teoria ↔ código:** `_merge_sort_recursive` faz a divisão `pairs[:mid]`
-  / `pairs[mid:]` (as duas subchamadas de `T(N/2)`) e `_merge` realiza o trabalho
-  Θ(N). No exemplo com 3 itens: comparisons=3, merges=2, moves=5.
+Espaço auxiliar: `Θ(N)` mais pilha recursiva `Θ(log N)`.
 
 ---
 
-## 2. Quick Sort
+## 3. Quick Sort
 
 Arquivo: `src/algorithms/quick_sort.py`.
 
-- **Estratégia de pivô:** mediana de três (primeiro, meio, último),
-  determinística. **Reduz os casos triviais de degeneração** (entradas já
-  ordenadas e em ordem inversa deixam de ser o pior caso), **mas o pior caso
-  continua sendo O(N²)** para entradas adversárias.
-- **Operação elementar:** comparação de chave no particionamento e na escolha do
-  pivô (`stats.comparisons`).
-- **Recorrências:**
-  - Balanceado (melhor/médio): `T(N) = 2 T(N/2) + Θ(N)` → **Θ(N log N)**.
-  - Desbalanceado (pior): `T(N) = T(N-1) + Θ(N)` → **Θ(N²)**.
+Estratégia:
 
-- **Casos:**
+- particionamento de Lomuto;
+- pivô por mediana de três.
 
-  | Caso | Tempo |
-  |---|---|
-  | Melhor | Θ(N log N) |
-  | Médio | Θ(N log N) |
-  | Pior | Θ(N²) |
+Caso balanceado:
 
-- **Motivo do pior caso quadrático:** quando o pivô selecionado é sistematicamente
-  um extremo, cada particionamento separa 1 elemento de N-1, gerando N níveis de
-  recursão com custo linear cada. Com mediana de três isso não acontece em
-  entradas ordenadas/inversas, mas pode ser induzido por entradas adversárias
-  específicas ou quando quase todas as chaves são iguais.
-- **Espaço:** O(log N) de pilha no caso balanceado; O(N) no pior caso. O
-  particionamento é in-place.
-- **Relação teoria ↔ código:** `_partition` (Lomuto) executa o trabalho Θ(N) por
-  nível; `_median_of_three` escolhe o pivô; `max_depth` na instrumentação torna
-  observável o balanceamento (proxy empírico do caso em que se está).
+```text
+T(N) = 2T(N/2) + Θ(N) = Θ(N log N)
+```
+
+Pior caso:
+
+```text
+T(N) = T(N-1) + Θ(N) = Θ(N²)
+```
+
+| Caso | Tempo |
+|---|---:|
+| Melhor | `Θ(N log N)` |
+| Médio | `Θ(N log N)` |
+| Pior | `Θ(N²)` |
+
+Espaço: `O(log N)` balanceado e `O(N)` no pior caso.
 
 ---
 
-## 3. Top-k com min-heap
+## 4. Top-k com min-heap
 
 Arquivo: `src/algorithms/topk_heap.py`.
 
-- **Objetivo:** obter os `k` melhores sem ordenar todos os `N`.
-- **Operação elementar:** comparação de chave na heap (`stats.comparisons`).
-- **Complexidade:**
+Tempo:
 
-  | Métrica | Custo |
-  |---|---|
-  | Tempo | O(N log k) |
-  | Espaço | O(min(N, k)) — limite superior O(k) |
+```text
+O(N log k)
+```
 
-- **Por que não é preciso ordenar todos os N:** mantém-se uma heap de tamanho no
-  máximo `k`. Cada item é processado em O(log k): ou entra (enquanto há espaço)
-  ou é comparado com o pior atual (raiz) e descartado se não for melhor. Ao todo
-  são O(N) operações de O(log k), portanto **O(N log k)**. Quando `k << N`, isso
-  é assintoticamente melhor que ordenar tudo (O(N log N)).
-- **Justificativa da heap de tamanho k:** guardar apenas os `k` melhores limita a
-  memória a **O(min(N, k))** (limite superior **O(k)**) e o custo por operação a
-  O(log k). A raiz "pior no topo"
-  permite decidir em uma comparação se um novo item pode melhorar o conjunto.
-- **Relação teoria ↔ código:** `_sift_up`/`_sift_down` custam O(log k);
-  `max_heap_size` confirma empiricamente o limite `k`; `replacements`/`insertions`
-  evidenciam quantas vezes o conjunto dos melhores foi atualizado.
+Espaço:
+
+```text
+O(min(N, k)) <= O(k)
+```
+
+É vantajoso quando `k << N` porque evita ordenar todos os candidatos.
 
 ---
 
-## 4. Busca binária (implementação do Wilson)
+## 5. Busca Binária
 
-Arquivo: `src/algorithms/binary_search.py`. Análise ligada ao código real.
+Arquivo: `src/algorithms/binary_search.py`.
 
-- **Pré-condição:** vetor ordenado não decrescente (vocabulário do índice
-  invertido).
-- **Operação elementar:** uma comparação de igualdade por iteração
-  (`comparisons += 1`), conforme o código.
-- **Recorrência:** `T(N) = T(N/2) + Θ(1)` → **Θ(log N)**.
+Recorrência:
 
-  | Caso | Tempo |
-  |---|---|
-  | Melhor | Θ(1) (acerta no meio na 1ª comparação) |
-  | Médio | Θ(log N) |
-  | Pior | Θ(log N) (ausente ou nos extremos) |
+```text
+T(N) = T(N/2) + Θ(1)
+```
 
-- **Espaço:** O(1) (implementação iterativa, sem recursão).
-- **Corretude:** ver `docs/CORRECTNESS.md` §4 — invariante "se existe, está em
-  `[left, right]`"; intervalo encolhe a cada passo; termina encontrando o alvo ou
-  esvaziando o intervalo.
+Logo:
 
----
+```text
+T(N) = Θ(log N)
+```
 
-## 5. Comparação entre os algoritmos
+| Caso | Tempo |
+|---|---:|
+| Melhor | `Θ(1)` |
+| Médio | `Θ(log N)` |
+| Pior | `Θ(log N)` |
 
-| Algoritmo | Melhor | Médio | Pior | Espaço | Uso no projeto |
-|---|---:|---:|---:|---:|---|
-| Merge Sort | Θ(N log N) | Θ(N log N) | Θ(N log N) | Θ(N) + Θ(log N) pilha | ordenação estável e previsível de candidatos |
-| Quick Sort | Θ(N log N) | Θ(N log N) | Θ(N²) | O(log N)–O(N) pilha | comparação clássica; in-place |
-| Top-k Heap | O(N log k) | O(N log k) | O(N log k) | O(min(N,k)) ≤ O(k) | seleção dos k melhores (config. otimizada) |
-| Busca binária | Θ(1) | Θ(log N) | Θ(log N) | O(1) | localizar termo no vocabulário ordenado |
+Espaço: `O(1)`.
 
-### Diferenças teóricas relevantes
+### Instrumentação atual
 
-- **Merge vs Quick:** o Merge Sort garante Θ(N log N) em todos os casos e é
-  estável, ao custo de Θ(N) de memória extra. O Quick Sort é in-place e
-  costuma ter constantes menores na prática, mas tem pior caso O(N²) — mitigado,
-  não eliminado, pela mediana de três.
-- **Ordenar tudo vs Top-k:** ordenar (Merge/Quick) custa Θ(N log N) e entrega a
-  lista completa; o Top-k custa O(N log k) e entrega só os `k` melhores. Para
-  `k << N`, o Top-k é a escolha assintoticamente superior — base da configuração
-  "Otimizada" (C) do projeto.
-- **Busca vs ordenação:** a busca binária resolve localização em Θ(log N) sobre
-  dados **já ordenados**; ordenar é o pré-requisito que habilita busca binária e
-  seleção eficiente.
+A implementação contabiliza as comparações de chave realmente executadas:
+
+```text
+elements[mid] == target -> +1
+```
+
+Se necessário:
+
+```text
+elements[mid] < target -> +1
+```
+
+Portanto, uma iteração pode registrar 1 ou 2 comparações. Isso melhora a fidelidade experimental do contador sem alterar a complexidade assintótica.
 
 ---
 
-## 6. Estado de verificação
+## 6. Busca Linear
 
-- Provas de corretude: `docs/CORRECTNESS.md` (Merge Sort, Quick Sort, Top-k,
-  busca binária do Wilson).
-- Testes: 49 passaram (Merge 14, Quick 17, Top-k 18) — ver relatórios 01–03.
-- Docker Linux: **NÃO EXECUTADO** (indisponível nesta máquina).
-- Nenhum arquivo de colega (retrievers/contratos) foi alterado.
+Na busca linear clássica:
+
+| Caso | Tempo |
+|---|---:|
+| Melhor | `Θ(1)` |
+| Médio | `Θ(N)` |
+| Pior | `Θ(N)` |
+
+No `LinearRetriever` do FastContext, todos os chunks precisam ser pontuados para produzir o ranking. Portanto, o scoring é:
+
+```text
+Θ(N)
+```
+
+Depois ocorre Merge Sort:
+
+```text
+Θ(N log N)
+```
+
+O ranking completo domina assintoticamente o pipeline Linear.
+
+---
+
+## 7. Índice Invertido
+
+O índice invertido mapeia:
+
+```text
+term -> posting list of chunks
+```
+
+Se `T` representa o total de termos processados, a construção pode ser descrita, em termos gerais, como:
+
+```text
+O(T)
+```
+
+Na consulta, cada termo é localizado no vocabulário ordenado por busca binária. Para vocabulário de tamanho `V`:
+
+```text
+O(log V)
+```
+
+por termo, além do custo de percorrer/unir as posting lists acessadas.
+
+---
+
+## 8. Comparação resumida
+
+| Componente | Melhor | Médio | Pior | Espaço auxiliar principal |
+|---|---:|---:|---:|---:|
+| Merge Sort | `Θ(N log N)` | `Θ(N log N)` | `Θ(N log N)` | `Θ(N)` + pilha `Θ(log N)` |
+| Quick Sort | `Θ(N log N)` | `Θ(N log N)` | `Θ(N²)` | `O(log N)` a `O(N)` |
+| Top-k Heap | `O(N log k)` | `O(N log k)` | `O(N log k)` | `O(k)` |
+| Binary Search | `Θ(1)` | `Θ(log N)` | `Θ(log N)` | `O(1)` |
+| Linear scoring | `Θ(N)` | `Θ(N)` | `Θ(N)` | depende da representação |
+| Inverted Index lookup | depende dos termos/postings | depende dos termos/postings | depende dos termos/postings | proporcional ao índice |
+
+---
+
+## 9. Relação com as estratégias de retrieval
+
+### Linear
+
+```text
+TF-IDF scoring over N chunks + Merge Sort
+```
+
+Custo dominante:
+
+```text
+Θ(N log N)
+```
+
+### Indexed
+
+Com `C` candidatos, `C <= N`:
+
+```text
+Binary Search + Inverted Index + scoring + Θ(C log C)
+```
+
+### Optimized
+
+```text
+Binary Search + Inverted Index + scoring + O(C log k)
+```
+
+### Semantic
+
+BGE + FAISS funciona como baseline complementar e não substitui a análise dos algoritmos clássicos.
+
+---
+
+## 10. Benchmark Merge Sort × Quick Sort
+
+Benchmark concluído:
+
+```text
+Raw rows: 200
+Summary rows: 40
+Comparable cases: 100
+Fingerprint mismatches: 0
+```
+
+Matriz:
+
+```text
+2 algorithms
+× 5 sizes
+× 4 scenarios
+× 5 repetitions
+= 200 measured runs
+```
+
+Tamanhos:
+
+```text
+100, 250, 500, 1000, 1305
+```
+
+Cenários:
+
+```text
+random
+already_sorted
+reverse_sorted
+many_ties
+```
+
+---
+
+## 11. Estado de verificação
+
+- Corretude detalhada: `docs/CORRECTNESS.md`.
+- Benchmark Merge × Quick: concluído.
+- Binary Search: contador de comparações atualizado.
+- Testes gerais devem ser executados novamente após mudanças de algoritmo.
+- Docker ainda precisa de validação final antes da entrega.

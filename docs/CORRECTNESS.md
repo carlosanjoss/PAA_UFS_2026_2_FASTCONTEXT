@@ -1,13 +1,22 @@
 # Corretude dos Algoritmos Clássicos — FastContext
 
-Este documento reúne as justificativas de corretude dos algoritmos clássicos
-implementados manualmente pela equipe. As provas são ligadas ao código real em
-`src/algorithms/`.
+Este documento reúne as justificativas de corretude dos algoritmos clássicos implementados manualmente pela equipe. As provas são vinculadas ao código real em `src/algorithms/`.
 
-Critério de ordenação canônico (ver `src/algorithms/ordering.py`):
+## Critério de ordenação canônico
 
-> Um item `a` precede `b` se `a.score > b.score`, ou, em empate
-> (`a.score == b.score`), se `a.chunk_id < b.chunk_id`.
+Definido em `src/algorithms/ordering.py`.
+
+Um item `a` precede `b` quando:
+
+```text
+a.score > b.score
+```
+
+ou, em empate:
+
+```text
+a.score == b.score and a.chunk_id < b.chunk_id
+```
 
 ---
 
@@ -15,76 +24,39 @@ Critério de ordenação canônico (ver `src/algorithms/ordering.py`):
 
 Arquivo: `src/algorithms/merge_sort.py`.
 
-### Objetivo da prova
+### 1.1 Objetivo
 
-Mostrar que `merge_sort(items)` produz uma permutação de `items` totalmente
-ordenada segundo o critério canônico (score DESC, chunk_id ASC).
+Mostrar que `merge_sort(items)` produz uma permutação dos itens de entrada totalmente ordenada segundo a ordem canônica.
 
-### Hipóteses e pré-condições
+### 1.2 Pré-condições
 
-- `items` é uma lista finita (possivelmente vazia).
-- Cada item admite extração de uma chave `(score, chunk_id)` via `key`.
-- `precedes` define uma ordem total estrita sobre as chaves (`score` real e
-  finito; `chunk_id` string). Como `chunk_id` é único no projeto, não há duas
-  chaves iguais entre itens distintos.
+- `items` é uma lista finita;
+- cada item possui uma chave `(score, chunk_id)`;
+- `score` e `chunk_id` são comparáveis.
 
-### Pós-condições
+### 1.3 Pós-condições
 
-- O resultado contém exatamente os mesmos elementos de `items` (permutação).
-- Para índices consecutivos `r[i]` e `r[i+1]` do resultado, não vale
-  `precedes(key(r[i+1]), key(r[i]))` — isto é, nenhum par está fora de ordem.
+O resultado contém exatamente os mesmos itens da entrada e está ordenado segundo `score DESC` e `chunk_id ASC`.
 
-### Invariante do merge (`_merge`)
+### 1.4 Invariante de `_merge`
 
-Sejam `left` e `right` já ordenadas. O laço mantém a invariante:
+Considere `left` e `right` já ordenadas.
 
-> `merged` está ordenada e contém todos os elementos já consumidos de `left[:i]`
-> e `right[:j]`; além disso, todo elemento em `merged` precede (ou empata,
-> mantendo estabilidade) qualquer elemento ainda não consumido em `left[i:]` e
-> `right[j:]`.
+> `merged` contém exatamente os elementos já consumidos de `left` e `right` e permanece ordenada segundo a ordem canônica.
 
-- **Inicialização:** antes do laço, `i = j = 0` e `merged = []`. A invariante
-  vale trivialmente (nada consumido, nada em `merged`).
-- **Manutenção:** a cada iteração compara-se `key(left[i])` e `key(right[j])`.
-  Escolhe-se `right[j]` somente quando ele precede estritamente `left[i]`; caso
-  contrário escolhe-se `left[i]`. O elemento escolhido é o menor (segundo o
-  critério) entre os dois candidatos mínimos das duas metades ordenadas, logo é
-  o menor global dentre os não consumidos. Anexá-lo a `merged` preserva a ordem.
-  Em empate, escolhe-se `left[i]` primeiro, garantindo estabilidade.
-- **Término:** o laço termina quando uma das metades se esgota; os laços de
-  drenagem anexam o restante da outra metade, que já está ordenado e é maior ou
-  igual a tudo que já está em `merged`. Assim `merged` fica totalmente ordenada
-  e contém todos os elementos de `left` e `right` exatamente uma vez.
+**Inicialização:** antes da primeira iteração, `i = 0`, `j = 0` e `merged = []`; a invariante vale trivialmente.
 
-### Indução da recursão (`_merge_sort_recursive`)
+**Manutenção:** a cada passo, o algoritmo compara o próximo elemento de `left` com o próximo de `right` e escolhe aquele que deve aparecer primeiro segundo a ordem canônica. Anexá-lo a `merged` preserva a ordenação.
 
-Indução forte sobre `n = len(pairs)`.
+**Término:** quando uma metade se esgota, o restante da outra metade já está ordenado e pode ser anexado sem violar a ordem.
 
-- **Caso base (`n <= 1`):** uma lista de 0 ou 1 elemento já está ordenada; o
-  algoritmo a devolve inalterada. ✔
-- **Passo (`n >= 2`):** as duas metades têm tamanho `< n`. Por hipótese de
-  indução, `left` e `right` retornam ordenadas e são permutações das metades
-  originais. Pela corretude de `_merge`, o resultado é a intercalação ordenada
-  contendo todos os elementos das duas metades exatamente uma vez — ou seja, uma
-  permutação ordenada de `pairs`. ✔
+### 1.5 Indução
 
-Como a divisão `pairs[:mid]` / `pairs[mid:]` cobre todos os elementos sem
-sobreposição, nenhum elemento é perdido ou duplicado.
+Para `n <= 1`, a lista já está ordenada.
 
-### Casos de borda
+Para `n >= 2`, a entrada é dividida em duas partes menores. Pela hipótese de indução, ambas são corretamente ordenadas pelas chamadas recursivas. Pela corretude de `_merge`, a combinação final também é ordenada e contém todos os elementos exatamente uma vez.
 
-- Lista vazia e unitária: cobertos pelo caso base.
-- Empates de score: resolvidos por `chunk_id` ASC dentro de `precedes`; a
-  estabilidade do merge garante determinismo.
-- Scores negativos e zero: `precedes` usa comparação numérica direta, válida
-  para qualquer real finito.
-
-### Limites da prova
-
-- A prova assume `score` finito (garantido pelo contrato `RetrievedChunk` do
-  projeto) e `chunk_id` comparável como string.
-- A prova cobre a ordenação; a instrumentação (contadores) é auxiliar e não
-  afeta a corretude do resultado ordenado.
+Logo, Merge Sort é correto.
 
 ---
 
@@ -92,62 +64,33 @@ sobreposição, nenhum elemento é perdido ou duplicado.
 
 Arquivo: `src/algorithms/quick_sort.py`.
 
-### Objetivo da prova
+### 2.1 Objetivo
 
-Mostrar que `quick_sort(items)` produz uma permutação de `items` totalmente
-ordenada segundo o critério canônico (score DESC, chunk_id ASC).
+Mostrar que `quick_sort(items)` retorna uma permutação totalmente ordenada segundo a ordem canônica.
 
-### Corretude do particionamento (`_partition`, esquema de Lomuto)
+### 2.2 Particionamento
 
-Após escolher o pivô por mediana de três e movê-lo para `high`, o laço mantém a
-invariante sobre o índice `i` (fronteira dos elementos que precedem o pivô):
+A implementação utiliza particionamento de Lomuto após escolher o pivô por mediana de três.
 
-> Ao início de cada iteração `j`, todo elemento em `pairs[low..i-1]` precede o
-> pivô, e todo elemento em `pairs[i..j-1]` não precede o pivô.
+Invariante:
 
-- **Inicialização:** `i = low`, `j = low`; ambos os intervalos são vazios. ✔
-- **Manutenção:** compara-se `pairs[j]` com o pivô. Se `precedes(pairs[j], pivô)`,
-  troca-se `pairs[i]` com `pairs[j]` e incrementa-se `i`, estendendo o prefixo
-  dos que precedem; caso contrário `pairs[j]` fica na região dos que não
-  precedem. A invariante se mantém. ✔
-- **Término:** após o laço, `pairs[low..i-1]` precedem o pivô e `pairs[i..high-1]`
-  não. A troca final `pairs[i] <-> pairs[high]` coloca o pivô em `i`, com todos
-  os que o precedem à esquerda e os demais à direita. O pivô fica na sua posição
-  final de ordenação.
+> Os itens à esquerda da fronteira `i` precedem o pivô; os itens entre `i` e a posição atualmente examinada não precedem o pivô.
 
-### Corretude do pivô (`_median_of_three`)
+**Inicialização:** as duas regiões começam vazias.
 
-Retorna sempre um índice válido dentre `{low, mid, high}` correspondente ao
-elemento mediano segundo `precedes`. É determinístico e não altera o conteúdo do
-vetor (apenas seleciona um índice), logo não afeta a permutação — apenas a
-qualidade do balanceamento.
+**Manutenção:** se o elemento atual precede o pivô, ele é movido para a região esquerda; caso contrário, permanece na região direita.
 
-### Indução da recursão (`_quick_sort_recursive`)
+**Término:** o pivô é colocado entre as duas regiões. Todos os itens à esquerda o precedem e todos os itens à direita não o precedem.
 
-Indução forte sobre o tamanho `m = high - low + 1` do subintervalo.
+### 2.3 Mediana de três
 
-- **Caso base (`low >= high`):** 0 ou 1 elemento já está ordenado. ✔
-- **Passo:** o particionamento posiciona o pivô corretamente e separa o
-  intervalo em `[low, p-1]` e `[p+1, high]`, ambos de tamanho `< m`. Por hipótese
-  de indução, as duas recursões os ordenam. Como todos à esquerda precedem o
-  pivô e todos à direita não o precedem, a concatenação `esquerda + pivô +
-  direita` está totalmente ordenada. ✔
+`_median_of_three` escolhe deterministicamente um pivô entre primeiro, meio e último. A estratégia altera o balanceamento, mas não a corretude do particionamento.
 
-Não há perda nem duplicação: o particionamento é uma permutação in-place do
-subintervalo, e o pivô é contado exatamente uma vez.
+### 2.4 Indução
 
-### Casos de borda
+Intervalos com 0 ou 1 elemento já estão ordenados. Para intervalos maiores, o particionamento posiciona corretamente o pivô e gera duas regiões menores. Pela hipótese de indução, ambas são ordenadas; logo, esquerda + pivô + direita está ordenada.
 
-- Vazio/unitário: caso base.
-- Empates de score: `precedes` desempata por chunk_id ASC; o resultado é
-  determinístico.
-- Entradas adversariais que produzem partições desbalanceadas: uma sequência
-  construída de modo que a mediana de três selecione repetidamente um dos
-  extremos gera partições de tamanhos 0 e `m-1` a cada nível, levando à
-  degeneração de desempenho (ver complexidade). Isso afeta apenas o custo, não a
-  corretude — o particionamento continua permutando o subintervalo e posicionando
-  o pivô corretamente.
-- Scores negativos/zero: comparação numérica direta em `precedes`.
+Portanto, Quick Sort é correto.
 
 ---
 
@@ -155,108 +98,77 @@ subintervalo, e o pivô é contado exatamente uma vez.
 
 Arquivo: `src/algorithms/topk_heap.py`.
 
-### Objetivo da prova
+### 3.1 Objetivo
 
-Mostrar que `top_k(items, k)` retorna exatamente os `k` melhores itens (ou
-todos, se `k >= N`) na ordem de ranking canônica.
+Mostrar que `top_k(items, k)` retorna exatamente os `k` melhores elementos, ou todos quando `k >= N`.
 
-### Propriedade de min-heap "pior no topo"
+### 3.2 Propriedade da heap
 
-A relação da heap é `_worse(a, b) = precedes(b, a)`: o "mínimo" é o item de
-menor preferência. `_sift_up` e `_sift_down` restauram a propriedade de que todo
-pai é pior (ou igual) que seus filhos. Portanto `heap[0]` é sempre o **pior**
-elemento presente na heap.
+A heap mantém o pior elemento atual na raiz.
 
-### Invariante do laço principal
+### 3.3 Invariante principal
 
-> Após processar os primeiros `t` itens, a heap contém exatamente os
-> `min(t, k)` melhores dentre eles, e sua raiz é o pior desse conjunto.
+> Após processar os primeiros `t` itens, a heap contém exatamente os `min(t, k)` melhores itens observados até aquele momento.
 
-- **Inicialização:** heap vazia; vale trivialmente para `t = 0`.
-- **Manutenção:** ao processar o item `t+1`:
-  - se `|heap| < k`, ele entra (os melhores ainda cabem todos);
-  - se `|heap| = k`, compara-se com a raiz (pior dos k atuais). Se o novo item o
-    precede (é melhor), substitui a raiz; caso contrário é descartado, pois é
-    pior que os `k` já mantidos e não pode figurar entre os `k` melhores.
-  Em ambos os casos a heap passa a conter os `min(t+1, k)` melhores. ✔
-- **Término:** após `N` itens, a heap contém os `min(N, k)` melhores.
+**Inicialização:** com zero itens, a heap vazia satisfaz a invariante.
 
-### Ordenação final (`_heap_to_sorted`)
+**Manutenção:** se há espaço, o item entra. Se a heap está cheia e o novo item é melhor que a raiz, a raiz é substituída. Caso contrário, o item é descartado.
 
-Extrai repetidamente a raiz (pior restante) para o fim de uma lista e inverte,
-produzindo a saída do melhor para o pior (score DESC / chunk_id ASC). É um
-heapsort correto sobre os elementos da heap.
+**Término:** após os `N` itens, a heap contém os `min(N, k)` melhores. A etapa final apenas os ordena segundo a ordem canônica.
 
-### Casos de borda
-
-- `k <= 0` ou `items` vazio: retorna `[]` sem construir heap.
-- `k >= N`: todos os itens entram; a ordenação final devolve todos ordenados.
-- Empates: `precedes` desempata por chunk_id ASC, inclusive na fronteira do
-  corte (o item com chunk_id menor é preferido).
-
-### Limites da prova
-
-- Assume `score` finito e `chunk_id` comparável. A prova cobre a seleção e a
-  ordenação; a instrumentação é auxiliar.
+Logo, Top-k é correto.
 
 ---
 
-## 4. Busca binária (implementação do Wilson)
+## 4. Busca Binária
 
-Arquivo: `src/algorithms/binary_search.py` (autoria do Wilson,
-`feature/retrieval`). A análise abaixo é ligada ao **código real** dessa
-implementação.
+Arquivo: `src/algorithms/binary_search.py`.
 
-### Código analisado
+### 4.1 Pré-condição
 
-```python
-def binary_search(elements, target):
-    comparisons = 0
-    left = 0
-    right = len(elements) - 1
-    while left <= right:
-        mid = (left + right) // 2
-        comparisons += 1
-        if elements[mid] == target:
-            return mid, comparisons
-        elif elements[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-    return None, comparisons
+A lista está ordenada em ordem não decrescente.
+
+### 4.2 Invariante
+
+> Se `target` estiver presente, seu índice está no intervalo fechado `[left, right]`.
+
+**Inicialização:** `left = 0` e `right = n - 1` cobrem toda a lista.
+
+**Manutenção:** se `elements[mid] == target`, o alvo é encontrado. Se `elements[mid] < target`, pela ordenação ele só pode estar à direita e `left = mid + 1`. Caso contrário, só pode estar à esquerda e `right = mid - 1`.
+
+**Término:** o intervalo encolhe estritamente. Quando `left > right`, ele está vazio e o alvo não existe.
+
+Logo, a busca binária é correta.
+
+### 4.3 Instrumentação de comparações
+
+A implementação atual conta as comparações de chave realmente executadas:
+
+```text
+elements[mid] == target -> +1
 ```
 
-### Pré-condições
+Se a igualdade falhar:
 
-- `elements` está ordenado em ordem **não decrescente** (no projeto, o
-  vocabulário ordenado do índice invertido).
-- Os elementos são comparáveis por `==` e `<`.
+```text
+elements[mid] < target -> +1
+```
 
-### Invariante do laço
+Assim:
 
-> Se `target` está em `elements`, então seu índice está no intervalo fechado
-> `[left, right]`.
+- alvo encontrado no `mid`: 1 comparação na iteração;
+- decisão esquerda/direita: 2 comparações na iteração.
 
-- **Inicialização:** `left = 0`, `right = n-1` cobre todo o vetor. ✔
-- **Manutenção:** calcula-se `mid`. Se `elements[mid] == target`, retorna `mid`
-  (corretude direta). Se `elements[mid] < target`, como o vetor é ordenado,
-  `target` só pode estar à direita, logo `left = mid + 1` preserva a invariante.
-  Caso contrário `target` só pode estar à esquerda, logo `right = mid - 1`. ✔
-- **Término:** o intervalo encolhe a cada iteração (pois `mid` está sempre em
-  `[left, right]` e é removido). Quando `left > right`, o intervalo é vazio e o
-  elemento não existe: retorna `None`. Como o intervalo diminui estritamente, o
-  laço termina.
+A complexidade permanece:
 
-### Corretude
+| Caso | Complexidade |
+|---|---:|
+| Melhor | `Θ(1)` |
+| Médio | `Θ(log N)` |
+| Pior | `Θ(log N)` |
 
-Pela invariante, se `target` existe ele nunca é excluído do intervalo, e como o
-laço testa `mid` a cada passo, ele será encontrado antes de o intervalo esvaziar.
-Se não existe, o intervalo esvazia e retorna `None`. A contagem `comparisons`
-soma uma comparação de chave por iteração (a igualdade em `elements[mid]`),
-métrica coerente para a análise de PAA.
+---
 
-### Observação
+## 5. Limites das provas
 
-Esta implementação conta **uma** comparação por iteração (a de igualdade); a
-comparação `<`/`>` subsequente não é contabilizada separadamente. A análise de
-complexidade abaixo respeita essa contagem do código real.
+As provas assumem entradas válidas segundo os contratos do projeto. A instrumentação é auxiliar e não altera o resultado dos algoritmos.
