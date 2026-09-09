@@ -42,6 +42,28 @@ https://github.com/fastapi/fastapi
 - FAISS
 - Ollama
 
+## Interface Streamlit
+
+Com o ambiente virtual ativo e o corpus preparado, inicie a interface com:
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+A interface usa o corpus real em `data/chunks/chunks.jsonl`, os quatro
+retrievers registrados (`linear`, `indexed`, `optimized` e `semantic`) e a
+camada `FastContextService`. O modo **Retrieval only** não chama um LLM e
+continua disponível se Ollama estiver desligado. O modo **Retrieval + LLM** usa
+o pipeline RAG configurado e preserva os resultados de retrieval quando a
+geração falhar.
+
+O provider, URL e modelos são lidos de `config/retrieval.yaml` com sobreposição
+das variáveis em `.env`. A configuração padrão espera Ollama em
+`http://localhost:11434`, o modelo `qwen2.5:3b` e, se configurado, o modelo de
+fallback. Para usar RAG, deixe um desses modelos disponível no Ollama. O índice
+semântico persistido em `data/processed/semantic/` é reutilizado somente quando
+for compatível com o corpus e a configuração de embeddings.
+
 ## Ambiente Docker e testes
 
 ### Aplicação
@@ -55,6 +77,8 @@ Acesse <http://localhost:8501> ou execute scripts manualmente:
 ```bash
 docker compose exec fastcontext python scripts/prepare_corpus.py
 ```
+
+O serviço `fastcontext` inicia a mesma interface Streamlit na porta 8501.
 
 ### Corpus
 

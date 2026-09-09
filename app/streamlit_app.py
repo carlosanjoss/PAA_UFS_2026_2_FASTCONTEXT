@@ -1,552 +1,297 @@
+"""Interactive Streamlit interface for the real FastContext runtime."""
+
 from __future__ import annotations
 
+from typing import Any
+
 import streamlit as st
+from components.answer import render_answer
+from components.comparison import render_experiment_comparison
+from components.header import (
+    configure_page,
+    inject_styles,
+    render_header,
+)
+from components.metrics import render_metrics
+from components.results import render_results
+from components.sidebar import RunControls, render_controls
+from components.status import render_status
 
 from src.app.bootstrap import create_application
 from src.app.health import check_application_health
-from src.app.models import ApplicationContainer
-from src.app.streamlit_support import (
-    build_health_rows,
-    build_retrieval_rows,
-    format_duration_ns,
-    format_optional_number,
-)
-from src.rag.providers.base import (
-    GenerationConfig,
-    LLMProviderError,
-)
+from src.app.models import ApplicationContainer, ApplicationHealthReport
+from src.rag.providers.base import GenerationConfig, LLMProviderError
 from src.retrieval.models import RetrievalResult
-from src.retrieval.registry import (
-    RetrieverRegistryError,
-)
-from src.services.factory import (
-    create_fastcontext_service,
-)
+from src.retrieval.registry import RetrieverRegistryError
+from src.services.factory import create_fastcontext_service
 from src.services.fastcontext import (
     FastContextResult,
+    RAGNotConfiguredError,
 )
 
-st.set_page_config(
-    page_title="FastContext",
-    layout="wide",
-)
+configure_page()
 
 
 @st.cache_resource
 def get_application() -> ApplicationContainer:
-    """Create and cache the FastContext application runtime."""
+    """Create and cache the application dependency container."""
 
     return create_application()
 
 
-def render_sidebar(
-    application: ApplicationContainer,
-) -> None:
-    """Render application health and runtime configuration."""
+@st.cache_resource
+def get_service(algorithm: str) -> Any:
+    """Create one cached service per real retrieval strategy."""
 
-    st.sidebar.title(
-        "FastContext"
-    )
-
-    st.sidebar.caption(
-        "Algorithmic context retrieval "
-        "for generative AI"
-    )
-
-    st.sidebar.divider()
-
-    st.sidebar.subheader(
-        "Application health"
-    )
-
-    report = check_application_health(
-        application
-    )
-
-    st.sidebar.write(
-        f"Overall status: **{report.status}**"
-    )
-
-    for component in report.components:
-        st.sidebar.write(
-            f"**{component.name}**: "
-            f"{component.status}"
-        )
-
-        st.sidebar.caption(
-            component.message
-        )
-
-    st.sidebar.divider()
-
-    st.sidebar.subheader(
-        "RAG configuration"
-    )
-
-    st.sidebar.write(
-        "Provider: "
-        f"`{application.settings.default_provider}`"
-    )
-
-    st.sidebar.write(
-        "Model: "
-        f"`{application.settings.ollama.model}`"
-    )
-
-    fallback_model = (
-        application.settings
-        .ollama
-        .fallback_model
-    )
-
-    fallback_text = (
-        "None"
-        if fallback_model is None
-        else fallback_model
-    )
-
-    st.sidebar.write(
-        "Fallback: "
-        f"`{fallback_text}`"
+    application = get_application()
+    return create_fastcontext_service(
+        algorithm=algorithm,
+        registry=application.registry,
+        rag_pipeline=application.rag_pipeline,
     )
 
 
-def render_retrieval_metrics(
-    result: RetrievalResult,
-) -> None:
-    """Render retrieval performance metrics."""
+@st.cache_data(ttl=15)
+def get_health_report() -> ApplicationHealthReport:
+    """Refresh optional provider availability without rebuilding resources."""
 
-    metrics = result.metrics
-
-    primary_columns = st.columns(
-        4
-    )
-
-    primary_columns[0].metric(
-        "Retrieval time",
-        format_duration_ns(
-            metrics.retrieval_time_ns
-        ),
-    )
-
-    primary_columns[1].metric(
-        "Comparisons",
-        format_optional_number(
-            metrics.comparisons
-        ),
-    )
-
-    primary_columns[2].metric(
-        "Chunks scored",
-        format_optional_number(
-            metrics.chunks_scored
-        ),
-    )
-
-    primary_columns[3].metric(
-        "Candidates",
-        format_optional_number(
-            metrics.candidates_found
-        ),
-    )
-
-    secondary_columns = st.columns(
-        3
-    )
-
-    secondary_columns[0].metric(
-        "Sorting time",
-        format_duration_ns(
-            metrics.sorting_time_ns
-        ),
-    )
-
-    secondary_columns[1].metric(
-        "Index build time",
-        format_duration_ns(
-            metrics.index_build_time_ns
-        ),
-    )
-
-    memory_text = (
-        "N/A"
-        if metrics.peak_memory_mb is None
-        else f"{metrics.peak_memory_mb:.2f} MB"
-    )
-
-    secondary_columns[2].metric(
-        "Peak memory",
-        memory_text,
-    )
-
-
-def render_retrieval_result(
-    result: RetrievalResult,
-) -> None:
-    """Render retrieval output and ranked chunks."""
-
-    st.subheader(
-        "Retrieval result"
-    )
-
-    st.write(
-        f"Algorithm: **{result.algorithm}**"
-    )
-
-    st.write(
-        f"Requested top-k: **{result.top_k}**"
-    )
-
-    render_retrieval_metrics(
-        result
-    )
-
-    st.markdown(
-        "#### Retrieved chunks"
-    )
-
-    rows = build_retrieval_rows(
-        result
-    )
-
-    if not rows:
-        st.info(
-            "No chunks were retrieved."
-        )
-
-        return
-
-    st.dataframe(
-        rows,
-        use_container_width=True,
-        hide_index=True,
-    )
-
-
-def render_rag_result(
-    result: FastContextResult,
-) -> None:
-    """Render the generated RAG response."""
-
-    rag = result.rag
-
-    st.subheader(
-        "RAG answer"
-    )
-
-    timing_columns = st.columns(
-        3
-    )
-
-    timing_columns[0].metric(
-        "Retrieval",
-        format_duration_ns(
-            result.retrieval_time_ns
-        ),
-    )
-
-    timing_columns[1].metric(
-        "Generation",
-        format_duration_ns(
-            result.generation_time_ns
-        ),
-    )
-
-    timing_columns[2].metric(
-        "End-to-end",
-        format_duration_ns(
-            result.end_to_end_time_ns
-        ),
-    )
-
-    st.write(
-        rag.answer
-    )
-
-    st.markdown(
-        "#### Generation metadata"
-    )
-
-    generation_columns = st.columns(
-        4
-    )
-
-    generation_columns[0].metric(
-        "Provider",
-        rag.provider,
-    )
-
-    generation_columns[1].metric(
-        "Model",
-        rag.model,
-    )
-
-    generation_columns[2].metric(
-        "Citation valid",
-        str(
-            rag.citation_valid
-        ),
-    )
-
-    generation_columns[3].metric(
-        "Citation retries",
-        str(
-            rag.citation_retry_count
-        ),
-    )
-
-    if rag.valid_citations:
-        st.success(
-            "Valid citations: "
-            + ", ".join(
-                rag.valid_citations
-            )
-        )
-
-    if rag.invalid_citations:
-        st.warning(
-            "Invalid citations: "
-            + ", ".join(
-                rag.invalid_citations
-            )
-        )
-
-
-def render_health_details(
-    application: ApplicationContainer,
-) -> None:
-    """Render the complete component health report."""
-
-    report = check_application_health(
-        application
-    )
-
-    with st.expander(
-        "Detailed health report"
-    ):
-        st.dataframe(
-            build_health_rows(
-                report
-            ),
-            use_container_width=True,
-            hide_index=True,
-        )
-
-
-def render_no_retrievers_message() -> None:
-    """Explain why retrieval actions are currently unavailable."""
-
-    st.warning(
-        "No retrieval algorithms are registered yet."
-    )
-
-    st.info(
-        "The application bootstrap, RAG layer, "
-        "Ollama integration, health checks, "
-        "retrieval contracts, and interface are ready. "
-        "The retrieval controls will become available "
-        "automatically when the real retrievers are registered."
-    )
+    return check_application_health(get_application())
 
 
 def main() -> None:
     """Run the FastContext Streamlit application."""
 
-    application = (
-        get_application()
-    )
+    inject_styles()
 
-    render_sidebar(
-        application
-    )
-
-    st.title(
-        "FastContext"
-    )
-
-    st.caption(
-        "Compare context retrieval algorithms "
-        "and optionally generate grounded "
-        "FastAPI answers."
-    )
-
-    render_health_details(
-        application
-    )
-
-    algorithms = (
-        application.registry
-        .available_names()
-    )
-
-    st.markdown(
-        "### Query"
-    )
-
-    query = st.text_area(
-        "FastAPI question",
-        placeholder=(
-            "How does FastAPI dependency "
-            "injection work?"
-        ),
-        height=100,
-    )
-
-    top_k = st.number_input(
-        "Top-k",
-        min_value=1,
-        max_value=50,
-        value=5,
-        step=1,
-    )
-
-    if not algorithms:
-        render_no_retrievers_message()
+    try:
+        application = get_application()
+    except Exception as exc:
+        _render_error(
+            "FastContext could not initialize the prepared corpus or runtime.",
+            exc,
+        )
         return
 
-    algorithm = st.selectbox(
-        "Retrieval algorithm",
-        options=algorithms,
-    )
+    report = get_health_report()
+    algorithms = application.registry.available_names()
 
-    action_columns = st.columns(
-        2
-    )
+    if not algorithms:
+        st.error("No retrieval strategies are registered in the application.")
+        return
 
-    retrieve_clicked = (
-        action_columns[0].button(
-            "Retrieve",
-            use_container_width=True,
+    controls = render_controls(algorithms)
+    semantic_metadata = _last_semantic_metadata()
+    render_status(application, report, semantic_metadata)
+    render_header(application.corpus_size)
+
+    workspace_tab, experiment_tab = st.tabs(("Ask & explain", "Experiment dashboard"))
+    with workspace_tab:
+        if application.corpus_size == 0:
+            st.warning(
+                "The prepared corpus is unavailable. Run the documented corpus "
+                "preparation workflow before submitting a query."
+            )
+        else:
+            query, submitted = _render_query_form(controls)
+            if submitted:
+                _execute_request(application, controls, query)
+            _render_saved_result()
+
+    with experiment_tab:
+        render_experiment_comparison()
+
+
+def _render_query_form(
+    controls: RunControls,
+) -> tuple[str, bool]:
+    """Render the main query form and resolve an optional suggestion."""
+
+    query_column, guide_column = st.columns((2.25, 1), gap="large")
+    with query_column, st.form("query_form"):
+        st.markdown("### Ask the documentation")
+        st.caption(
+            "Ask a question, receive a grounded answer, and inspect exactly "
+            "how the context was retrieved."
         )
-    )
-
-    rag_clicked = (
-        action_columns[1].button(
-            "Retrieve + Generate",
-            use_container_width=True,
+        entered_query = st.text_area(
+            "Ask the FastAPI documentation",
+            key="query_input",
+            placeholder="How does FastAPI dependency injection work?",
+            height=104,
+            label_visibility="collapsed",
         )
-    )
 
-    if retrieve_clicked:
+        if controls.suggestion:
+            st.caption(
+                "A selected suggested query is used when the text field is empty."
+            )
+
+        action_label = "Ask for an answer" if controls.use_rag else "Retrieve context"
+        submitted = st.form_submit_button(
+            action_label,
+            width="stretch",
+            type="primary",
+        )
+
+    with guide_column, st.container(border=True):
+        st.markdown("#### Learning guide")
+        st.markdown(
+            "1. **Choose** a retrieval strategy in the sidebar.  \n"
+            "2. **Ask** a documentation question.  \n"
+            "3. **Read** the answer, then inspect the algorithm and its evidence."
+        )
+        if controls.use_rag:
+            st.caption("LLM answer enabled · retrieval evidence stays visible.")
+        else:
+            st.caption("Retrieval-only mode · no LLM call will be made.")
+
+    resolved_query = entered_query.strip() or (controls.suggestion or "")
+    return resolved_query, submitted
+
+
+def _execute_request(
+    application: ApplicationContainer,
+    controls: RunControls,
+    query: str,
+) -> None:
+    """Use the service facade for retrieval and optional RAG generation."""
+
+    if not query:
+        st.warning("Enter a FastAPI question or select a suggested query.")
+        return
+
+    try:
+        service = get_service(controls.algorithm)
+    except (RetrieverRegistryError, ValueError) as exc:
+        _render_error("The selected retriever could not be initialized.", exc)
+        return
+
+    if not controls.use_rag:
+        with st.spinner("Retrieving and ranking documentation chunks..."):
+            try:
+                retrieval = service.retrieve(query=query, top_k=controls.top_k)
+            except (RetrieverRegistryError, ValueError) as exc:
+                _render_error("Retrieval could not be completed.", exc)
+                return
+            except Exception as exc:
+                _render_error("Retrieval failed unexpectedly.", exc)
+                return
+
+        _save_retrieval(retrieval)
+        st.rerun()
+        return
+
+    if not application.provider.is_available():
+        st.warning(
+            "The LLM provider is offline or the configured model is missing. "
+            "Showing retrieval results without generation."
+        )
+        _retrieve_after_llm_failure(service, query, controls.top_k)
+        return
+
+    with st.spinner("Retrieving documentation and generating a grounded answer..."):
         try:
-            service = (
-                create_fastcontext_service(
-                    algorithm=algorithm,
-                    registry=(
-                        application.registry
-                    ),
-                )
+            result = service.ask(
+                query=query,
+                top_k=controls.top_k,
+                generation_config=GenerationConfig(
+                    temperature=0.0,
+                    max_tokens=256,
+                    think=False,
+                ),
             )
+        except (LLMProviderError, RAGNotConfiguredError) as exc:
+            st.warning("Generation was unavailable. Showing retrieval results instead.")
+            _retrieve_after_llm_failure(service, query, controls.top_k, exc)
+            return
+        except (RetrieverRegistryError, ValueError) as exc:
+            _render_error("The RAG request could not be completed.", exc)
+            return
+        except Exception as exc:
+            _render_error("The RAG request failed unexpectedly.", exc)
+            return
 
-            retrieval_result = (
-                service.retrieve(
-                    query=query,
-                    top_k=int(
-                        top_k
-                    ),
-                )
-            )
+    st.session_state["retrieval_result"] = result.retrieval
+    st.session_state["fastcontext_result"] = result
+    st.session_state.pop("generation_error", None)
+    st.rerun()
 
-            st.session_state[
-                "retrieval_result"
-            ] = retrieval_result
 
-            st.session_state.pop(
-                "fastcontext_result",
-                None,
-            )
+def _retrieve_after_llm_failure(
+    service: Any,
+    query: str,
+    top_k: int,
+    generation_error: Exception | None = None,
+) -> None:
+    """Keep retrieval available after an optional LLM failure."""
 
-        except (
-            ValueError,
-            RetrieverRegistryError,
-        ) as exc:
-            st.error(
-                str(exc)
-            )
+    try:
+        retrieval = service.retrieve(query=query, top_k=top_k)
+    except Exception as exc:
+        _render_error("Retrieval fallback also failed.", exc)
+        return
 
-    if rag_clicked:
-        try:
-            service = (
-                create_fastcontext_service(
-                    algorithm=algorithm,
-                    registry=(
-                        application.registry
-                    ),
-                    rag_pipeline=(
-                        application.rag_pipeline
-                    ),
-                )
-            )
+    _save_retrieval(retrieval, generation_error)
+    st.rerun()
 
-            fastcontext_result = (
-                service.ask(
-                    query=query,
-                    top_k=int(
-                        top_k
-                    ),
-                    generation_config=(
-                        GenerationConfig(
-                            temperature=0.0,
-                            max_tokens=128,
-                            think=False,
-                        )
-                    ),
-                )
-            )
 
-            st.session_state[
-                "retrieval_result"
-            ] = (
-                fastcontext_result
-                .retrieval
-            )
+def _save_retrieval(
+    result: RetrievalResult,
+    generation_error: Exception | None = None,
+) -> None:
+    """Store the latest retrieval and clear stale generated output."""
 
-            st.session_state[
-                "fastcontext_result"
-            ] = (
-                fastcontext_result
-            )
-
-        except (
-            ValueError,
-            RetrieverRegistryError,
-            LLMProviderError,
-        ) as exc:
-            st.error(
-                str(exc)
-            )
-
-    retrieval_result = (
-        st.session_state.get(
-            "retrieval_result"
+    st.session_state["retrieval_result"] = result
+    st.session_state.pop("fastcontext_result", None)
+    if generation_error is None:
+        st.session_state.pop("generation_error", None)
+    else:
+        st.session_state["generation_error"] = (
+            str(generation_error) or type(generation_error).__name__
         )
-    )
 
-    if isinstance(
-        retrieval_result,
-        RetrievalResult,
-    ):
+
+def _render_saved_result() -> None:
+    """Render results that survive ordinary Streamlit reruns."""
+
+    result = st.session_state.get("fastcontext_result")
+    if isinstance(result, FastContextResult):
         st.divider()
+        render_answer(result)
 
-        render_retrieval_result(
-            retrieval_result
-        )
+    generation_error = st.session_state.get("generation_error")
+    if isinstance(generation_error, str):
+        st.warning("An LLM answer was unavailable; retrieved context is shown below.")
+        with st.expander("Generation technical details"):
+            st.code(generation_error)
 
-    fastcontext_result = (
-        st.session_state.get(
-            "fastcontext_result"
-        )
-    )
-
-    if isinstance(
-        fastcontext_result,
-        FastContextResult,
-    ):
+    retrieval = st.session_state.get("retrieval_result")
+    if isinstance(retrieval, RetrievalResult):
         st.divider()
+        render_metrics(retrieval)
+        st.divider()
+        render_results(retrieval)
 
-        render_rag_result(
-            fastcontext_result
-        )
+
+def _last_semantic_metadata() -> dict[str, Any] | None:
+    """Return metadata from the latest real semantic request, if available."""
+
+    retrieval = st.session_state.get("retrieval_result")
+    if not isinstance(retrieval, RetrievalResult):
+        return None
+
+    if retrieval.algorithm != "semantic":
+        return None
+
+    return retrieval.metadata
+
+
+def _render_error(message: str, exc: Exception) -> None:
+    """Show a useful error without exposing a traceback by default."""
+
+    st.error(message)
+    with st.expander("Technical details"):
+        st.code(str(exc) or type(exc).__name__)
 
 
 if __name__ == "__main__":
