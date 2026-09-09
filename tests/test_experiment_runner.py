@@ -5,9 +5,21 @@ from __future__ import annotations
 import pytest
 
 from experiments.run_experiments import (
+    CHECKPOINT_SCHEMA_VERSION,
+    EvaluationQuery,
     _build_nested_subsets,
+    _build_run_id,
+    _calculate_signature,
+    _expected_run_ids,
+    _load_checkpoint,
     _quality_fields,
+    _raw_fieldnames,
+    _read_raw_results,
     _summarize,
+    _validate_checkpoint,
+    _validate_existing_rows,
+    _write_checkpoint,
+    build_parser,
 )
 
 
@@ -32,6 +44,110 @@ def _chunks(
             count
         )
     ]
+
+
+def _query(
+    query_id: str = "q01",
+) -> EvaluationQuery:
+    return EvaluationQuery(
+        query_id=query_id,
+        category="tutorial",
+        question=(
+            f"Question {query_id}?"
+        ),
+        relevant_chunks=(
+            "chunk-1",
+        ),
+    )
+
+
+def _resume_row(
+    *,
+    algorithm: str = "linear",
+    fraction: float = 1.0,
+    query_id: str = "q01",
+    repetition: int = 1,
+    fingerprint: str = "fingerprint",
+) -> dict[str, str]:
+    return {
+        "run_id": _build_run_id(
+            algorithm,
+            fraction,
+            query_id,
+            repetition,
+        ),
+        "algorithm": algorithm,
+        "corpus_fraction": str(
+            fraction
+        ),
+        "corpus_chunks": "20",
+        "full_corpus_chunks": "20",
+        "corpus_fingerprint": fingerprint,
+        "query_id": query_id,
+        "category": "tutorial",
+        "question": (
+            f"Question {query_id}?"
+        ),
+        "repetition": str(
+            repetition
+        ),
+        "retrieval_top_k": "10",
+        "warmup_repetitions": "1",
+        "random_seed": "42",
+        "result_count": "2",
+        "retrieved_chunk_ids": (
+            '["chunk-1", "chunk-2"]'
+        ),
+    }
+
+
+def _validate_rows(
+    rows: list[
+        dict[
+            str,
+            str,
+        ]
+    ],
+    *,
+    repetitions: int = 1,
+) -> set[str]:
+    queries = (
+        _query(),
+    )
+
+    expected = _expected_run_ids(
+        algorithms=(
+            "linear",
+        ),
+        fractions=(
+            1.0,
+        ),
+        queries=queries,
+        repetitions=repetitions,
+    )
+
+    return _validate_existing_rows(
+        rows,
+        expected_run_ids=expected,
+        algorithms=(
+            "linear",
+        ),
+        fractions=(
+            1.0,
+        ),
+        queries=queries,
+        repetitions=repetitions,
+        subset_metadata={
+            1.0: (
+                20,
+                "fingerprint",
+            )
+        },
+        full_corpus_chunks=20,
+        top_k=10,
+        warmup_repetitions=1,
+        seed=42,
+    )
 
 
 def test_nested_subsets_have_expected_sizes() -> None:
@@ -404,3 +520,381 @@ def test_summary_does_not_duplicate_quality_across_repetitions() -> None:
         ]
         == 1.0
     )
+
+
+def test_force_and_resume_are_mutually_exclusive() -> None:
+    parser = build_parser()
+
+    with pytest.raises(
+        SystemExit
+    ):
+        parser.parse_args(
+            [
+                "--force",
+                "--resume",
+            ]
+        )
+
+
+def test_expected_final_matrix_contains_2400_measured_runs() -> None:
+    queries = tuple(
+        _query(
+            f"q{index:02d}"
+        )
+        for index in range(
+            1,
+            31,
+        )
+    )
+
+    run_ids = _expected_run_ids(
+        algorithms=(
+            "linear",
+            "indexed",
+            "optimized",
+            "semantic",
+        ),
+        fractions=(
+            0.25,
+            0.50,
+            0.75,
+            1.0,
+        ),
+        queries=queries,
+        repetitions=5,
+    )
+
+    assert len(
+        run_ids
+    ) == 2400
+
+
+def test_run_id_is_deterministic() -> None:
+    assert _build_run_id(
+        "semantic",
+        0.5,
+        "q12",
+        4,
+    ) == (
+        "semantic|0.500000|q12|4"
+    )
+
+
+def test_resume_row_validation_accepts_one_exact_run() -> None:
+    completed = _validate_rows(
+        [
+            _resume_row()
+        ]
+    )
+
+    assert completed == {
+        "linear|1.000000|q01|1"
+    }
+
+
+def test_resume_row_validation_rejects_duplicate_run_id() -> None:
+    row = _resume_row()
+
+    with pytest.raises(
+        ValueError,
+        match="Duplicate run_id",
+    ):
+        _validate_rows(
+            [
+                row,
+                dict(
+                    row
+                ),
+            ]
+        )
+
+
+def test_resume_row_validation_rejects_incompatible_fingerprint() -> None:
+    with pytest.raises(
+        ValueError,
+        match="fingerprint mismatch",
+    ):
+        _validate_rows(
+            [
+                _resume_row(
+                    fingerprint="changed"
+                )
+            ]
+        )
+
+
+def test_read_raw_results_rejects_truncated_row(
+    tmp_path,
+) -> None:
+    path = (
+        tmp_path
+        / "results.csv"
+    )
+
+    fields = _raw_fieldnames(
+        (
+            1,
+        )
+    )
+
+    path.write_text(
+        ",".join(
+            fields
+        )
+        + "\n"
+        + "linear|1.000000|q01|1,linear\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="truncated or incomplete",
+    ):
+        _read_raw_results(
+            path,
+            expected_fieldnames=fields,
+        )
+
+
+def test_read_raw_results_rejects_schema_change(
+    tmp_path,
+) -> None:
+    path = (
+        tmp_path
+        / "results.csv"
+    )
+
+    path.write_text(
+        "run_id,algorithm\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="schema does not match",
+    ):
+        _read_raw_results(
+            path,
+            expected_fieldnames=(
+                "run_id",
+                "algorithm",
+                "query_id",
+            ),
+        )
+
+
+def test_signature_is_deterministic_and_sensitive_to_changes() -> None:
+    first = {
+        "algorithms": [
+            "linear",
+            "semantic",
+        ],
+        "memory_profiling": True,
+        "seed": 42,
+    }
+
+    reordered = {
+        "seed": 42,
+        "memory_profiling": True,
+        "algorithms": [
+            "linear",
+            "semantic",
+        ],
+    }
+
+    changed = {
+        "seed": 42,
+        "memory_profiling": False,
+        "algorithms": [
+            "linear",
+            "semantic",
+        ],
+    }
+
+    assert (
+        _calculate_signature(
+            first
+        )
+        == _calculate_signature(
+            reordered
+        )
+    )
+
+    assert (
+        _calculate_signature(
+            first
+        )
+        != _calculate_signature(
+            changed
+        )
+    )
+
+
+def test_checkpoint_round_trip(
+    tmp_path,
+) -> None:
+    path = (
+        tmp_path
+        / "results.csv.checkpoint.json"
+    )
+
+    raw_output = (
+        tmp_path
+        / "results.csv"
+    )
+
+    summary_output = (
+        tmp_path
+        / "summary.csv"
+    )
+
+    completed = {
+        "linear|1.000000|q01|1"
+    }
+
+    _write_checkpoint(
+        path,
+        signature="abc",
+        signature_payload={
+            "mode": "test"
+        },
+        expected_runs=2,
+        completed_run_ids=(
+            completed
+        ),
+        status="in_progress",
+        raw_output=raw_output,
+        summary_output=(
+            summary_output
+        ),
+    )
+
+    checkpoint = (
+        _load_checkpoint(
+            path
+        )
+    )
+
+    assert checkpoint[
+        "schema_version"
+    ] == CHECKPOINT_SCHEMA_VERSION
+
+    assert checkpoint[
+        "signature"
+    ] == "abc"
+
+    assert checkpoint[
+        "completed_runs"
+    ] == 1
+
+    assert checkpoint[
+        "completed_run_ids"
+    ] == sorted(
+        completed
+    )
+
+
+def test_checkpoint_may_lag_raw_results_by_one_or_more_rows() -> None:
+    checkpoint = {
+        "schema_version": (
+            CHECKPOINT_SCHEMA_VERSION
+        ),
+        "signature": "abc",
+        "status": "in_progress",
+        "expected_runs": 2,
+        "completed_runs": 1,
+        "completed_run_ids": [
+            "run-1"
+        ],
+    }
+
+    _validate_checkpoint(
+        checkpoint,
+        signature="abc",
+        expected_runs=2,
+        raw_completed_run_ids={
+            "run-1",
+            "run-2",
+        },
+    )
+
+
+def test_checkpoint_cannot_be_ahead_of_raw_results() -> None:
+    checkpoint = {
+        "schema_version": (
+            CHECKPOINT_SCHEMA_VERSION
+        ),
+        "signature": "abc",
+        "status": "in_progress",
+        "expected_runs": 2,
+        "completed_runs": 2,
+        "completed_run_ids": [
+            "run-1",
+            "run-2",
+        ],
+    }
+
+    with pytest.raises(
+        ValueError,
+        match="missing from raw results",
+    ):
+        _validate_checkpoint(
+            checkpoint,
+            signature="abc",
+            expected_runs=2,
+            raw_completed_run_ids={
+                "run-1"
+            },
+        )
+
+
+def test_checkpoint_rejects_incompatible_signature() -> None:
+    checkpoint = {
+        "schema_version": (
+            CHECKPOINT_SCHEMA_VERSION
+        ),
+        "signature": "old",
+        "status": "in_progress",
+        "expected_runs": 1,
+        "completed_runs": 0,
+        "completed_run_ids": [],
+    }
+
+    with pytest.raises(
+        ValueError,
+        match="signature does not match",
+    ):
+        _validate_checkpoint(
+            checkpoint,
+            signature="new",
+            expected_runs=1,
+            raw_completed_run_ids=set(),
+        )
+
+
+def test_complete_checkpoint_requires_complete_raw_results() -> None:
+    checkpoint = {
+        "schema_version": (
+            CHECKPOINT_SCHEMA_VERSION
+        ),
+        "signature": "abc",
+        "status": "complete",
+        "expected_runs": 2,
+        "completed_runs": 1,
+        "completed_run_ids": [
+            "run-1"
+        ],
+    }
+
+    with pytest.raises(
+        ValueError,
+        match="marked complete",
+    ):
+        _validate_checkpoint(
+            checkpoint,
+            signature="abc",
+            expected_runs=2,
+            raw_completed_run_ids={
+                "run-1"
+            },
+        )
