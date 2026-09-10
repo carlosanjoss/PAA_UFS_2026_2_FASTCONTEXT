@@ -351,8 +351,8 @@ class RAGPipeline:
             )
 
         else:
-            allowed_citations = ", ".join(
-                f"[{chunk_id}]"
+            allowed_citations = "\n".join(
+                f"- [{chunk_id}]"
                 for chunk_id
                 in available_chunk_ids
             )
@@ -362,13 +362,29 @@ class RAGPipeline:
                 "validation.\n\n"
                 "Rewrite the answer using only the "
                 "retrieved documentation.\n\n"
-                "Allowed citations:\n"
+                "Allowed citation tokens:\n"
                 f"{allowed_citations}\n\n"
-                "Requirements:\n"
-                "- Include at least one allowed citation.\n"
-                "- Do not invent citations.\n"
+                "Strict citation requirements:\n"
+                "- Copy at least one complete token "
+                "from the allowed list exactly.\n"
+                "- The square brackets are mandatory.\n"
+                "- Do not use parentheses around "
+                "chunk identifiers.\n"
+                "- Do not write a bare chunk identifier.\n"
+                "- Do not cite source paths or section "
+                "titles instead of chunk identifiers.\n"
+                "- Do not invent, abbreviate, translate, "
+                "or reformat citation tokens.\n"
+                "- Remove any citation-like text from "
+                "the previous answer that is not an "
+                "exact allowed token.\n"
+                "- Keep only claims supported by the "
+                "retrieved documentation.\n"
                 "- Keep the answer concise.\n"
-                "- Return only the corrected final answer."
+                "- Return only the corrected final answer.\n\n"
+                "Your answer will be rejected unless it "
+                "contains an exact allowed citation token "
+                "with square brackets."
             )
 
         messages.append(

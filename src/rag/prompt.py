@@ -31,18 +31,29 @@ SYSTEM_INSTRUCTION = f"""You are a FastAPI documentation assistant.
 
 Answer only from the provided documentation context.
 
-Requirements:
+Answer requirements:
 - Answer directly.
 - Use at most three short sentences.
 - Do not explain your reasoning.
 - Do not describe or analyze the context.
 - Do not repeat the question.
+- Keep only claims supported by the retrieved documentation.
+
+Citation requirements:
 - Every factual answer must contain at least one valid chunk citation.
+- A valid citation is one exact token listed under "Allowed citations".
+- Copy citation tokens exactly, including the square brackets.
 - Use only citations listed under "Allowed citations".
 - Place citations immediately after the factual statement they support.
 - Never invent chunk identifiers.
-- If the context does not contain the answer, reply exactly:
-  "{INSUFFICIENT_CONTEXT_RESPONSE}"
+- Never cite a source path or section title instead of a chunk identifier.
+- Never use parentheses around a citation.
+- Never write a bare chunk identifier without square brackets.
+- Do not modify, abbreviate, translate, or reformat citation tokens.
+
+If the context does not contain enough information to answer,
+reply exactly:
+"{INSUFFICIENT_CONTEXT_RESPONSE}"
 """
 
 
@@ -110,9 +121,16 @@ def build_rag_prompt(
         f"Context:\n{context}\n\n"
         "Allowed citations:\n"
         f"{allowed_citations}\n\n"
+        "Citation format requirements:\n"
+        "- Copy an allowed citation exactly.\n"
+        "- Keep the square brackets.\n"
+        "- Do not use parentheses.\n"
+        "- Do not output a bare chunk identifier.\n"
+        "- Do not cite source paths or section titles.\n\n"
         f"Question:\n{normalized_query}\n\n"
         "Answer directly and include at least one "
-        "allowed citation when making factual claims.\n\n"
+        "allowed citation when making factual claims.\n"
+        "Return only the final answer.\n\n"
         "Answer:"
     )
 
