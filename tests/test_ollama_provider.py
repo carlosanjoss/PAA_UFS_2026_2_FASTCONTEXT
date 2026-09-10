@@ -22,6 +22,38 @@ def build_user_message() -> list[LLMMessage]:
     ]
 
 
+def build_generation_response() -> Mock:
+    response = Mock()
+    response.raise_for_status.return_value = None
+    response.json.return_value = {
+        "message": {
+            "role": "assistant",
+            "content": (
+                "FastAPI is a Python "
+                "web framework."
+            ),
+        },
+        "done_reason": "stop",
+        "total_duration": 100,
+        "load_duration": 10,
+        "prompt_eval_count": 20,
+        "prompt_eval_duration": 30,
+        "eval_count": 10,
+        "eval_duration": 40,
+    }
+    return response
+
+
+def test_generation_config_rejects_negative_seed() -> None:
+    with pytest.raises(
+        ValueError,
+        match="seed cannot be negative",
+    ):
+        GenerationConfig(
+            seed=-1
+        )
+
+
 def test_ollama_provider_name() -> None:
     provider = OllamaProvider(
         model="qwen3:4b"
@@ -90,27 +122,9 @@ def test_ollama_provider_generates_response() -> None:
         spec=requests.Session
     )
 
-    response = Mock()
-    response.raise_for_status.return_value = None
-
-    response.json.return_value = {
-        "message": {
-            "role": "assistant",
-            "content": (
-                "FastAPI is a Python "
-                "web framework."
-            ),
-        },
-        "done_reason": "stop",
-        "total_duration": 100,
-        "load_duration": 10,
-        "prompt_eval_count": 20,
-        "prompt_eval_duration": 30,
-        "eval_count": 10,
-        "eval_duration": 40,
-    }
-
-    session.post.return_value = response
+    session.post.return_value = (
+        build_generation_response()
+    )
 
     provider = OllamaProvider(
         model="qwen3:4b",
@@ -136,6 +150,11 @@ def test_ollama_provider_generates_response() -> None:
         == "stop"
     )
 
+    assert (
+        result.metadata["requested_seed"]
+        is None
+    )
+
     payload = (
         session.post.call_args.kwargs[
             "json"
@@ -147,6 +166,64 @@ def test_ollama_provider_generates_response() -> None:
     assert (
         payload["messages"][0]["role"]
         == "user"
+    )
+
+    assert (
+        "seed"
+        not in payload["options"]
+    )
+
+
+def test_ollama_provider_sends_generation_seed() -> None:
+    session = Mock(
+        spec=requests.Session
+    )
+
+    session.post.return_value = (
+        build_generation_response()
+    )
+
+    provider = OllamaProvider(
+        model="qwen3:4b",
+        session=session,
+    )
+
+    result = provider.generate(
+        messages=build_user_message(),
+        config=GenerationConfig(
+            temperature=0.0,
+            max_tokens=256,
+            think=False,
+            seed=42,
+        ),
+    )
+
+    payload = (
+        session.post.call_args.kwargs[
+            "json"
+        ]
+    )
+
+    assert (
+        payload["options"]["seed"]
+        == 42
+    )
+
+    assert (
+        payload["options"]["temperature"]
+        == 0.0
+    )
+
+    assert (
+        payload["options"]["num_predict"]
+        == 256
+    )
+
+    assert result.metadata is not None
+
+    assert (
+        result.metadata["requested_seed"]
+        == 42
     )
 
 

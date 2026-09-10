@@ -29,6 +29,7 @@ class GenerationConfig:
     temperature: float = 0.1
     max_tokens: int = 512
     think: bool = False
+    seed: int | None = None
 
     def __post_init__(self) -> None:
         if self.temperature < 0:
@@ -39,6 +40,14 @@ class GenerationConfig:
         if self.max_tokens <= 0:
             raise ValueError(
                 "max_tokens must be greater than zero."
+            )
+
+        if (
+            self.seed is not None
+            and self.seed < 0
+        ):
+            raise ValueError(
+                "seed cannot be negative."
             )
 
 

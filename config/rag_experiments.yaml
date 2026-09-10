@@ -1,8 +1,6 @@
 rag_experiment:
   conditions:
     - no_rag
-    - linear
-    - indexed
     - optimized
     - semantic
 
@@ -24,6 +22,7 @@ rag_experiment:
     temperature: 0.0
     max_tokens: 256
     think: false
+    seed: 42
     citation_retries: 1
     max_truncation_retries: 1
     max_retry_tokens: 256

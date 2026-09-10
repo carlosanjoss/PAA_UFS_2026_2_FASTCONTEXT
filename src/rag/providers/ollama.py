@@ -114,6 +114,20 @@ class OllamaProvider(LLMProvider):
             config or GenerationConfig()
         )
 
+        options: dict[str, Any] = {
+            "temperature": (
+                generation_config.temperature
+            ),
+            "num_predict": (
+                generation_config.max_tokens
+            ),
+        }
+
+        if generation_config.seed is not None:
+            options["seed"] = (
+                generation_config.seed
+            )
+
         payload: dict[str, Any] = {
             "model": self._model,
             "messages": [
@@ -125,14 +139,7 @@ class OllamaProvider(LLMProvider):
             ],
             "stream": False,
             "think": generation_config.think,
-            "options": {
-                "temperature": (
-                    generation_config.temperature
-                ),
-                "num_predict": (
-                    generation_config.max_tokens
-                ),
-            },
+            "options": options,
         }
 
         try:
@@ -226,6 +233,12 @@ class OllamaProvider(LLMProvider):
                 ),
                 "requested_max_tokens": (
                     generation_config.max_tokens
+                ),
+                "requested_temperature": (
+                    generation_config.temperature
+                ),
+                "requested_seed": (
+                    generation_config.seed
                 ),
             },
         )

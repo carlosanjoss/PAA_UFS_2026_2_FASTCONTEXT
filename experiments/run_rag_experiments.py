@@ -19,6 +19,7 @@ import yaml
 from src.app.bootstrap import create_application
 from src.ingestion.chunk_loader import load_chunks_jsonl
 from src.rag.pipeline import RAGPipeline
+from src.rag.prompt import ContextChunk, build_rag_prompt
 from src.rag.providers.base import (
     GenerationConfig,
     LLMMessage,
@@ -53,15 +54,11 @@ RUNNER_PATH = Path(__file__).resolve()
 
 CONDITIONS = (
     "no_rag",
-    "linear",
-    "indexed",
     "optimized",
     "semantic",
 )
 
 RAG_CONDITIONS = (
-    "linear",
-    "indexed",
     "optimized",
     "semantic",
 )
@@ -70,6 +67,19 @@ LEXICAL_CONDITIONS = (
     "linear",
     "indexed",
     "optimized",
+)
+
+SIGNATURE_SOURCE_PATHS = (
+    PROJECT_ROOT / "config" / "retrieval.yaml",
+    PROJECT_ROOT / "src" / "app" / "bootstrap.py",
+    PROJECT_ROOT / "src" / "rag" / "providers" / "base.py",
+    PROJECT_ROOT / "src" / "rag" / "providers" / "ollama.py",
+    PROJECT_ROOT / "src" / "retrieval" / "linear_retriever.py",
+    PROJECT_ROOT / "src" / "retrieval" / "indexed_retriever.py",
+    PROJECT_ROOT / "src" / "retrieval" / "optimized_retriever.py",
+    PROJECT_ROOT / "src" / "retrieval" / "semantic_retriever.py",
+    PROJECT_ROOT / "src" / "services" / "factory.py",
+    PROJECT_ROOT / "src" / "services" / "fastcontext.py",
 )
 
 CHECKPOINT_SCHEMA_VERSION = 1
@@ -102,6 +112,7 @@ CSV_FIELDS = (
     "temperature",
     "max_tokens",
     "think",
+    "generation_seed",
     "retrieval_time_ns",
     "generation_time_ns",
     "end_to_end_time_ns",
@@ -141,6 +152,7 @@ class OutputPaths:
     csv_path: Path
     jsonl_path: Path
     checkpoint_path: Path
+    lexical_audit_path: Path
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -156,7 +168,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--smoke",
         action="store_true",
         help=(
-            "Run all five conditions for the first query only."
+            "Run all three final conditions for the first query only."
         ),
     )
 
@@ -247,6 +259,12 @@ def main() -> int:
     think = bool(
         generation[
             "think"
+        ]
+    )
+
+    generation_seed = int(
+        generation[
+            "seed"
         ]
     )
 
@@ -361,6 +379,9 @@ def main() -> int:
             temperature=temperature,
             max_tokens=max_tokens,
             think=think,
+            generation_seed=(
+                generation_seed
+            ),
             smoke=args.smoke,
         )
     )
@@ -427,6 +448,9 @@ def main() -> int:
         f"Temperature: {temperature}"
     )
     print(
+        f"Generation seed: {generation_seed}"
+    )
+    print(
         f"Corpus chunks: {len(chunks)}"
     )
     print(
@@ -487,6 +511,15 @@ def main() -> int:
 
     registry = application.registry
 
+    _audit_lexical_equivalence(
+        registry=registry,
+        queries=queries,
+        top_k=top_k,
+        output_path=(
+            outputs.lexical_audit_path
+        ),
+    )
+
     services = {
         condition: (
             create_fastcontext_service(
@@ -503,6 +536,7 @@ def main() -> int:
             temperature=temperature,
             max_tokens=max_tokens,
             think=think,
+            seed=generation_seed,
         )
     )
 
@@ -705,8 +739,230 @@ def main() -> int:
         "Checkpoint: "
         f"{outputs.checkpoint_path}"
     )
+    print(
+        "Lexical audit: "
+        f"{outputs.lexical_audit_path}"
+    )
 
     return 0
+
+
+
+def _audit_lexical_equivalence(
+    *,
+    registry: Any,
+    queries: Sequence[EvaluationQuery],
+    top_k: int,
+    output_path: Path,
+) -> None:
+    """Verify lexical Top-k and RAG prompts are identical."""
+
+    print(
+        "Auditing lexical retrieval equivalence..."
+    )
+
+    services = {
+        condition: (
+            create_fastcontext_service(
+                algorithm=condition,
+                registry=registry,
+            )
+        )
+        for condition in LEXICAL_CONDITIONS
+    }
+
+    records: list[
+        dict[
+            str,
+            Any,
+        ]
+    ] = []
+
+    all_top_k_identical = True
+    all_prompts_identical = True
+
+    for query in queries:
+        top_k_by_condition: dict[
+            str,
+            tuple[
+                str,
+                ...,
+            ],
+        ] = {}
+
+        prompt_hash_by_condition: dict[
+            str,
+            str,
+        ] = {}
+
+        prompt_bytes_by_condition: dict[
+            str,
+            int,
+        ] = {}
+
+        for condition in LEXICAL_CONDITIONS:
+            result = services[
+                condition
+            ].retrieve(
+                query=query.question,
+                top_k=top_k,
+            )
+
+            top_k_ids = tuple(
+                chunk.chunk_id
+                for chunk in result.chunks
+            )
+
+            context_chunks = [
+                ContextChunk(
+                    chunk_id=chunk.chunk_id,
+                    content=chunk.content,
+                    source_path=(
+                        chunk.source_path
+                    ),
+                    section_title=(
+                        chunk.section_title
+                    ),
+                    score=chunk.score,
+                )
+                for chunk in result.chunks
+            ]
+
+            prompt = build_rag_prompt(
+                query=query.question,
+                chunks=context_chunks,
+            )
+
+            serialized = (
+                "SYSTEM\n"
+                + prompt.system
+                + "\nUSER\n"
+                + prompt.user
+            ).encode(
+                "utf-8"
+            )
+
+            top_k_by_condition[
+                condition
+            ] = top_k_ids
+
+            prompt_hash_by_condition[
+                condition
+            ] = hashlib.sha256(
+                serialized
+            ).hexdigest()
+
+            prompt_bytes_by_condition[
+                condition
+            ] = len(
+                serialized
+            )
+
+        top_k_identical = (
+            len(
+                set(
+                    top_k_by_condition
+                    .values()
+                )
+            )
+            == 1
+        )
+
+        prompts_identical = (
+            len(
+                set(
+                    prompt_hash_by_condition
+                    .values()
+                )
+            )
+            == 1
+        )
+
+        all_top_k_identical = (
+            all_top_k_identical
+            and top_k_identical
+        )
+
+        all_prompts_identical = (
+            all_prompts_identical
+            and prompts_identical
+        )
+
+        records.append(
+            {
+                "query_id": query.query_id,
+                "top_k_identical": (
+                    top_k_identical
+                ),
+                "prompts_identical": (
+                    prompts_identical
+                ),
+                "top_k_by_condition": {
+                    condition: list(
+                        top_k_by_condition[
+                            condition
+                        ]
+                    )
+                    for condition
+                    in LEXICAL_CONDITIONS
+                },
+                "prompt_sha256_by_condition": (
+                    prompt_hash_by_condition
+                ),
+                "prompt_bytes_by_condition": (
+                    prompt_bytes_by_condition
+                ),
+            }
+        )
+
+    payload = {
+        "lexical_conditions": list(
+            LEXICAL_CONDITIONS
+        ),
+        "queries_checked": len(
+            queries
+        ),
+        "top_k": top_k,
+        "all_top_k_identical": (
+            all_top_k_identical
+        ),
+        "all_prompts_identical": (
+            all_prompts_identical
+        ),
+        "records": records,
+    }
+
+    output_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    output_path.write_text(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    if not all_top_k_identical:
+        raise RuntimeError(
+            "Lexical Top-k equivalence audit failed."
+        )
+
+    if not all_prompts_identical:
+        raise RuntimeError(
+            "Lexical RAG prompt equivalence audit failed."
+        )
+
+    print(
+        "Lexical audit passed: "
+        f"{len(queries)}/{len(queries)} queries "
+        "have identical Top-k and prompts."
+    )
+    print()
 
 
 def _run_warmup(
@@ -802,6 +1058,22 @@ def _run_no_rag(
         expected_model=expected_model,
     )
 
+    metadata = (
+        response.metadata
+        or {}
+    )
+
+    if (
+        metadata.get(
+            "done_reason"
+        )
+        == "length"
+    ):
+        raise RuntimeError(
+            "No-RAG generation reached the "
+            "configured token limit."
+        )
+
     if (
         response.provider
         != expected_provider
@@ -843,6 +1115,9 @@ def _run_no_rag(
             generation_config.max_tokens
         ),
         "think": generation_config.think,
+        "generation_seed": (
+            generation_config.seed
+        ),
         "retrieval_time_ns": None,
         "generation_time_ns": (
             end_to_end_time_ns
@@ -987,6 +1262,9 @@ def _run_rag(
             generation_config.max_tokens
         ),
         "think": generation_config.think,
+        "generation_seed": (
+            generation_config.seed
+        ),
         "retrieval_time_ns": (
             result.retrieval_time_ns
         ),
@@ -1492,6 +1770,10 @@ def _resolve_output_paths(
                 directory
                 / "checkpoint.smoke.json"
             ),
+            lexical_audit_path=(
+                directory
+                / "lexical_equivalence_audit.smoke.json"
+            ),
         )
 
     return OutputPaths(
@@ -1522,6 +1804,10 @@ def _resolve_output_paths(
                 "checkpoint output name",
             )
         ),
+        lexical_audit_path=(
+            directory
+            / "lexical_equivalence_audit.json"
+        ),
     )
 
 
@@ -1539,6 +1825,7 @@ def _prepare_outputs(
         outputs.csv_path,
         outputs.jsonl_path,
         outputs.checkpoint_path,
+        outputs.lexical_audit_path,
     ):
         path.parent.mkdir(
             parents=True,
@@ -1550,6 +1837,7 @@ def _prepare_outputs(
             outputs.csv_path,
             outputs.jsonl_path,
             outputs.checkpoint_path,
+            outputs.lexical_audit_path,
         ):
             path.unlink(
                 missing_ok=True
@@ -1561,6 +1849,7 @@ def _prepare_outputs(
             outputs.csv_path,
             outputs.jsonl_path,
             outputs.checkpoint_path,
+            outputs.lexical_audit_path,
         )
     )
 
@@ -2053,6 +2342,7 @@ def _calculate_signature(
     temperature: float,
     max_tokens: int,
     think: bool,
+    generation_seed: int,
     smoke: bool,
 ) -> str:
     """Calculate the immutable experiment signature."""
@@ -2083,6 +2373,17 @@ def _calculate_signature(
                 runner_path
             )
         ),
+        "source_sha256": {
+            str(
+                path.relative_to(
+                    PROJECT_ROOT
+                )
+            ): _sha256_file(
+                path
+            )
+            for path
+            in SIGNATURE_SOURCE_PATHS
+        },
         "corpus_fingerprint": (
             corpus_fingerprint
         ),
@@ -2098,6 +2399,7 @@ def _calculate_signature(
         "temperature": temperature,
         "max_tokens": max_tokens,
         "think": think,
+        "generation_seed": generation_seed,
         "smoke": smoke,
     }
 

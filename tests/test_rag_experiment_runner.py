@@ -74,7 +74,7 @@ def test_build_run_id() -> None:
     )
 
 
-def test_expected_run_ids_build_five_conditions() -> None:
+def test_expected_run_ids_build_three_conditions() -> None:
     expected = _expected_run_ids(
         conditions=CONDITIONS,
         queries=(
@@ -84,7 +84,7 @@ def test_expected_run_ids_build_five_conditions() -> None:
 
     assert len(
         expected
-    ) == 5
+    ) == 3
 
     assert (
         "no_rag|q01"
@@ -94,6 +94,21 @@ def test_expected_run_ids_build_five_conditions() -> None:
     assert (
         "semantic|q01"
         in expected
+    )
+
+    assert (
+        "optimized|q01"
+        in expected
+    )
+
+    assert (
+        "linear|q01"
+        not in expected
+    )
+
+    assert (
+        "indexed|q01"
+        not in expected
     )
 
 
@@ -361,3 +376,18 @@ def test_read_completed_runs_rejects_signature_change(
                 "new"
             ),
         )
+
+
+def test_csv_schema_contains_generation_seed() -> None:
+    assert (
+        "generation_seed"
+        in CSV_FIELDS
+    )
+
+
+def test_final_conditions_use_one_lexical_representative() -> None:
+    assert CONDITIONS == (
+        "no_rag",
+        "optimized",
+        "semantic",
+    )
