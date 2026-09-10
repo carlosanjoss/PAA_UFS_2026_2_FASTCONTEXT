@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "overall": {
+    "count": 963,
+    "agreements": 747,
+    "disagreements": 216,
+    "agreement_rate": 0.7757009345794392,
+    "cohen_kappa": 0.5319541512720006
+  },
+  "by_pair": {
+    "carlos + gabriela": {
+      "count": 95,
+      "agreements": 58,
+      "disagreements": 37,
+      "agreement_rate": 0.6105263157894737,
+      "cohen_kappa": 0.24844986102202266
+    },
+    "carlos + matheus": {
+      "count": 101,
+      "agreements": 50,
+      "disagreements": 51,
+      "agreement_rate": 0.49504950495049505,
+      "cohen_kappa": 0.10805194805194807
+    },
+    "carlos + wilson": {
+      "count": 91,
+      "agreements": 56,
+      "disagreements": 35,
+      "agreement_rate": 0.6153846153846154,
+      "cohen_kappa": 0.18604651162790703
+    },
+    "carlos + yann": {
+      "count": 102,
+      "agreements": 85,
+      "disagreements": 17,
+      "agreement_rate": 0.8333333333333334,
+      "cohen_kappa": 0.6571767497034402
+    },
+    "gabriela + matheus": {
+      "count": 90,
+      "agreements": 68,
+      "disagreements": 22,
+      "agreement_rate": 0.7555555555555555,
+      "cohen_kappa": 0.5205811138014528
+    },
+    "gabriela + wilson": {
+      "count": 99,
+      "agreements": 91,
+      "disagreements": 8,
+      "agreement_rate": 0.9191919191919192,
+      "cohen_kappa": 0.7735849056603775
+    },
+    "gabriela + yann": {
+      "count": 101,
+      "agreements": 100,
+      "disagreements": 1,
+      "agreement_rate": 0.9900990099009901,
+      "cohen_kappa": 0.9714123973959807
+    },
+    "matheus + wilson": {
+      "count": 87,
+      "agreements": 55,
+      "disagreements": 32,
+      "agreement_rate": 0.632183908045977,
+      "cohen_kappa": 0.3294797687861272
+    },
+    "matheus + yann": {
+      "count": 92,
+      "agreements": 83,
+      "disagreements": 9,
+      "agreement_rate": 0.9021739130434783,
+      "cohen_kappa": 0.6982507288629738
+    },
+    "wilson + yann": {
+      "count": 105,
+      "agreements": 101,
+      "disagreements": 4,
+      "agreement_rate": 0.9619047619047619,
+      "cohen_kappa": 0.8765432098765432
+    }
+  },
+  "by_query": {
+    "q01": {
+      "count": 35,
+      "agreements": 33,
+      "disagreements": 2,
+      "agreement_rate": 0.9428571428571428,
+      "cohen_kappa": 0.8387096774193548
+    },
+    "q02": {
+      "count": 33,
+      "agreements": 29,
+      "disagreements": 4,
+      "agreement_rate": 0.8787878787878788,
+      "cohen_kappa": 0.759124087591241
+    },
+    "q03": {
+      "count": 34,
+      "agreements": 23,
+      "disagreements": 11,
+      "agreement_rate": 0.6764705882352942,
+      "cohen_kappa": 0.3529411764705883
+    },
+    "q04": {
+      "count": 30,
+      "agreements": 13,
+      "disagreements": 17,
+      "agreement_rate": 0.43333333333333335,
+      "cohen_kappa": -0.06694560669456069
+    },
+    "q05": {
+      "count": 31,
+      "agreements": 25,
+      "disagreements": 6,
+      "agreement_rate": 0.8064516129032258,
+      "cohen_kappa": 0.5753424657534245
+    },
+    "q06": {
+      "count": 30,
+      "agreements": 18,
+      "disagreements": 12,
+      "agreement_rate": 0.6,
+      "cohen_kappa": 0.12195121951219516
+    },
+    "q07": {
+      "count": 36,
+      "agreements": 8,
+      "disagreements": 28,
+      "agreement_rate": 0.2222222222222222,
+      "cohen_kappa": -0.03067484662576686
+    },
+    "q08": {
+      "count": 31,
+      "agreements": 16,
+      "disagreements": 15,
+      "agreement_rate": 0.5161290322580645,
+      "cohen_kappa": 0.19130434782608693
+    },
+    "q09": {
+      "count": 34,
+      "agreements": 26,
+      "disagreements": 8,
+      "agreement_rate": 0.7647058823529411,
+      "cohen_kappa": 0.08724832214765103
+    },
+    "q10": {
+      "count": 27,
+      "agreements": 15,
+      "disagreements": 12,
+      "agreement_rate": 0.5555555555555556,
+      "cohen_kappa": -0.08724832214765098
+    },
+    "q11": {
+      "count": 37,
+      "agreements": 27,
+      "disagreements": 10,
+      "agreement_rate": 0.7297297297297297,
+      "cohen_kappa": 0.4526627218934911
+    },
+    "q12": {
+      "count": 31,
+      "agreements": 16,
+      "disagreements": 15,
+      "agreement_rate": 0.5161290322580645,
+      "cohen_kappa": -0.0640732265446223
+    },
+    "q13": {
+      "count": 38,
+      "agreements": 37,
+      "disagreements": 1,
+      "agreement_rate": 0.9736842105263158,
+      "cohen_kappa": 0.8429752066115703
+    },
+    "q14": {
+      "count": 33,
+      "agreements": 30,
+      "disagreements": 3,
+      "agreement_rate": 0.9090909090909091,
+      "cohen_kappa": 0.7130434782608694
+    },
+    "q15": {
+      "count": 34,
+      "agreements": 34,
+      "disagreements": 0,
+      "agreement_rate": 1.0,
+      "cohen_kappa": 1.0
+    },
+    "q16": {
+      "count": 36,
+      "agreements": 31,
+      "disagreements": 5,
+      "agreement_rate": 0.8611111111111112,
+      "cohen_kappa": 0.5454545454545456
+    },
+    "q17": {
+      "count": 29,
+      "agreements": 26,
+      "disagreements": 3,
+      "agreement_rate": 0.896551724137931,
+      "cohen_kappa": 0.7535410764872522
+    },
+    "q18": {
+      "count": 27,
+      "agreements": 26,
+      "disagreements": 1,
+      "agreement_rate": 0.9629629629629629,
+      "cohen_kappa": 0.8363636363636361
+    },
+    "q19": {
+      "count": 35,
+      "agreements": 34,
+      "disagreements": 1,
+      "agreement_rate": 0.9714285714285714,
+      "cohen_kappa": 0.9152542372881356
+    },
+    "q20": {
+      "count": 36,
+      "agreements": 36,
+      "disagreements": 0,
+      "agreement_rate": 1.0,
+      "cohen_kappa": 1.0
+    },
+    "q21": {
+      "count": 30,
+      "agreements": 30,
+      "disagreements": 0,
+      "agreement_rate": 1.0,
+      "cohen_kappa": 1.0
+    },
+    "q22": {
+      "count": 28,
+      "agreements": 16,
+      "disagreements": 12,
+      "agreement_rate": 0.5714285714285714,
+      "cohen_kappa": 0.20379146919431268
+    },
+    "q23": {
+      "count": 28,
+      "agreements": 22,
+      "disagreements": 6,
+      "agreement_rate": 0.7857142857142857,
+      "cohen_kappa": 0.5555555555555555
+    },
+    "q24": {
+      "count": 31,
+      "agreements": 17,
+      "disagreements": 14,
+      "agreement_rate": 0.5483870967741935,
+      "cohen_kappa": 0.24390243902439016
+    },
+    "q25": {
+      "count": 35,
+      "agreements": 31,
+      "disagreements": 4,
+      "agreement_rate": 0.8857142857142857,
+      "cohen_kappa": 0.644670050761421
+    },
+    "q26": {
+      "count": 32,
+      "agreements": 30,
+      "disagreements": 2,
+      "agreement_rate": 0.9375,
+      "cohen_kappa": 0.762962962962963
+    },
+    "q27": {
+      "count": 32,
+      "agreements": 30,
+      "disagreements": 2,
+      "agreement_rate": 0.9375,
+      "cohen_kappa": 0.8614718614718615
+    },
+    "q28": {
+      "count": 30,
+      "agreements": 27,
+      "disagreements": 3,
+      "agreement_rate": 0.9,
+      "cohen_kappa": 0.7567567567567569
+    },
+    "q29": {
+      "count": 29,
+      "agreements": 26,
+      "disagreements": 3,
+      "agreement_rate": 0.896551724137931,
+      "cohen_kappa": 0.7862407862407863
+    },
+    "q30": {
+      "count": 31,
+      "agreements": 15,
+      "disagreements": 16,
+      "agreement_rate": 0.4838709677419355,
+      "cohen_kappa": 0.1842105263157895
+    }
+  }
+}

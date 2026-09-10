@@ -1,0 +1,682 @@
+query_id,category,question,candidate_order,chunk_id,source_path,section_title,content,adjudicator,adjudicated_relevance,adjudication_notes
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,6,advanced/additional-responses-1,advanced/additional-responses.md,Additional Response with `model` { #additional-response-with-model },"## Additional Response with `model` { #additional-response-with-model }
+
+You can pass to your *path operation decorators* a parameter `responses`.
+
+It receives a `dict`: the keys are status codes for each response (like `200`), and the values are other `dict`s with the information for each of them.
+
+Each of those response `dict`s can have a key `model`, containing a Pydantic model, just like `response_model`.
+
+**FastAPI** will take that model, generate its JSON Schema and include it in the correct place in OpenAPI.
+
+For example, to declare another response with a status code `404` and a Pydantic model `Message`, you can write:
+
+{* ../../docs_src/additional_responses/tutorial001_py310.py hl[18,22] *}
+
+/// note
+
+Keep in mind that you have to return the `JSONResponse` directly.
+
+///
+
+/// note
+
+The `model` key is not part of OpenAPI.
+
+**FastAPI** will take the Pydantic model from there, generate the JSON Schema, and put it in the correct place.
+
+The correct place is:",yann,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,10,advanced/response-directly-3,advanced/response-directly.md,Returning a custom `Response` { #returning-a-custom-response },"## Returning a custom `Response` { #returning-a-custom-response }
+
+The example above shows all the parts you need, but it's not very useful yet, as you could have just returned the `item` directly, and **FastAPI** would put it in a `JSONResponse` for you, converting it to a `dict`, etc. All that by default.
+
+Now, let's see how you could use that to return a custom response.
+
+Let's say that you want to return an [XML](https://en.wikipedia.org/wiki/XML) response.
+
+You could put your XML content in a string, put that in a `Response`, and return it:
+
+{* ../../docs_src/response_directly/tutorial002_py310.py hl[1,18] *}",yann,0,
+q05,tutorial,How should I handle errors and raise HTTP exceptions in FastAPI?,17,advanced/websockets-9,advanced/websockets.md,Handling disconnections and multiple clients { #handling-disconnections-and-multiple-clients },"## Handling disconnections and multiple clients { #handling-disconnections-and-multiple-clients }
+
+When a WebSocket connection is closed, the `await websocket.receive_text()` will raise a `WebSocketDisconnect` exception, which you can then catch and handle like in this example.
+
+{* ../../docs_src/websockets_/tutorial003_py310.py hl[79:81] *}
+
+To try it out:
+
+* Open the app with several browser tabs.
+* Write messages from them.
+* Then close one of the tabs.
+
+That will raise the `WebSocketDisconnect` exception, and all the other clients will receive a message like:
+
+```
+Client #1596980209979 left the chat
+```
+
+/// tip
+
+The app above is a minimal and simple example to demonstrate how to handle and broadcast messages to several WebSocket connections.
+
+But keep in mind that, as everything is handled in memory, in a single list, it will only work while the process is running, and will only work with a single process.
+
+If you need something easy to integrate with FastAPI but that is more robust, supported by Redis, PostgreSQL or others, check [encode/broadcaster](https://github.com/encode/broadcaster).
+
+///",yann,0,
+q05,tutorial,How should I handle errors and raise HTTP exceptions in FastAPI?,25,advanced/websockets-7,advanced/websockets.md,Using `Depends` and others { #using-depends-and-others },"## Using `Depends` and others { #using-depends-and-others }
+
+In WebSocket endpoints you can import from `fastapi` and use:
+
+* `Depends`
+* `Security`
+* `Cookie`
+* `Header`
+* `Path`
+* `Query`
+
+They work the same way as for other FastAPI endpoints/*path operations*:
+
+{* ../../docs_src/websockets_/tutorial002_an_py310.py hl[68:69,82] *}
+
+/// note
+
+As this is a WebSocket it doesn't really make sense to raise an `HTTPException`, instead we raise a `WebSocketException`.
+
+You can use a closing code from the [valid codes defined in the specification](https://tools.ietf.org/html/rfc6455#section-7.4.1).
+
+///",yann,0,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,15,tutorial/security/get-current-user-2,tutorial/security/get-current-user.md,Create a `get_current_user` dependency { #create-a-get-current-user-dependency },"## Create a `get_current_user` dependency { #create-a-get-current-user-dependency }
+
+Let's create a dependency `get_current_user`.
+
+Remember that dependencies can have sub-dependencies?
+
+`get_current_user` will have a dependency with the same `oauth2_scheme` we created before.
+
+The same as we were doing before in the *path operation* directly, our new dependency `get_current_user` will receive a `token` as a `str` from the sub-dependency `oauth2_scheme`:
+
+{* ../../docs_src/security/tutorial002_an_py310.py hl[25] *}",yann,1,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,29,advanced/settings-8,advanced/settings.md,Settings in a dependency { #settings-in-a-dependency },"## Settings in a dependency { #settings-in-a-dependency }
+
+In some occasions it might be useful to provide the settings from a dependency, instead of having a global object with `settings` that is used everywhere.
+
+This could be especially useful during testing, as it's very easy to override a dependency with your own custom settings.",yann,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,1,tutorial/dependencies/index-0,tutorial/dependencies/index.md,Dependencies { #dependencies },"# Dependencies { #dependencies }
+
+**FastAPI** has a very powerful but intuitive **<dfn title=""also known as components, resources, providers, services, injectables"">Dependency Injection</dfn>** system.
+
+It is designed to be very simple to use, and to make it very easy for any developer to integrate other components with **FastAPI**.",yann,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,3,advanced/testing-dependencies-3,advanced/testing-dependencies.md,Use the `app.dependency_overrides` attribute { #use-the-app-dependency-overrides-attribute },"### Use the `app.dependency_overrides` attribute { #use-the-app-dependency-overrides-attribute }
+
+For these cases, your **FastAPI** application has an attribute `app.dependency_overrides`, it is a simple `dict`.
+
+To override a dependency for testing, you put as a key the original dependency (a function), and as the value, your dependency override (another function).
+
+And then **FastAPI** will call that override instead of the original dependency.
+
+{* ../../docs_src/dependency_testing/tutorial001_an_py310.py hl[26:27,30] *}
+
+/// tip
+
+You can set a dependency override for a dependency used anywhere in your **FastAPI** application.
+
+The original dependency could be used in a *path operation function*, a *path operation decorator* (when you don't use the return value), a `.include_router()` call, etc.
+
+FastAPI will still be able to override it.
+
+///
+
+Then you can reset your overrides (remove them) by setting `app.dependency_overrides` to be an empty `dict`:
+
+```Python
+app.dependency_overrides = {}
+```
+
+/// tip
+
+If you want to override a dependency only during some tests, you can set the override at the beginning of the test (inside the test function) and reset it at the end (at the end of the test function).
+
+///",yann,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,4,tutorial/background-tasks-4,tutorial/background-tasks.md,Dependency Injection { #dependency-injection },"## Dependency Injection { #dependency-injection }
+
+Using `BackgroundTasks` also works with the dependency injection system, you can declare a parameter of type `BackgroundTasks` at multiple levels: in a *path operation function*, in a dependency (dependable), in a sub-dependency, etc.
+
+**FastAPI** knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards:
+
+
+{* ../../docs_src/background_tasks/tutorial002_an_py310.py hl[13,15,22,25] *}
+
+
+In this example, the messages will be written to the `log.txt` file *after* the response is sent.
+
+If there was a query in the request, it will be written to the log in a background task.
+
+And then another background task generated at the *path operation function* will write a message using the `email` path parameter.",yann,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,7,tutorial/dependencies/classes-as-dependencies-2,tutorial/dependencies/classes-as-dependencies.md,What makes a dependency { #what-makes-a-dependency },"## What makes a dependency { #what-makes-a-dependency }
+
+Up to now you have seen dependencies declared as functions.
+
+But that's not the only way to declare dependencies (although it would probably be the more common).
+
+The key factor is that a dependency should be a ""callable"".
+
+A ""**callable**"" in Python is anything that Python can ""call"" like a function.
+
+So, if you have an object `something` (that might _not_ be a function) and you can ""call"" it (execute it) like:
+
+```Python
+something()
+```
+
+or
+
+```Python
+something(some_argument, some_keyword_argument=""foo"")
+```
+
+then it is a ""callable"".",yann,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,9,tutorial/dependencies/sub-dependencies-4,tutorial/dependencies/sub-dependencies.md,Using the same dependency multiple times { #using-the-same-dependency-multiple-times },"## Using the same dependency multiple times { #using-the-same-dependency-multiple-times }
+
+If one of your dependencies is declared multiple times for the same *path operation*, for example, multiple dependencies have a common sub-dependency, **FastAPI** will know to call that sub-dependency only once per request.
+
+And it will save the returned value in a <dfn title=""A utility/system to store computed/generated values, to reuse them instead of computing them again."">""cache""</dfn> and pass it to all the ""dependants"" that need it in that specific request, instead of calling the dependency multiple times for the same request.
+
+In an advanced scenario where you know you need the dependency to be called at every step (possibly multiple times) in the same request instead of using the ""cached"" value, you can set the parameter `use_cache=False` when using `Depends`:
+
+//// tab | Python 3.10+
+
+```Python hl_lines=""1""
+async def needy_dependency(fresh_value: Annotated[str, Depends(get_value, use_cache=False)]):
+    return {""fresh_value"": fresh_value}
+```
+
+////
+
+//// tab | Python 3.10+ non-Annotated
+
+/// tip
+
+Prefer to use the `Annotated` version if possible.
+
+///
+
+```Python hl_lines=""1""
+async def needy_dependency(fresh_value: str = Depends(get_value, use_cache=False)):
+    return {""fresh_value"": fresh_value}
+```
+
+////",yann,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,13,tutorial/security/get-current-user-2,tutorial/security/get-current-user.md,Create a `get_current_user` dependency { #create-a-get-current-user-dependency },"## Create a `get_current_user` dependency { #create-a-get-current-user-dependency }
+
+Let's create a dependency `get_current_user`.
+
+Remember that dependencies can have sub-dependencies?
+
+`get_current_user` will have a dependency with the same `oauth2_scheme` we created before.
+
+The same as we were doing before in the *path operation* directly, our new dependency `get_current_user` will receive a `token` as a `str` from the sub-dependency `oauth2_scheme`:
+
+{* ../../docs_src/security/tutorial002_an_py310.py hl[25] *}",yann,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,22,tutorial/dependencies/classes-as-dependencies-3,tutorial/dependencies/classes-as-dependencies.md,Classes as dependencies { #classes-as-dependencies_1 },"## Classes as dependencies { #classes-as-dependencies_1 }
+
+You might notice that to create an instance of a Python class, you use that same syntax.
+
+For example:
+
+```Python
+class Cat:
+    def __init__(self, name: str):
+        self.name = name
+fluffy = Cat(name=""Mr Fluffy"")
+```
+
+In this case, `fluffy` is an instance of the class `Cat`.
+
+And to create `fluffy`, you are ""calling"" `Cat`.
+
+So, a Python class is also a **callable**.
+
+Then, in **FastAPI**, you could use a Python class as a dependency.
+
+What FastAPI actually checks is that it is a ""callable"" (function, class or anything else) and the parameters defined.
+
+If you pass a ""callable"" as a dependency in **FastAPI**, it will analyze the parameters for that ""callable"", and process them in the same way as the parameters for a *path operation function*. Including sub-dependencies.
+
+That also applies to callables with no parameters at all. The same as it would be for *path operation functions* with no parameters.
+
+Then, we can change the dependency ""dependable"" `common_parameters` from above to the class `CommonQueryParams`:
+
+{* ../../docs_src/dependencies/tutorial002_an_py310.py hl[11:15] *}
+
+Pay attention to the `__init__` method used to create the instance of the class:
+
+{* ../../docs_src/dependencies/tutorial002_an_py310.py hl[12] *}",yann,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,24,features-9,features.md,Dependency Injection { #dependency-injection },"### Dependency Injection { #dependency-injection }
+
+FastAPI includes an extremely easy to use, but extremely powerful <dfn title='also known as ""components"", ""resources"", ""services"", ""providers""'><strong>Dependency Injection</strong></dfn> system.
+
+* Even dependencies can have dependencies, creating a hierarchy or **""graph"" of dependencies**.
+* All **automatically handled** by the framework.
+* All the dependencies can require data from requests and **augment the path operation** constraints and automatic documentation.
+* **Automatic validation** even for *path operation* parameters defined in dependencies.
+* Support for complex user authentication systems, **database connections**, etc.
+* **No compromise** with databases, frontends, etc. But easy integration with all of them.",yann,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,32,tutorial/dependencies/index-6,tutorial/dependencies/index.md,"Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }","This way you write shared code once and **FastAPI** takes care of calling it for your *path operations*.
+
+/// tip
+
+Notice that you don't have to create a special class and pass it somewhere to **FastAPI** to ""register"" it or anything similar.
+
+You just pass it to `Depends` and **FastAPI** knows how to do the rest.
+
+///",yann,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,33,advanced/security/oauth2-scopes-5,advanced/security/oauth2-scopes.md,Declare scopes in *path operations* and dependencies { #declare-scopes-in-path-operations-and-dependencies },"## Declare scopes in *path operations* and dependencies { #declare-scopes-in-path-operations-and-dependencies }
+
+Now we declare that the *path operation* for `/users/me/items/` requires the scope `items`.
+
+For this, we import and use `Security` from `fastapi`.
+
+You can use `Security` to declare dependencies (just like `Depends`), but `Security` also receives a parameter `scopes` with a list of scopes (strings).
+
+In this case, we pass a dependency function `get_current_active_user` to `Security` (the same way we would do with `Depends`).
+
+But we also pass a `list` of scopes, in this case with just one scope: `items` (it could have more).
+
+And the dependency function `get_current_active_user` can also declare sub-dependencies, not only with `Depends` but also with `Security`. Declaring its own sub-dependency function (`get_current_user`), and more scope requirements.
+
+In this case, it requires the scope `me` (it could require more than one scope).
+
+/// note
+
+You don't necessarily need to add different scopes in different places.
+
+We are doing it here to demonstrate how **FastAPI** handles scopes declared at different levels.
+
+///
+
+{* ../../docs_src/security/tutorial005_an_py310.py hl[5,141,172] *}
+
+/// note | Technical Details
+
+`Security` is actually a subclass of `Depends`, and it has just one extra parameter that we'll see later.",yann,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,35,tutorial/dependencies/index-3,tutorial/dependencies/index.md,"Create a dependency, or ""dependable"" { #create-a-dependency-or-dependable }","### Create a dependency, or ""dependable"" { #create-a-dependency-or-dependable }
+
+Let's first focus on the dependency.
+
+It is just a function that can take all the same parameters that a *path operation function* can take:
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[8:9] *}
+
+That's it.
+
+**2 lines**.
+
+And it has the same shape and structure that all your *path operation functions* have.
+
+You can think of it as a *path operation function* without the ""decorator"" (without the `@app.get(""/some-path"")`).
+
+And it can return anything you want.
+
+In this case, this dependency expects:
+
+* An optional query parameter `q` that is a `str`.
+* An optional query parameter `skip` that is an `int`, and by default is `0`.
+* An optional query parameter `limit` that is an `int`, and by default is `100`.
+
+And then it just returns a `dict` containing those values.
+
+/// note
+
+FastAPI added support for `Annotated` (and started recommending it) in version 0.95.0.
+
+If you have an older version, you would get errors when trying to use `Annotated`.
+
+Make sure you [Upgrade the FastAPI version](../../deployment/versions.md#upgrading-the-fastapi-versions) to at least 0.95.1 before using `Annotated`.
+
+///",yann,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,7,tutorial/dependencies/index-5,tutorial/dependencies/index.md,"Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }","### Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }
+
+The same way you use `Body`, `Query`, etc. with your *path operation function* parameters, use `Depends` with a new parameter:
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[13,18] *}
+
+Although you use `Depends` in the parameters of your function the same way you use `Body`, `Query`, etc, `Depends` works a bit differently.
+
+You only give `Depends` a single parameter.
+
+This parameter must be something like a function.
+
+You **don't call it** directly (don't add the parenthesis at the end), you just pass it as a parameter to `Depends()`.
+
+And that function takes parameters in the same way that *path operation functions* do.
+
+/// tip
+
+You'll see what other ""things"", apart from functions, can be used as dependencies in the next chapter.
+
+///
+
+Whenever a new request arrives, **FastAPI** will take care of:
+
+* Calling your dependency (""dependable"") function with the correct parameters.
+* Get the result from your function.
+* Assign that result to the parameter in your *path operation function*.
+
+```mermaid
+graph TB
+common_parameters([""common_parameters""])
+read_items[""/items/""]
+read_users[""/users/""]
+common_parameters --> read_items
+common_parameters --> read_users
+```
+
+This way you write shared code once and **FastAPI** takes care of calling it for your *path operations*.
+
+/// tip",yann,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,10,tutorial/bigger-applications-6,tutorial/bigger-applications.md,*Path operations* with `APIRouter` { #path-operations-with-apirouter },"### *Path operations* with `APIRouter` { #path-operations-with-apirouter }
+
+And then you use it to declare your *path operations*.
+
+Use it the same way you would use the `FastAPI` class:
+
+{* ../../docs_src/bigger_applications/app_an_py310/routers/users.py hl[6,11,16] title[""app/routers/users.py""] *}
+
+You can think of `APIRouter` as a ""mini `FastAPI`"" class.
+
+All the same options are supported.
+
+All the same `parameters`, `responses`, `dependencies`, `tags`, etc.
+
+/// tip
+
+In this example, the variable is called `router`, but you can name it however you want.
+
+///
+
+We are going to include this `APIRouter` in the main `FastAPI` app, but first, let's check the dependencies and another `APIRouter`.",yann,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,11,tutorial/dependencies/dependencies-with-yield-10,tutorial/dependencies/dependencies-with-yield.md,Early exit and `scope` { #early-exit-and-scope },"## Early exit and `scope` { #early-exit-and-scope }
+
+Normally the exit code of dependencies with `yield` is executed **after the response** is sent to the client.
+
+But if you know that you won't need to use the dependency after returning from the *path operation function*, you can use `Depends(scope=""function"")` to tell FastAPI that it should close the dependency after the *path operation function* returns, but **before** the **response is sent**.
+
+{* ../../docs_src/dependencies/tutorial008e_an_py310.py hl[12,16] *}
+
+`Depends()` receives a `scope` parameter that can be:
+
+* `""function""`: start the dependency before the *path operation function* that handles the request, end the dependency after the *path operation function* ends, but **before** the response is sent back to the client. So, the dependency function will be executed **around** the *path operation **function***.
+* `""request""`: start the dependency before the *path operation function* that handles the request (similar to when using `""function""`), but end **after** the response is sent back to the client. So, the dependency function will be executed **around** the **request** and response cycle.
+
+If not specified and the dependency has `yield`, it will have a `scope` of `""request""` by default.",yann,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,24,tutorial/path-operation-configuration-8,tutorial/path-operation-configuration.md,Recap { #recap },"## Recap { #recap }
+
+You can configure and add metadata for your *path operations* easily by passing parameters to the *path operation decorators*.",yann,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,30,tutorial/dependencies/global-dependencies-0,tutorial/dependencies/global-dependencies.md,Global Dependencies { #global-dependencies },"# Global Dependencies { #global-dependencies }
+
+For some types of applications you might want to add dependencies to the whole application.
+
+Similar to the way you can [add `dependencies` to the *path operation decorators*](dependencies-in-path-operation-decorators.md), you can add them to the `FastAPI` application.
+
+In that case, they will be applied to all the *path operations* in the application:
+
+{* ../../docs_src/dependencies/tutorial012_an_py310.py hl[17] *}
+
+
+And all the ideas in the section about [adding `dependencies` to the *path operation decorators*](dependencies-in-path-operation-decorators.md) still apply, but in this case, to all of the *path operations* in the app.",yann,0,
+q09,dependencies,How can I apply a dependency to every path operation in a FastAPI application?,15,advanced/sub-applications-6,advanced/sub-applications.md,Technical Details: `root_path` { #technical-details-root-path },"### Technical Details: `root_path` { #technical-details-root-path }
+
+When you mount a sub-application as described above, FastAPI will take care of communicating the mount path for the sub-application using a mechanism from the ASGI specification called a `root_path`.
+
+That way, the sub-application will know to use that path prefix for the docs UI.
+
+And the sub-application could also have its own mounted sub-applications and everything would work correctly, because FastAPI handles all these `root_path`s automatically.
+
+You will learn more about the `root_path` and how to use it explicitly in the section about [Behind a Proxy](behind-a-proxy.md).",yann,0,
+q09,dependencies,How can I apply a dependency to every path operation in a FastAPI application?,26,tutorial/dependencies/index-11,tutorial/dependencies/index.md,**FastAPI** plug-ins { #fastapi-plug-ins },"## **FastAPI** plug-ins { #fastapi-plug-ins }
+
+Integrations and ""plug-ins"" can be built using the **Dependency Injection** system. But in fact, there is actually **no need to create ""plug-ins""**, as by using dependencies it's possible to declare an infinite number of integrations and interactions that become available to your *path operation functions*.
+
+And dependencies can be created in a very simple and intuitive way that allows you to just import the Python packages you need, and integrate them with your API functions in a couple of lines of code, *literally*.
+
+You will see examples of this in the next chapters, about relational and NoSQL databases, security, etc.",yann,0,
+q09,dependencies,How can I apply a dependency to every path operation in a FastAPI application?,33,tutorial/dependencies/dependencies-in-path-operation-decorators-7,tutorial/dependencies/dependencies-in-path-operation-decorators.md,Global Dependencies { #global-dependencies },"## Global Dependencies { #global-dependencies }
+
+Next we will see how to add dependencies to the whole `FastAPI` application, so that they apply to each *path operation*.",yann,1,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,12,advanced/security/oauth2-scopes-2,advanced/security/oauth2-scopes.md,Global view { #global-view },"## Global view { #global-view }
+
+First, let's quickly see the parts that change from the examples in the main **Tutorial - User Guide** for [OAuth2 with Password (and hashing), Bearer with JWT tokens](../../tutorial/security/oauth2-jwt.md). Now using OAuth2 scopes:
+
+{* ../../docs_src/security/tutorial005_an_py310.py hl[5,9,13,47,65,106,108:116,122:126,130:136,141,157] *}
+
+Now let's review those changes step by step.",yann,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,15,features-8,features.md,Security and authentication { #security-and-authentication },"### Security and authentication { #security-and-authentication }
+
+Security and authentication integrated. Without any compromise with databases or data models.
+
+All the security schemes defined in OpenAPI, including:
+
+* HTTP Basic.
+* **OAuth2** (also with **JWT tokens**). Check the tutorial on [OAuth2 with JWT](tutorial/security/oauth2-jwt.md).
+* API keys in:
+    * Headers.
+    * Query parameters.
+    * Cookies, etc.
+
+Plus all the security features from Starlette (including **session cookies**).
+
+All built as reusable tools and components that are easy to integrate with your systems, data stores, relational and NoSQL databases, etc.",yann,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,17,tutorial/extra-models-0,tutorial/extra-models.md,Extra Models { #extra-models },"# Extra Models { #extra-models }
+
+Continuing with the previous example, it will be common to have more than one related model.
+
+This is especially the case for user models, because:
+
+* The **input model** needs to be able to have a password.
+* The **output model** should not have a password.
+* The **database model** would probably need to have a hashed password.
+
+/// danger
+
+Never store user's plaintext passwords. Always store a ""secure hash"" that you can then verify.
+
+If you don't know, you will learn what a ""password hash"" is in the [security chapters](security/simple-oauth2.md#password-hashing).
+
+///",yann,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,26,tutorial/security/first-steps-7,tutorial/security/first-steps.md,**FastAPI**'s `OAuth2PasswordBearer` { #fastapis-oauth2passwordbearer },"## **FastAPI**'s `OAuth2PasswordBearer` { #fastapis-oauth2passwordbearer }
+
+**FastAPI** provides several tools, at different levels of abstraction, to implement these security features.
+
+In this example we are going to use **OAuth2**, with the **Password** flow, using a **Bearer** token. We do that using the `OAuth2PasswordBearer` class.
+
+/// note
+
+A ""bearer"" token is not the only option.
+
+But it's the best one for our use case.
+
+And it might be the best for most use cases, unless you are an OAuth2 expert and know exactly why there's another option that better suits your needs.
+
+In that case, **FastAPI** also provides you with the tools to build it.
+
+///
+
+When we create an instance of the `OAuth2PasswordBearer` class we pass in the `tokenUrl` parameter. This parameter contains the URL that the client (the frontend running in the user's browser) will use to send the `username` and `password` in order to get a token.
+
+{* ../../docs_src/security/tutorial001_an_py310.py hl[8] *}
+
+/// tip
+
+Here `tokenUrl=""token""` refers to a relative URL `token` that we haven't created yet. As it's a relative URL, it's equivalent to `./token`.",yann,1,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,10,advanced/strict-content-type-0,advanced/strict-content-type.md,Strict Content-Type Checking { #strict-content-type-checking },"# Strict Content-Type Checking { #strict-content-type-checking }
+
+By default, **FastAPI** uses strict `Content-Type` header checking for JSON request bodies, this means that JSON requests **must** include a valid `Content-Type` header (e.g. `application/json`) in order for the body to be parsed as JSON.",yann,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,16,tutorial/security/oauth2-jwt-13,tutorial/security/oauth2-jwt.md,Advanced usage with `scopes` { #advanced-usage-with-scopes },"## Advanced usage with `scopes` { #advanced-usage-with-scopes }
+
+OAuth2 has the notion of ""scopes"".
+
+You can use them to add a specific set of permissions to a JWT token.
+
+Then you can give this token to a user directly or a third party, to interact with your API with a set of restrictions.
+
+You can learn how to use them and how they are integrated into **FastAPI** later in the **Advanced User Guide**.",yann,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,6,tutorial/security/first-steps-6,tutorial/security/first-steps.md,The `password` flow { #the-password-flow },"But in this case, the same **FastAPI** application will handle the API and the authentication.
+
+So, let's review it from that simplified point of view:
+
+* The user types the `username` and `password` in the frontend, and hits `Enter`.
+* The frontend (running in the user's browser) sends that `username` and `password` to a specific URL in our API (declared with `tokenUrl=""token""`).
+* The API checks that `username` and `password`, and responds with a ""token"" (we haven't implemented any of this yet).
+    * A ""token"" is just a string with some content that we can use later to verify this user.
+    * Normally, a token is set to expire after some time.
+        * So, the user will have to log in again at some point later.
+        * And if the token is stolen, the risk is less. It is not like a permanent key that will work forever (in most of the cases).
+* The frontend stores that token temporarily somewhere.
+* The user clicks in the frontend to go to another section of the frontend web app.
+* The frontend needs to fetch some more data from the API.
+    * But it needs authentication for that specific endpoint.
+    * So, to authenticate with our API, it sends a header `Authorization` with a value of `Bearer ` plus the token.
+    * If the token contains `foobar`, the content of the `Authorization` header would be: `Bearer foobar`.",yann,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,13,reference/dependencies-0,reference/dependencies.md,Dependencies - `Depends()` and `Security()`,# Dependencies - `Depends()` and `Security()`,yann,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,15,tutorial/frontend-8,tutorial/frontend.md,Dependencies and Middleware { #dependencies-and-middleware },"## Dependencies and Middleware { #dependencies-and-middleware }
+
+Frontend responses run inside the normal **FastAPI** application, so HTTP middleware applies to them.
+
+Dependencies from the app, from an `APIRouter`, and from `include_router()` also apply to frontend responses. This can be useful for protecting a frontend with cookie authentication or similar.",yann,0,
+q23,deployment,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?",15,deployment/concepts-29,deployment/concepts.md,Resource Utilization { #resource-utilization },"There's also the chance that for some reason you have a **spike** of usage of your API. Maybe it went viral, or maybe some other services or bots start using it. And you might want to have extra resources to be safe in those cases.
+
+You could put an **arbitrary number** to target, for example, something **between 50% to 90%** of resource utilization. The point is that those are probably the main things you will want to measure and use to tweak your deployments.
+
+You can use simple tools like `htop` to see the CPU and RAM used in your server or the amount used by each process. Or you can use more complex monitoring tools, which may be distributed across servers, etc.",yann,1,
+q23,deployment,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?",18,deployment/server-workers-15,deployment/server-workers.md,Recap { #recap },"## Recap { #recap }
+
+You can use multiple worker processes with the `--workers` CLI option with the `fastapi` or `uvicorn` commands to take advantage of **multi-core CPUs**, to run **multiple processes in parallel**.
+
+You could use these tools and ideas if you are setting up **your own deployment system** while taking care of the other deployment concepts yourself.
+
+Check out the next chapter to learn about **FastAPI** with containers (e.g. Docker and Kubernetes). You will see that those tools have simple ways to solve the other **deployment concepts** as well. ✨",yann,1,
+q23,deployment,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?",25,deployment/server-workers-14,deployment/server-workers.md,Containers and Docker { #containers-and-docker },"## Containers and Docker { #containers-and-docker }
+
+In the next chapter about [FastAPI in Containers - Docker](docker.md) I'll explain some strategies you could use to handle the other **deployment concepts**.
+
+I'll show you how to **build your own image from scratch** to run a single Uvicorn process. It is a simple process and is probably what you would want to do when using a distributed container management system like **Kubernetes**.",yann,0,
+q24,deployment,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,24,advanced/behind-a-proxy-3,advanced/behind-a-proxy.md,Redirects with HTTPS { #redirects-with-https },"### Redirects with HTTPS { #redirects-with-https }
+
+For example, let's say you define a *path operation* `/items/`:
+
+{* ../../docs_src/behind_a_proxy/tutorial001_01_py310.py hl[6] *}
+
+If the client tries to go to `/items`, by default, it would be redirected to `/items/`.
+
+But before setting the *CLI Option* `--forwarded-allow-ips` it could redirect to `http://localhost:8000/items/`.
+
+But maybe your application is hosted at `https://mysuperapp.com`, and the redirection should be to `https://mysuperapp.com/items/`.
+
+By setting `--proxy-headers` now FastAPI would be able to redirect to the right location. 😎
+
+```
+https://mysuperapp.com/items/
+```
+
+/// tip
+
+If you want to learn more about HTTPS, check the guide [About HTTPS](../deployment/https.md).
+
+///",yann,1,
+q24,deployment,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,26,advanced/behind-a-proxy-20,advanced/behind-a-proxy.md,Additional servers { #additional-servers },"## Additional servers { #additional-servers }
+
+/// warning
+
+This is a more advanced use case. Feel free to skip it.
+
+///
+
+By default, **FastAPI** will create a `server` in the OpenAPI schema with the URL for the `root_path`.
+
+But you can also provide other alternative `servers`, for example if you want *the same* docs UI to interact with both a staging and a production environment.
+
+If you pass a custom list of `servers` and there's a `root_path` (because your API lives behind a proxy), **FastAPI** will insert a ""server"" with this `root_path` at the beginning of the list.
+
+For example:
+
+{* ../../docs_src/behind_a_proxy/tutorial003_py310.py hl[4:7] *}
+
+Will generate an OpenAPI schema like:
+
+```JSON hl_lines=""5-7""
+{
+    ""openapi"": ""3.1.0"",
+    // More stuff here
+    ""servers"": [
+        {
+            ""url"": ""/api/v1""
+        },
+        {
+            ""url"": ""https://stag.example.com"",
+            ""description"": ""Staging environment""
+        },
+        {
+            ""url"": ""https://prod.example.com"",
+            ""description"": ""Production environment""
+        }
+    ],
+    ""paths"": {
+            // More stuff here
+    }
+}
+```
+
+/// tip
+
+Notice the auto-generated server with a `url` value of `/api/v1`, taken from the `root_path`.
+
+///",yann,1,
+q24,deployment,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,27,deployment/docker-0,deployment/docker.md,FastAPI in Containers - Docker { #fastapi-in-containers-docker },"# FastAPI in Containers - Docker { #fastapi-in-containers-docker }
+
+When deploying FastAPI applications a common approach is to build a **Linux container image**. It's normally done using [**Docker**](https://www.docker.com/). You can then deploy that container image in one of a few possible ways.
+
+Using Linux containers has several advantages including **security**, **replicability**, **simplicity**, and others.
+
+/// tip
+
+In a hurry and already know this stuff? Jump to the [`Dockerfile` below 👇](#build-a-docker-image-for-fastapi).
+
+///
+
+<details>
+<summary>Dockerfile Preview 👀</summary>
+
+```Dockerfile
+FROM python:3.14
+
+WORKDIR /code
+
+COPY ./requirements.txt /code/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+COPY ./app /code/app
+
+CMD [""fastapi"", ""run"", ""app/main.py"", ""--port"", ""80""]
+
+# If running behind a proxy like Nginx or Traefik add --proxy-headers
+# CMD [""fastapi"", ""run"", ""app/main.py"", ""--port"", ""80"", ""--proxy-headers""]
+```
+
+</details>",yann,0,
+q29,advanced,How do I include and organize APIRouter instances in a larger FastAPI application?,25,tutorial/bigger-applications-16,tutorial/bigger-applications.md,Import `FastAPI` { #import-fastapi },"### Import `FastAPI` { #import-fastapi }
+
+You import and create a `FastAPI` class as normally.
+
+And we can even declare [global dependencies](dependencies/global-dependencies.md) that will be combined with the dependencies for each `APIRouter`:
+
+{* ../../docs_src/bigger_applications/app_an_py310/main.py hl[1,3,7] title[""app/main.py""] *}",yann,0,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,3,tutorial/first-steps-14,tutorial/first-steps.md,OpenAPI and JSON Schema { #openapi-and-json-schema },"#### OpenAPI and JSON Schema { #openapi-and-json-schema }
+
+OpenAPI defines an API schema for your API. And that schema includes definitions (or ""schemas"") of the data sent and received by your API using **JSON Schema**, the standard for JSON data schemas.",yann,0,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,30,reference/openapi/models-0,reference/openapi/models.md,OpenAPI `models`,"# OpenAPI `models`
+
+OpenAPI Pydantic models used to generate and validate the generated OpenAPI.
+
+::: fastapi.openapi.models",yann,1,

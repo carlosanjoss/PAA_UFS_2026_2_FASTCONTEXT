@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "random_seed": 42,
+  "total_disagreements": 216,
+  "assignment_rule": "Each disagreement is assigned to one team member who was not one of its two primary annotators. Among eligible members, the least-loaded adjudicator is preferred; ties are resolved deterministically using the configured random seed.",
+  "counts_by_adjudicator": {
+    "carlos": 43,
+    "gabriela": 43,
+    "matheus": 44,
+    "wilson": 43,
+    "yann": 43
+  },
+  "disagreements_by_query": {
+    "q01": 2,
+    "q02": 4,
+    "q03": 11,
+    "q04": 17,
+    "q05": 6,
+    "q06": 12,
+    "q07": 28,
+    "q08": 15,
+    "q09": 8,
+    "q10": 12,
+    "q11": 10,
+    "q12": 15,
+    "q13": 1,
+    "q14": 3,
+    "q16": 5,
+    "q17": 3,
+    "q18": 1,
+    "q19": 1,
+    "q22": 12,
+    "q23": 6,
+    "q24": 14,
+    "q25": 4,
+    "q26": 2,
+    "q27": 2,
+    "q28": 3,
+    "q29": 3,
+    "q30": 16
+  }
+}

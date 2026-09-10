@@ -1,0 +1,612 @@
+{
+  "metadata": {
+    "schema_version": 1,
+    "corpus": "FastAPI Documentation",
+    "corpus_version": "0.141.0",
+    "corpus_chunk_count": 1305,
+    "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+    "language": "en",
+    "relevance_type": "binary",
+    "annotation_status": "complete",
+    "annotation_protocol": {
+      "relevance_type": "binary",
+      "primary_annotators_per_query": 2,
+      "adjudication": "third_annotator_on_disagreement",
+      "pool_depth": 20,
+      "total_candidate_judgments": 963,
+      "total_relevant_chunks": 343,
+      "overall_agreement": {
+        "count": 963,
+        "agreements": 747,
+        "disagreements": 216,
+        "agreement_rate": 0.7757009345794392,
+        "cohen_kappa": 0.5319541512720006
+      }
+    }
+  },
+  "queries": [
+    {
+      "query_id": "q01",
+      "category": "tutorial",
+      "question": "How do I create a basic FastAPI application and define my first path operation?",
+      "relevant_chunks": [
+        "advanced/sub-applications-2",
+        "deployment/docker-7",
+        "tutorial/first-steps-0",
+        "tutorial/first-steps-22",
+        "tutorial/first-steps-23",
+        "tutorial/first-steps-26",
+        "tutorial/first-steps-28",
+        "tutorial/first-steps-33"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 2 disagreement(s) adjudicated; 8 relevant chunk(s)."
+    },
+    {
+      "query_id": "q02",
+      "category": "tutorial",
+      "question": "How can I declare and validate query parameters in FastAPI?",
+      "relevant_chunks": [
+        "index-35",
+        "reference/parameters-0",
+        "tutorial/body-9",
+        "tutorial/body-multiple-params-4",
+        "tutorial/path-params-numeric-validations-9",
+        "tutorial/query-param-models-0",
+        "tutorial/query-param-models-1",
+        "tutorial/query-param-models-3",
+        "tutorial/query-param-models-4",
+        "tutorial/query-params-0",
+        "tutorial/query-params-2",
+        "tutorial/query-params-4",
+        "tutorial/query-params-str-validations-0",
+        "tutorial/query-params-str-validations-10",
+        "tutorial/query-params-str-validations-14",
+        "tutorial/query-params-str-validations-16",
+        "tutorial/query-params-str-validations-2",
+        "tutorial/query-params-str-validations-4",
+        "tutorial/query-params-str-validations-5",
+        "tutorial/query-params-str-validations-6"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 4 disagreement(s) adjudicated; 20 relevant chunk(s)."
+    },
+    {
+      "query_id": "q03",
+      "category": "tutorial",
+      "question": "How do I define a request body using a Pydantic model in FastAPI?",
+      "relevant_chunks": [
+        "index-31",
+        "python-types-15",
+        "tutorial/body-0",
+        "tutorial/body-10",
+        "tutorial/body-7",
+        "tutorial/body-8",
+        "tutorial/body-9",
+        "tutorial/body-fields-0",
+        "tutorial/body-multiple-params-3",
+        "tutorial/body-multiple-params-5",
+        "tutorial/body-nested-models-0",
+        "tutorial/body-nested-models-14",
+        "tutorial/body-nested-models-6",
+        "tutorial/request-form-models-1"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 11 disagreement(s) adjudicated; 14 relevant chunk(s)."
+    },
+    {
+      "query_id": "q04",
+      "category": "tutorial",
+      "question": "How can I customize the response status code of a FastAPI endpoint?",
+      "relevant_chunks": [
+        "advanced/additional-responses-6",
+        "advanced/additional-status-codes-0",
+        "advanced/additional-status-codes-1",
+        "advanced/additional-status-codes-2",
+        "advanced/custom-response-4",
+        "advanced/custom-response-8",
+        "advanced/response-change-status-code-0",
+        "advanced/response-change-status-code-1",
+        "advanced/response-change-status-code-2",
+        "advanced/response-cookies-1",
+        "advanced/response-headers-1",
+        "reference/response-0",
+        "reference/status-0",
+        "reference/status-1",
+        "tutorial/path-operation-configuration-1",
+        "tutorial/response-status-code-0",
+        "tutorial/response-status-code-1",
+        "tutorial/response-status-code-2",
+        "tutorial/response-status-code-3",
+        "tutorial/response-status-code-4"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 17 disagreement(s) adjudicated; 20 relevant chunk(s)."
+    },
+    {
+      "query_id": "q05",
+      "category": "tutorial",
+      "question": "How should I handle errors and raise HTTP exceptions in FastAPI?",
+      "relevant_chunks": [
+        "advanced/advanced-dependencies-11",
+        "advanced/advanced-dependencies-6",
+        "reference/exceptions-0",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-4",
+        "tutorial/dependencies/dependencies-with-yield-5",
+        "tutorial/dependencies/dependencies-with-yield-6",
+        "tutorial/dependencies/dependencies-with-yield-7",
+        "tutorial/dependencies/dependencies-with-yield-8",
+        "tutorial/handling-errors-0",
+        "tutorial/handling-errors-1",
+        "tutorial/handling-errors-11",
+        "tutorial/handling-errors-12",
+        "tutorial/handling-errors-3",
+        "tutorial/handling-errors-4",
+        "tutorial/handling-errors-6",
+        "tutorial/handling-errors-7",
+        "tutorial/handling-errors-8",
+        "tutorial/handling-errors-9"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 6 disagreement(s) adjudicated; 18 relevant chunk(s)."
+    },
+    {
+      "query_id": "q06",
+      "category": "dependencies",
+      "question": "How do I declare a reusable dependency with Depends in FastAPI?",
+      "relevant_chunks": [
+        "advanced/advanced-dependencies-5",
+        "features-9",
+        "reference/dependencies-0",
+        "reference/dependencies-1",
+        "tutorial/dependencies/classes-as-dependencies-3",
+        "tutorial/dependencies/classes-as-dependencies-5",
+        "tutorial/dependencies/classes-as-dependencies-9",
+        "tutorial/dependencies/index-3",
+        "tutorial/dependencies/index-4",
+        "tutorial/dependencies/index-5",
+        "tutorial/dependencies/index-6",
+        "tutorial/dependencies/sub-dependencies-1",
+        "tutorial/dependencies/sub-dependencies-2",
+        "tutorial/dependencies/sub-dependencies-3",
+        "tutorial/dependencies/sub-dependencies-4",
+        "tutorial/security/first-steps-10",
+        "tutorial/security/get-current-user-2",
+        "tutorial/security/get-current-user-4"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 12 disagreement(s) adjudicated; 18 relevant chunk(s)."
+    },
+    {
+      "query_id": "q07",
+      "category": "dependencies",
+      "question": "How can one FastAPI dependency depend on another dependency?",
+      "relevant_chunks": [
+        "advanced/security/oauth2-scopes-11",
+        "advanced/security/oauth2-scopes-5",
+        "features-9",
+        "tutorial/background-tasks-4",
+        "tutorial/dependencies/classes-as-dependencies-3",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-3",
+        "tutorial/dependencies/dependencies-with-yield-3",
+        "tutorial/dependencies/dependencies-with-yield-4",
+        "tutorial/dependencies/sub-dependencies-0",
+        "tutorial/dependencies/sub-dependencies-1",
+        "tutorial/dependencies/sub-dependencies-2",
+        "tutorial/dependencies/sub-dependencies-3",
+        "tutorial/dependencies/sub-dependencies-4",
+        "tutorial/security/get-current-user-2"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 28 disagreement(s) adjudicated; 14 relevant chunk(s)."
+    },
+    {
+      "query_id": "q08",
+      "category": "dependencies",
+      "question": "How do I add dependencies to a path operation decorator when I do not need their return values?",
+      "relevant_chunks": [
+        "advanced/security/oauth2-scopes-17",
+        "tutorial/bigger-applications-9",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-1",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-2",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-5"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 15 disagreement(s) adjudicated; 6 relevant chunk(s)."
+    },
+    {
+      "query_id": "q09",
+      "category": "dependencies",
+      "question": "How can I apply a dependency to every path operation in a FastAPI application?",
+      "relevant_chunks": [
+        "tutorial/bigger-applications-16",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+        "tutorial/dependencies/dependencies-in-path-operation-decorators-7",
+        "tutorial/dependencies/global-dependencies-0"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 8 disagreement(s) adjudicated; 4 relevant chunk(s)."
+    },
+    {
+      "query_id": "q10",
+      "category": "security",
+      "question": "How do I implement OAuth2 password authentication with bearer tokens in FastAPI?",
+      "relevant_chunks": [
+        "advanced/security/oauth2-scopes-16",
+        "reference/security/index-4",
+        "reference/security/index-5",
+        "tutorial/security/first-steps-0",
+        "tutorial/security/first-steps-10",
+        "tutorial/security/first-steps-5",
+        "tutorial/security/first-steps-6",
+        "tutorial/security/first-steps-7",
+        "tutorial/security/index-2",
+        "tutorial/security/index-6",
+        "tutorial/security/oauth2-jwt-0",
+        "tutorial/security/oauth2-jwt-14",
+        "tutorial/security/simple-oauth2-0",
+        "tutorial/security/simple-oauth2-1",
+        "tutorial/security/simple-oauth2-11",
+        "tutorial/security/simple-oauth2-17",
+        "tutorial/security/simple-oauth2-4",
+        "tutorial/security/simple-oauth2-5"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 12 disagreement(s) adjudicated; 18 relevant chunk(s)."
+    },
+    {
+      "query_id": "q11",
+      "category": "security",
+      "question": "How can I create and validate JWT access tokens in FastAPI?",
+      "relevant_chunks": [
+        "advanced/security/oauth2-scopes-4",
+        "tutorial/security/first-steps-6",
+        "tutorial/security/first-steps-7",
+        "tutorial/security/index-6",
+        "tutorial/security/oauth2-jwt-0",
+        "tutorial/security/oauth2-jwt-1",
+        "tutorial/security/oauth2-jwt-10",
+        "tutorial/security/oauth2-jwt-11",
+        "tutorial/security/oauth2-jwt-14",
+        "tutorial/security/oauth2-jwt-8",
+        "tutorial/security/oauth2-jwt-9",
+        "tutorial/security/simple-oauth2-11"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 10 disagreement(s) adjudicated; 12 relevant chunk(s)."
+    },
+    {
+      "query_id": "q12",
+      "category": "security",
+      "question": "How do OAuth2 scopes work with FastAPI Security dependencies?",
+      "relevant_chunks": [
+        "advanced/security/oauth2-scopes-0",
+        "advanced/security/oauth2-scopes-1",
+        "advanced/security/oauth2-scopes-10",
+        "advanced/security/oauth2-scopes-11",
+        "advanced/security/oauth2-scopes-12",
+        "advanced/security/oauth2-scopes-17",
+        "advanced/security/oauth2-scopes-3",
+        "advanced/security/oauth2-scopes-4",
+        "advanced/security/oauth2-scopes-5",
+        "advanced/security/oauth2-scopes-6",
+        "advanced/security/oauth2-scopes-7",
+        "advanced/security/oauth2-scopes-8",
+        "reference/dependencies-2",
+        "reference/security/index-0",
+        "reference/security/index-6",
+        "tutorial/security/oauth2-jwt-13",
+        "tutorial/security/simple-oauth2-4"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 15 disagreement(s) adjudicated; 17 relevant chunk(s)."
+    },
+    {
+      "query_id": "q13",
+      "category": "security",
+      "question": "How can I protect an endpoint using an API key in FastAPI?",
+      "relevant_chunks": [
+        "reference/security/index-0",
+        "reference/security/index-1",
+        "tutorial/security/index-6"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 1 disagreement(s) adjudicated; 3 relevant chunk(s)."
+    },
+    {
+      "query_id": "q14",
+      "category": "middleware_cors",
+      "question": "How do I configure CORS to allow requests from specific origins in FastAPI?",
+      "relevant_chunks": [
+        "reference/middleware-0",
+        "tutorial/cors-0",
+        "tutorial/cors-3",
+        "tutorial/cors-4",
+        "tutorial/cors-5",
+        "tutorial/cors-6"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 3 disagreement(s) adjudicated; 6 relevant chunk(s)."
+    },
+    {
+      "query_id": "q15",
+      "category": "middleware_cors",
+      "question": "How do I add middleware to a FastAPI application?",
+      "relevant_chunks": [
+        "advanced/middleware-0",
+        "advanced/middleware-1",
+        "advanced/middleware-2",
+        "advanced/wsgi-1",
+        "reference/middleware-0",
+        "tutorial/cors-4",
+        "tutorial/middleware-0",
+        "tutorial/middleware-1",
+        "tutorial/middleware-3",
+        "tutorial/middleware-4"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 0 disagreement(s) adjudicated; 10 relevant chunk(s)."
+    },
+    {
+      "query_id": "q16",
+      "category": "middleware_cors",
+      "question": "How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?",
+      "relevant_chunks": [
+        "advanced/middleware-0",
+        "advanced/middleware-1",
+        "advanced/middleware-2",
+        "advanced/middleware-3",
+        "advanced/middleware-4",
+        "reference/middleware-0"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 5 disagreement(s) adjudicated; 6 relevant chunk(s)."
+    },
+    {
+      "query_id": "q17",
+      "category": "background_tasks",
+      "question": "How can I run work after returning a response using BackgroundTasks in FastAPI?",
+      "relevant_chunks": [
+        "advanced/advanced-dependencies-12",
+        "reference/background-0",
+        "tutorial/background-tasks-0",
+        "tutorial/background-tasks-1",
+        "tutorial/background-tasks-2",
+        "tutorial/background-tasks-4",
+        "tutorial/background-tasks-5",
+        "tutorial/background-tasks-6",
+        "tutorial/background-tasks-7"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 3 disagreement(s) adjudicated; 9 relevant chunk(s)."
+    },
+    {
+      "query_id": "q18",
+      "category": "background_tasks",
+      "question": "Can FastAPI dependencies add tasks to the same BackgroundTasks object?",
+      "relevant_chunks": [
+        "reference/background-0",
+        "tutorial/background-tasks-4",
+        "tutorial/background-tasks-7"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 1 disagreement(s) adjudicated; 3 relevant chunk(s)."
+    },
+    {
+      "query_id": "q19",
+      "category": "websockets",
+      "question": "How do I create a WebSocket endpoint in FastAPI?",
+      "relevant_chunks": [
+        "advanced/websockets-0",
+        "advanced/websockets-3",
+        "advanced/websockets-4",
+        "advanced/websockets-6",
+        "advanced/websockets-7",
+        "advanced/websockets-8",
+        "reference/fastapi-0",
+        "reference/websockets-0"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 1 disagreement(s) adjudicated; 8 relevant chunk(s)."
+    },
+    {
+      "query_id": "q20",
+      "category": "websockets",
+      "question": "How can a FastAPI application manage multiple WebSocket clients and disconnected connections?",
+      "relevant_chunks": [
+        "advanced/websockets-9",
+        "reference/websockets-1"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 0 disagreement(s) adjudicated; 2 relevant chunk(s)."
+    },
+    {
+      "query_id": "q21",
+      "category": "deployment",
+      "question": "How can I deploy a FastAPI application in a Docker container?",
+      "relevant_chunks": [
+        "deployment/docker-0",
+        "deployment/docker-15",
+        "deployment/docker-16",
+        "deployment/docker-2",
+        "deployment/docker-20",
+        "deployment/docker-22",
+        "deployment/docker-3",
+        "deployment/docker-34",
+        "deployment/docker-35",
+        "deployment/docker-36",
+        "deployment/docker-4",
+        "deployment/docker-5",
+        "deployment/server-workers-14"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 0 disagreement(s) adjudicated; 13 relevant chunk(s)."
+    },
+    {
+      "query_id": "q22",
+      "category": "deployment",
+      "question": "What are workers and when should I use multiple worker processes to run FastAPI?",
+      "relevant_chunks": [
+        "deployment/concepts-18",
+        "deployment/concepts-19",
+        "deployment/concepts-20",
+        "deployment/concepts-23",
+        "deployment/concepts-24",
+        "deployment/concepts-5",
+        "deployment/docker-24",
+        "deployment/docker-26",
+        "deployment/docker-27",
+        "deployment/docker-28",
+        "deployment/docker-35",
+        "deployment/server-workers-0",
+        "deployment/server-workers-1",
+        "deployment/server-workers-12",
+        "deployment/server-workers-13",
+        "deployment/server-workers-15",
+        "deployment/server-workers-2"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 12 disagreement(s) adjudicated; 17 relevant chunk(s)."
+    },
+    {
+      "query_id": "q23",
+      "category": "deployment",
+      "question": "What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?",
+      "relevant_chunks": [
+        "advanced/events-6",
+        "deployment/concepts-0",
+        "deployment/concepts-11",
+        "deployment/concepts-12",
+        "deployment/concepts-18",
+        "deployment/concepts-21",
+        "deployment/concepts-24",
+        "deployment/concepts-27",
+        "deployment/concepts-29",
+        "deployment/concepts-30",
+        "deployment/docker-21",
+        "deployment/docker-23",
+        "deployment/docker-31",
+        "deployment/docker-38",
+        "deployment/https-1",
+        "deployment/https-21",
+        "deployment/manually-11",
+        "deployment/server-workers-0",
+        "deployment/server-workers-13",
+        "deployment/server-workers-15"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 6 disagreement(s) adjudicated; 20 relevant chunk(s)."
+    },
+    {
+      "query_id": "q24",
+      "category": "deployment",
+      "question": "How should FastAPI be configured when it runs behind a proxy that adds a path prefix?",
+      "relevant_chunks": [
+        "advanced/behind-a-proxy-0",
+        "advanced/behind-a-proxy-10",
+        "advanced/behind-a-proxy-11",
+        "advanced/behind-a-proxy-13",
+        "advanced/behind-a-proxy-18",
+        "advanced/behind-a-proxy-19",
+        "advanced/behind-a-proxy-2",
+        "advanced/behind-a-proxy-20",
+        "advanced/behind-a-proxy-22",
+        "advanced/behind-a-proxy-3",
+        "advanced/behind-a-proxy-5",
+        "advanced/behind-a-proxy-6",
+        "advanced/behind-a-proxy-7",
+        "advanced/behind-a-proxy-8",
+        "advanced/sub-applications-6",
+        "deployment/https-19",
+        "tutorial/security/first-steps-8"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 14 disagreement(s) adjudicated; 17 relevant chunk(s)."
+    },
+    {
+      "query_id": "q25",
+      "category": "testing",
+      "question": "How do I test FastAPI endpoints using TestClient?",
+      "relevant_chunks": [
+        "advanced/async-tests-0",
+        "advanced/async-tests-2",
+        "advanced/testing-websockets-0",
+        "reference/testclient-0",
+        "tutorial/testing-0",
+        "tutorial/testing-1",
+        "tutorial/testing-2",
+        "tutorial/testing-8"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 4 disagreement(s) adjudicated; 8 relevant chunk(s)."
+    },
+    {
+      "query_id": "q26",
+      "category": "testing",
+      "question": "How can I override dependencies during FastAPI tests?",
+      "relevant_chunks": [
+        "advanced/settings-11",
+        "advanced/settings-19",
+        "advanced/testing-dependencies-0",
+        "advanced/testing-dependencies-1",
+        "advanced/testing-dependencies-3"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 2 disagreement(s) adjudicated; 5 relevant chunk(s)."
+    },
+    {
+      "query_id": "q27",
+      "category": "advanced",
+      "question": "How can I use lifespan events to initialize and clean up shared resources in FastAPI?",
+      "relevant_chunks": [
+        "advanced/events-0",
+        "advanced/events-10",
+        "advanced/events-2",
+        "advanced/events-3",
+        "advanced/events-4",
+        "advanced/events-5",
+        "advanced/events-6",
+        "advanced/events-8",
+        "advanced/events-9",
+        "advanced/testing-events-0"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 2 disagreement(s) adjudicated; 10 relevant chunk(s)."
+    },
+    {
+      "query_id": "q28",
+      "category": "advanced",
+      "question": "How can I create a custom exception handler in FastAPI?",
+      "relevant_chunks": [
+        "how-to/custom-request-and-route-6",
+        "reference/responses-0",
+        "tutorial/handling-errors-11",
+        "tutorial/handling-errors-12",
+        "tutorial/handling-errors-6",
+        "tutorial/handling-errors-7",
+        "tutorial/handling-errors-8",
+        "tutorial/handling-errors-9"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 3 disagreement(s) adjudicated; 8 relevant chunk(s)."
+    },
+    {
+      "query_id": "q29",
+      "category": "advanced",
+      "question": "How do I include and organize APIRouter instances in a larger FastAPI application?",
+      "relevant_chunks": [
+        "reference/apirouter-0",
+        "tutorial/bigger-applications-17",
+        "tutorial/bigger-applications-20",
+        "tutorial/bigger-applications-21",
+        "tutorial/bigger-applications-22",
+        "tutorial/bigger-applications-23",
+        "tutorial/bigger-applications-27",
+        "tutorial/bigger-applications-4",
+        "tutorial/bigger-applications-5",
+        "tutorial/bigger-applications-6",
+        "tutorial/bigger-applications-8",
+        "tutorial/static-files-2"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 3 disagreement(s) adjudicated; 12 relevant chunk(s)."
+    },
+    {
+      "query_id": "q30",
+      "category": "advanced",
+      "question": "How can I customize or extend the generated OpenAPI schema in FastAPI?",
+      "relevant_chunks": [
+        "advanced/behind-a-proxy-20",
+        "advanced/path-operation-advanced-configuration-6",
+        "advanced/path-operation-advanced-configuration-8",
+        "how-to/extending-openapi-0",
+        "how-to/extending-openapi-1",
+        "how-to/extending-openapi-3",
+        "how-to/extending-openapi-5",
+        "how-to/extending-openapi-6",
+        "how-to/extending-openapi-7",
+        "how-to/separate-openapi-schemas-0",
+        "how-to/separate-openapi-schemas-8",
+        "reference/openapi/models-0",
+        "tutorial/body-fields-3",
+        "tutorial/schema-extra-example-1",
+        "tutorial/schema-extra-example-14",
+        "tutorial/schema-extra-example-15",
+        "tutorial/schema-extra-example-4"
+      ],
+      "annotation_notes": "Binary pooled relevance assessment; two independent primary annotators; 16 disagreement(s) adjudicated; 17 relevant chunk(s)."
+    }
+  ]
+}

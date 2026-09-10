@@ -1,0 +1,687 @@
+query_id,category,question,candidate_order,chunk_id,source_path,section_title,content,adjudicator,adjudicated_relevance,adjudication_notes
+q01,tutorial,How do I create a basic FastAPI application and define my first path operation?,8,advanced/sub-applications-2,advanced/sub-applications.md,Top-level application { #top-level-application },"### Top-level application { #top-level-application }
+
+First, create the main, top-level, **FastAPI** application, and its *path operations*:
+
+{* ../../docs_src/sub_applications/tutorial001_py310.py hl[3, 6:8] *}",wilson,1,
+q01,tutorial,How do I create a basic FastAPI application and define my first path operation?,22,tutorial/bigger-applications-23,tutorial/bigger-applications.md,Include a *path operation* { #include-a-path-operation },"### Include a *path operation* { #include-a-path-operation }
+
+We can also add *path operations* directly to the `FastAPI` app.
+
+Here we do it... just to show that we can 🤷:
+
+{* ../../docs_src/bigger_applications/app_an_py310/main.py hl[21:23] title[""app/main.py""] *}
+
+and it will work correctly, together with all the other *path operations* added with `app.include_router()`.
+
+/// note | Very Technical Details
+
+**Note**: this is a very technical detail that you probably can **just skip**.
+
+---
+
+The `APIRouter`s are not ""mounted"", they are not isolated from the rest of the application.
+
+This is because we want to include their *path operations* in the OpenAPI schema and the user interfaces.
+
+FastAPI keeps the original routers and path operations active, and combines the router prefixes, dependencies, tags, responses, and other metadata when handling requests and generating OpenAPI.
+
+///",wilson,0,
+q02,tutorial,How can I declare and validate query parameters in FastAPI?,21,index-35,index.md,Recap { #recap },"---
+
+Coming back to the previous code example, **FastAPI** will:
+
+* Validate that there is an `item_id` in the path for `GET` and `PUT` requests.
+* Validate that the `item_id` is of type `int` for `GET` and `PUT` requests.
+    * If it is not, the client will see a useful, clear error.
+* Check if there is an optional query parameter named `q` (as in `http://127.0.0.1:8000/items/foo?q=somequery`) for `GET` requests.
+    * As the `q` parameter is declared with `= None`, it is optional.
+    * Without the `None` it would be required (as is the body in the case with `PUT`).
+* For `PUT` requests to `/items/{item_id}`, read the body as JSON:
+    * Check that it has a required attribute `name` that should be a `str`.
+    * Check that it has a required attribute `price` that has to be a `float`.
+    * Check that it has an optional attribute `is_offer`, that should be a `bool`, if present.
+    * All this would also work for deeply nested JSON objects.
+* Convert from and to JSON automatically.
+* Document everything with OpenAPI, that can be used by:
+    * Interactive documentation systems.
+    * Automatic client code generation systems, for many languages.
+* Provide 2 interactive documentation web interfaces directly.
+
+---
+
+We just scratched the surface, but you already get the idea of how it all works.
+
+Try changing the line with:
+
+```Python
+    return {""item_name"": item.name, ""item_id"": item_id}
+```
+
+...from:",wilson,1,
+q02,tutorial,How can I declare and validate query parameters in FastAPI?,26,tutorial/body-9,tutorial/body.md,Request body + path + query parameters { #request-body-path-query-parameters },"## Request body + path + query parameters { #request-body-path-query-parameters }
+
+You can also declare **body**, **path** and **query** parameters, all at the same time.
+
+**FastAPI** will recognize each of them and take the data from the correct place.
+
+{* ../../docs_src/body/tutorial004_py310.py hl[16] *}
+
+The function parameters will be recognized as follows:
+
+* If the parameter is also declared in the **path**, it will be used as a path parameter.
+* If the parameter is of a **singular type** (like `int`, `float`, `str`, `bool`, etc) it will be interpreted as a **query** parameter.
+* If the parameter is declared to be of the type of a **Pydantic model**, it will be interpreted as a request **body**.
+
+/// note
+
+FastAPI will know that the value of `q` is not required because of the default value `= None`.
+
+The `str | None` is not used by FastAPI to determine that the value is not required, it will know it's not required because it has a default value of `= None`.
+
+But adding the type annotations will allow your editor to give you better support and detect errors.
+
+///",wilson,1,
+q02,tutorial,How can I declare and validate query parameters in FastAPI?,28,tutorial/path-params-numeric-validations-9,tutorial/path-params-numeric-validations.md,Recap { #recap },"## Recap { #recap }
+
+With `Query`, `Path` (and others you haven't seen yet) you can declare metadata and string validations in the same ways as with [Query Parameters and String Validations](query-params-str-validations.md).
+
+And you can also declare numeric validations:
+
+* `gt`: `g`reater `t`han
+* `ge`: `g`reater than or `e`qual
+* `lt`: `l`ess `t`han
+* `le`: `l`ess than or `e`qual
+
+/// note
+
+`Query`, `Path`, and other classes you will see later are subclasses of a common `Param` class.
+
+All of them share the same parameters for additional validation and metadata you have seen.
+
+///
+
+/// note | Technical Details
+
+When you import `Query`, `Path` and others from `fastapi`, they are actually functions.
+
+That when called, return instances of classes of the same name.
+
+So, you import `Query`, which is a function. And when you call it, it returns an instance of a class also named `Query`.
+
+These functions are there (instead of just using the classes directly) so that your editor doesn't mark errors about their types.
+
+That way you can use your normal editor and coding tools without having to add custom configurations to disregard those errors.
+
+///",wilson,1,
+q03,tutorial,How do I define a request body using a Pydantic model in FastAPI?,10,tutorial/header-param-models-5,tutorial/header-param-models.md,Summary { #summary },"## Summary { #summary }
+
+You can use **Pydantic models** to declare **headers** in **FastAPI**. 😎",wilson,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,5,reference/dependencies-1,reference/dependencies.md,`Depends()`,"## `Depends()`
+
+Dependencies are handled mainly with the special function `Depends()` that takes a callable.
+
+Here is the reference for it and its parameters.
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import Depends
+```
+
+::: fastapi.Depends",wilson,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,8,tutorial/dependencies/index-5,tutorial/dependencies/index.md,"Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }","### Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }
+
+The same way you use `Body`, `Query`, etc. with your *path operation function* parameters, use `Depends` with a new parameter:
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[13,18] *}
+
+Although you use `Depends` in the parameters of your function the same way you use `Body`, `Query`, etc, `Depends` works a bit differently.
+
+You only give `Depends` a single parameter.
+
+This parameter must be something like a function.
+
+You **don't call it** directly (don't add the parenthesis at the end), you just pass it as a parameter to `Depends()`.
+
+And that function takes parameters in the same way that *path operation functions* do.
+
+/// tip
+
+You'll see what other ""things"", apart from functions, can be used as dependencies in the next chapter.
+
+///
+
+Whenever a new request arrives, **FastAPI** will take care of:
+
+* Calling your dependency (""dependable"") function with the correct parameters.
+* Get the result from your function.
+* Assign that result to the parameter in your *path operation function*.
+
+```mermaid
+graph TB
+common_parameters([""common_parameters""])
+read_items[""/items/""]
+read_users[""/users/""]
+common_parameters --> read_items
+common_parameters --> read_users
+```
+
+This way you write shared code once and **FastAPI** takes care of calling it for your *path operations*.
+
+/// tip",wilson,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,10,tutorial/sql-databases-8,tutorial/sql-databases.md,Create a Session Dependency { #create-a-session-dependency },"### Create a Session Dependency { #create-a-session-dependency }
+
+A **`Session`** is what stores the **objects in memory** and keeps track of any changes needed in the data, then it **uses the `engine`** to communicate with the database.
+
+We will create a FastAPI **dependency** with `yield` that will provide a new `Session` for each request. This is what ensures that we use a single session per request. 🤓
+
+Then we create an `Annotated` dependency `SessionDep` to simplify the rest of the code that will use this dependency.
+
+{* ../../docs_src/sql_databases/tutorial001_an_py310.py ln[25:30]  hl[25:27,30] *}",wilson,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,12,tutorial/dependencies/dependencies-with-yield-4,tutorial/dependencies/dependencies-with-yield.md,Sub-dependencies with `yield` { #sub-dependencies-with-yield },"And you could have a single dependency that requires several other dependencies with `yield`, etc.
+
+You can have any combinations of dependencies that you want.
+
+**FastAPI** will make sure everything is run in the correct order.
+
+/// note | Technical Details
+
+This works thanks to Python's [Context Managers](https://docs.python.org/3/library/contextlib.html).
+
+**FastAPI** uses them internally to achieve this.
+
+///",wilson,1,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,14,tutorial/bigger-applications-16,tutorial/bigger-applications.md,Import `FastAPI` { #import-fastapi },"### Import `FastAPI` { #import-fastapi }
+
+You import and create a `FastAPI` class as normally.
+
+And we can even declare [global dependencies](dependencies/global-dependencies.md) that will be combined with the dependencies for each `APIRouter`:
+
+{* ../../docs_src/bigger_applications/app_an_py310/main.py hl[1,3,7] title[""app/main.py""] *}",wilson,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,20,tutorial/dependencies/dependencies-with-yield-10,tutorial/dependencies/dependencies-with-yield.md,Early exit and `scope` { #early-exit-and-scope },"## Early exit and `scope` { #early-exit-and-scope }
+
+Normally the exit code of dependencies with `yield` is executed **after the response** is sent to the client.
+
+But if you know that you won't need to use the dependency after returning from the *path operation function*, you can use `Depends(scope=""function"")` to tell FastAPI that it should close the dependency after the *path operation function* returns, but **before** the **response is sent**.
+
+{* ../../docs_src/dependencies/tutorial008e_an_py310.py hl[12,16] *}
+
+`Depends()` receives a `scope` parameter that can be:
+
+* `""function""`: start the dependency before the *path operation function* that handles the request, end the dependency after the *path operation function* ends, but **before** the response is sent back to the client. So, the dependency function will be executed **around** the *path operation **function***.
+* `""request""`: start the dependency before the *path operation function* that handles the request (similar to when using `""function""`), but end **after** the response is sent back to the client. So, the dependency function will be executed **around** the **request** and response cycle.
+
+If not specified and the dependency has `yield`, it will have a `scope` of `""request""` by default.",wilson,0,
+q07,dependencies,How can one FastAPI dependency depend on another dependency?,27,tutorial/dependencies/dependencies-with-yield-2,tutorial/dependencies/dependencies-with-yield.md,A dependency with `yield` and `try` { #a-dependency-with-yield-and-try },"## A dependency with `yield` and `try` { #a-dependency-with-yield-and-try }
+
+If you use a `try` block in a dependency with `yield`, you'll receive any exception that was thrown when using the dependency.
+
+For example, if some code at some point in the middle, in another dependency or in a *path operation*, made a database transaction ""rollback"" or created any other exception, you would receive the exception in your dependency.
+
+So, you can look for that specific exception inside the dependency with `except SomeException`.
+
+In the same way, you can use `finally` to make sure the exit steps are executed, no matter if there was an exception or not.
+
+{* ../../docs_src/dependencies/tutorial007_py310.py hl[3,5] *}",wilson,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,9,tutorial/bigger-applications-23,tutorial/bigger-applications.md,Include a *path operation* { #include-a-path-operation },"### Include a *path operation* { #include-a-path-operation }
+
+We can also add *path operations* directly to the `FastAPI` app.
+
+Here we do it... just to show that we can 🤷:
+
+{* ../../docs_src/bigger_applications/app_an_py310/main.py hl[21:23] title[""app/main.py""] *}
+
+and it will work correctly, together with all the other *path operations* added with `app.include_router()`.
+
+/// note | Very Technical Details
+
+**Note**: this is a very technical detail that you probably can **just skip**.
+
+---
+
+The `APIRouter`s are not ""mounted"", they are not isolated from the rest of the application.
+
+This is because we want to include their *path operations* in the OpenAPI schema and the user interfaces.
+
+FastAPI keeps the original routers and path operations active, and combines the router prefixes, dependencies, tags, responses, and other metadata when handling requests and generating OpenAPI.
+
+///",wilson,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,16,tutorial/bigger-applications-9,tutorial/bigger-applications.md,Another module with `APIRouter` { #another-module-with-apirouter },"...the prefix must not include a final `/`.
+
+So, the prefix in this case is `/items`.
+
+We can also add a list of `tags` and extra `responses` that will be applied to all the *path operations* included in this router.
+
+And we can add a list of `dependencies` that will be added to all the *path operations* in the router and will be executed/solved for each request made to them.
+
+/// tip
+
+Note that, much like [dependencies in *path operation decorators*](dependencies/dependencies-in-path-operation-decorators.md), no value will be passed to your *path operation function*.
+
+///
+
+The end result is that the item paths are now:
+
+* `/items/`
+* `/items/{item_id}`
+
+...as we intended.
+
+* They will be marked with a list of tags that contain a single string `""items""`.
+    * These ""tags"" are especially useful for the automatic interactive documentation systems (using OpenAPI).
+* All of them will include the predefined `responses`.
+* All these *path operations* will have the list of `dependencies` evaluated/executed before them.
+    * If you also declare dependencies in a specific *path operation*, **they will be executed too**.
+    * The router dependencies are executed first, then the [`dependencies` in the decorator](dependencies/dependencies-in-path-operation-decorators.md), and then the normal parameter dependencies.
+    * You can also add [`Security` dependencies with `scopes`](../advanced/security/oauth2-scopes.md).
+
+/// tip",wilson,1,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,17,alternatives-19,alternatives.md,[APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 },"### [APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 }
+
+Right before deciding to build **FastAPI** I found **APIStar** server. It had almost everything I was looking for and had a great design.
+
+It was one of the first implementations of a framework using Python type hints to declare parameters and requests that I ever saw (before NestJS and Molten). I found it more or less at the same time as Hug. But APIStar used the OpenAPI standard.
+
+It had automatic data validation, data serialization and OpenAPI schema generation based on the same type hints in several places.
+
+Body schema definitions didn't use the same Python type hints like Pydantic, it was a bit more similar to Marshmallow, so, editor support wouldn't be as good, but still, APIStar was the best available option.
+
+It had the best performance benchmarks at the time (only surpassed by Starlette).
+
+At first, it didn't have an automatic API documentation web UI, but I knew I could add Swagger UI to it.
+
+It had a dependency injection system. It required pre-registration of components, as other tools discussed above. But still, it was a great feature.
+
+I was never able to use it in a full project, as it didn't have security integration, so, I couldn't replace all the features I was having with the full-stack generators based on Flask-apispec. I had in my backlog of projects to create a pull request adding that functionality.
+
+But then, the project's focus shifted.
+
+It was no longer an API web framework, as the creator needed to focus on Starlette.
+
+Now APIStar is a set of tools to validate OpenAPI specifications, not a web framework.",wilson,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,23,tutorial/response-model-1,tutorial/response-model.md,`response_model` Parameter { #response-model-parameter },"## `response_model` Parameter { #response-model-parameter }
+
+There are some cases where you need or want to return some data that is not exactly what the type declares.
+
+For example, you could want to **return a dictionary** or a database object, but **declare it as a Pydantic model**. This way the Pydantic model would do all the data documentation, validation, etc. for the object that you returned (e.g. a dictionary or database object).
+
+If you added the return type annotation, tools and editors would complain with a (correct) error telling you that your function is returning a type (e.g. a dict) that is different from what you declared (e.g. a Pydantic model).
+
+In those cases, you can use the *path operation decorator* parameter `response_model` instead of the return type.
+
+You can use the `response_model` parameter in any of the *path operations*:
+
+* `@app.get()`
+* `@app.post()`
+* `@app.put()`
+* `@app.delete()`
+* etc.
+
+{* ../../docs_src/response_model/tutorial001_py310.py hl[17,22,24:27] *}
+
+/// note
+
+Notice that `response_model` is a parameter of the ""decorator"" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.
+
+///",wilson,0,
+q08,dependencies,How do I add dependencies to a path operation decorator when I do not need their return values?,27,tutorial/dependencies/dependencies-in-path-operation-decorators-7,tutorial/dependencies/dependencies-in-path-operation-decorators.md,Global Dependencies { #global-dependencies },"## Global Dependencies { #global-dependencies }
+
+Next we will see how to add dependencies to the whole `FastAPI` application, so that they apply to each *path operation*.",wilson,0,
+q09,dependencies,How can I apply a dependency to every path operation in a FastAPI application?,13,tutorial/dependencies/index-6,tutorial/dependencies/index.md,"Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }","This way you write shared code once and **FastAPI** takes care of calling it for your *path operations*.
+
+/// tip
+
+Notice that you don't have to create a special class and pass it somewhere to **FastAPI** to ""register"" it or anything similar.
+
+You just pass it to `Depends` and **FastAPI** knows how to do the rest.
+
+///",wilson,0,
+q09,dependencies,How can I apply a dependency to every path operation in a FastAPI application?,16,tutorial/dependencies/dependencies-with-yield-2,tutorial/dependencies/dependencies-with-yield.md,A dependency with `yield` and `try` { #a-dependency-with-yield-and-try },"## A dependency with `yield` and `try` { #a-dependency-with-yield-and-try }
+
+If you use a `try` block in a dependency with `yield`, you'll receive any exception that was thrown when using the dependency.
+
+For example, if some code at some point in the middle, in another dependency or in a *path operation*, made a database transaction ""rollback"" or created any other exception, you would receive the exception in your dependency.
+
+So, you can look for that specific exception inside the dependency with `except SomeException`.
+
+In the same way, you can use `finally` to make sure the exit steps are executed, no matter if there was an exception or not.
+
+{* ../../docs_src/dependencies/tutorial007_py310.py hl[3,5] *}",wilson,0,
+q09,dependencies,How can I apply a dependency to every path operation in a FastAPI application?,25,how-to/custom-docs-ui-assets-5,how-to/custom-docs-ui-assets.md,Create a *path operation* to test it { #create-a-path-operation-to-test-it },"### Create a *path operation* to test it { #create-a-path-operation-to-test-it }
+
+Now, to be able to test that everything works, create a *path operation*:
+
+{* ../../docs_src/custom_docs_ui/tutorial001_py310.py hl[36:38] *}",wilson,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,10,how-to/custom-docs-ui-assets-14,how-to/custom-docs-ui-assets.md,Include the custom docs for static files { #include-the-custom-docs-for-static-files },"/// tip
+
+The *path operation* for `swagger_ui_redirect` is a helper for when you use OAuth2.
+
+If you integrate your API with an OAuth2 provider, you will be able to authenticate and come back to the API docs with the acquired credentials. And interact with it using the real OAuth2 authentication.
+
+Swagger UI will handle it behind the scenes for you, but it needs this ""redirect"" helper.
+
+///",wilson,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,23,tutorial/security/index-2,tutorial/security/index.md,OAuth2 { #oauth2 },"## OAuth2 { #oauth2 }
+
+OAuth2 is a specification that defines several ways to handle authentication and authorization.
+
+It is quite an extensive specification and covers several complex use cases.
+
+It includes ways to authenticate using a ""third party"".
+
+That's what all the systems with ""login with Facebook, Google, X (Twitter), GitHub"" use underneath.",wilson,1,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,18,tutorial/body-4,tutorial/body.md,Results { #results },"## Results { #results }
+
+With just that Python type declaration, **FastAPI** will:
+
+* Read the body of the request as JSON.
+* Convert the corresponding types (if needed).
+* Validate the data.
+    * If the data is invalid, it will return a nice and clear error, indicating exactly where and what was the incorrect data.
+* Give you the received data in the parameter `item`.
+    * As you declared it in the function to be of type `Item`, you will also have all the editor support (completion, etc) for all of the attributes and their types.
+* Generate [JSON Schema](https://json-schema.org) definitions for your model, you can also use them anywhere else you like if it makes sense for your project.
+* Those schemas will be part of the generated OpenAPI schema, and used by the automatic documentation <abbr title=""User Interfaces"">UIs</abbr>.",wilson,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,19,tutorial/security/oauth2-jwt-9,tutorial/security/oauth2-jwt.md,Update the dependencies { #update-the-dependencies },"## Update the dependencies { #update-the-dependencies }
+
+Update `get_current_user` to receive the same token as before, but this time, using JWT tokens.
+
+Decode the received token, verify it, and return the current user.
+
+If the token is invalid, return an HTTP error right away.
+
+{* ../../docs_src/security/tutorial004_an_py310.py hl[93:110] *}",wilson,1,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,29,tutorial/sql-databases-14,tutorial/sql-databases.md,Run the App { #run-the-app },"### Run the App { #run-the-app }
+
+You can run the app:
+
+<div class=""termy"">
+
+```console
+$ uv run fastapi dev
+
+<span style=""color: green;"">INFO</span>:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
+
+</div>
+
+Then go to the `/docs` UI, you will see that **FastAPI** is using these **models** to **document** the API, and it will use them to **serialize** and **validate** the data too.
+
+<div class=""screenshot"">
+<img src=""/img/tutorial/sql-databases/image01.png"">
+</div>",wilson,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,30,tutorial/security/oauth2-jwt-14,tutorial/security/oauth2-jwt.md,Recap { #recap },"## Recap { #recap }
+
+With what you have seen up to now, you can set up a secure **FastAPI** application using standards like OAuth2 and JWT.
+
+In almost any framework handling the security becomes a rather complex subject quite quickly.
+
+Many packages that simplify it a lot have to make many compromises with the data model, database, and available features. And some of these packages that simplify things too much actually have security flaws underneath.
+
+---
+
+**FastAPI** doesn't make any compromise with any database, data model or tool.
+
+It gives you all the flexibility to choose the ones that fit your project the best.
+
+And you can use directly many well maintained and widely used packages like `pwdlib` and `PyJWT`, because **FastAPI** doesn't require any complex mechanisms to integrate external packages.
+
+But it provides you the tools to simplify the process as much as possible without compromising flexibility, robustness, or security.
+
+And you can use and implement secure, standard protocols, like OAuth2 in a relatively simple way.
+
+You can learn more in the **Advanced User Guide** about how to use OAuth2 ""scopes"", for a more fine-grained permission system, following these same standards. OAuth2 with scopes is the mechanism used by many big authentication providers, like Facebook, Google, GitHub, Microsoft, X (Twitter), etc. to authorize third party applications to interact with their APIs on behalf of their users.",wilson,1,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,7,reference/security/index-5,reference/security/index.md,OAuth2 Password Form,"## OAuth2 Password Form
+
+::: fastapi.security.OAuth2PasswordRequestForm
+
+::: fastapi.security.OAuth2PasswordRequestFormStrict",wilson,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,11,tutorial/security/simple-oauth2-5,tutorial/security/simple-oauth2.md,`OAuth2PasswordRequestForm` { #oauth2passwordrequestform },"`OAuth2PasswordBearer` makes **FastAPI** know that it is a security scheme. So it is added that way to OpenAPI.
+
+But `OAuth2PasswordRequestForm` is just a class dependency that you could have written yourself, or you could have declared `Form` parameters directly.
+
+But as it's a common use case, it is provided by **FastAPI** directly, just to make it easier.
+
+///",wilson,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,12,tutorial/security/oauth2-jwt-14,tutorial/security/oauth2-jwt.md,Recap { #recap },"## Recap { #recap }
+
+With what you have seen up to now, you can set up a secure **FastAPI** application using standards like OAuth2 and JWT.
+
+In almost any framework handling the security becomes a rather complex subject quite quickly.
+
+Many packages that simplify it a lot have to make many compromises with the data model, database, and available features. And some of these packages that simplify things too much actually have security flaws underneath.
+
+---
+
+**FastAPI** doesn't make any compromise with any database, data model or tool.
+
+It gives you all the flexibility to choose the ones that fit your project the best.
+
+And you can use directly many well maintained and widely used packages like `pwdlib` and `PyJWT`, because **FastAPI** doesn't require any complex mechanisms to integrate external packages.
+
+But it provides you the tools to simplify the process as much as possible without compromising flexibility, robustness, or security.
+
+And you can use and implement secure, standard protocols, like OAuth2 in a relatively simple way.
+
+You can learn more in the **Advanced User Guide** about how to use OAuth2 ""scopes"", for a more fine-grained permission system, following these same standards. OAuth2 with scopes is the mechanism used by many big authentication providers, like Facebook, Google, GitHub, Microsoft, X (Twitter), etc. to authorize third party applications to interact with their APIs on behalf of their users.",wilson,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,22,tutorial/security/first-steps-7,tutorial/security/first-steps.md,**FastAPI**'s `OAuth2PasswordBearer` { #fastapis-oauth2passwordbearer },"## **FastAPI**'s `OAuth2PasswordBearer` { #fastapis-oauth2passwordbearer }
+
+**FastAPI** provides several tools, at different levels of abstraction, to implement these security features.
+
+In this example we are going to use **OAuth2**, with the **Password** flow, using a **Bearer** token. We do that using the `OAuth2PasswordBearer` class.
+
+/// note
+
+A ""bearer"" token is not the only option.
+
+But it's the best one for our use case.
+
+And it might be the best for most use cases, unless you are an OAuth2 expert and know exactly why there's another option that better suits your needs.
+
+In that case, **FastAPI** also provides you with the tools to build it.
+
+///
+
+When we create an instance of the `OAuth2PasswordBearer` class we pass in the `tokenUrl` parameter. This parameter contains the URL that the client (the frontend running in the user's browser) will use to send the `username` and `password` in order to get a token.
+
+{* ../../docs_src/security/tutorial001_an_py310.py hl[8] *}
+
+/// tip
+
+Here `tokenUrl=""token""` refers to a relative URL `token` that we haven't created yet. As it's a relative URL, it's equivalent to `./token`.",wilson,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,30,tutorial/security/first-steps-10,tutorial/security/first-steps.md,Use it { #use-it },"### Use it { #use-it }
+
+Now you can pass that `oauth2_scheme` in a dependency with `Depends`.
+
+{* ../../docs_src/security/tutorial001_an_py310.py hl[12] *}
+
+This dependency will provide a `str` that is assigned to the parameter `token` of the *path operation function*.
+
+**FastAPI** will know that it can use this dependency to define a ""security scheme"" in the OpenAPI schema (and the automatic API docs).
+
+/// note | Technical Details
+
+**FastAPI** will know that it can use the class `OAuth2PasswordBearer` (declared in a dependency) to define the security scheme in OpenAPI because it inherits from `fastapi.security.oauth2.OAuth2`, which in turn inherits from `fastapi.security.base.SecurityBase`.
+
+All the security utilities that integrate with OpenAPI (and the automatic API docs) inherit from `SecurityBase`, that's how **FastAPI** can know how to integrate them in OpenAPI.
+
+///",wilson,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,31,advanced/security/oauth2-scopes-6,advanced/security/oauth2-scopes.md,Declare scopes in *path operations* and dependencies { #declare-scopes-in-path-operations-and-dependencies },"/// note | Technical Details
+
+`Security` is actually a subclass of `Depends`, and it has just one extra parameter that we'll see later.
+
+But by using `Security` instead of `Depends`, **FastAPI** will know that it can declare security scopes, use them internally, and document the API with OpenAPI.
+
+But when you import `Query`, `Path`, `Depends`, `Security` and others from `fastapi`, those are actually functions that return special classes.
+
+///",wilson,1,
+q16,middleware_cors,How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?,13,advanced/middleware-0,advanced/middleware.md,Advanced Middleware { #advanced-middleware },"# Advanced Middleware { #advanced-middleware }
+
+In the main tutorial you read how to add [Custom Middleware](../tutorial/middleware.md) to your application.
+
+And then you also read how to handle [CORS with the `CORSMiddleware`](../tutorial/cors.md).
+
+In this section we'll see how to use other middlewares.",wilson,1,
+q16,middleware_cors,How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?,18,tutorial/middleware-3,tutorial/middleware.md,Multiple middleware execution order { #multiple-middleware-execution-order },"## Multiple middleware execution order { #multiple-middleware-execution-order }
+
+When you add multiple middlewares using either `@app.middleware()` decorator or `app.add_middleware()` method, each new middleware wraps the application, forming a stack. The last middleware added is the *outermost*, and the first is the *innermost*.
+
+On the request path, the *outermost* middleware runs first.
+
+On the response path, it runs last.
+
+For example:
+
+```Python
+app.add_middleware(MiddlewareA)
+app.add_middleware(MiddlewareB)
+```
+
+This results in the following execution order:
+
+* **Request**: MiddlewareB → MiddlewareA → route
+
+* **Response**: route → MiddlewareA → MiddlewareB
+
+This stacking behavior ensures that middlewares are executed in a predictable and controllable order.",wilson,0,
+q16,middleware_cors,How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?,26,tutorial/middleware-4,tutorial/middleware.md,Other middlewares { #other-middlewares },"## Other middlewares { #other-middlewares }
+
+You can later read more about other middlewares in the [Advanced User Guide: Advanced Middleware](../advanced/middleware.md).
+
+You will read about how to handle <abbr title=""Cross-Origin Resource Sharing"">CORS</abbr> with a middleware in the next section.",wilson,0,
+q19,websockets,How do I create a WebSocket endpoint in FastAPI?,12,advanced/websockets-8,advanced/websockets.md,Try the WebSockets with dependencies { #try-the-websockets-with-dependencies },"### Try the WebSockets with dependencies { #try-the-websockets-with-dependencies }
+
+Run your application:
+
+<div class=""termy"">
+
+```console
+$ uv run fastapi dev
+
+<span style=""color: green;"">INFO</span>:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
+
+</div>
+
+Open your browser at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+There you can set:
+
+* The ""Item ID"", used in the path.
+* The ""Token"" used as a query parameter.
+
+/// tip
+
+Notice that the query `token` will be handled by a dependency.
+
+///
+
+With that you can connect the WebSocket and then send and receive messages:
+
+<img src=""/img/tutorial/websockets/image05.png"">",wilson,1,
+q28,advanced,How can I create a custom exception handler in FastAPI?,25,reference/response-0,reference/response.md,`Response` class,"# `Response` class
+
+You can declare a parameter in a *path operation function* or dependency to be of type `Response` and then you can set data for the response like headers or cookies.
+
+You can also use it directly to create an instance of it and return it from your *path operations*.
+
+Read more about it in the [FastAPI docs about returning a custom Response](https://fastapi.tiangolo.com/advanced/response-directly/#returning-a-custom-response)
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import Response
+```
+
+::: fastapi.Response",wilson,0,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,4,how-to/separate-openapi-schemas-8,how-to/separate-openapi-schemas.md,Do not Separate Schemas { #do-not-separate-schemas },"## Do not Separate Schemas { #do-not-separate-schemas }
+
+Now, there are some cases where you might want to have the **same schema for input and output**.
+
+Probably the main use case for this is if you already have some autogenerated client code/SDKs and you don't want to update all the autogenerated client code/SDKs yet, you probably will want to do it at some point, but maybe not right now.
+
+In that case, you can disable this feature in **FastAPI**, with the parameter `separate_input_output_schemas=False`.
+
+/// note
+
+Support for `separate_input_output_schemas` was added in FastAPI `0.102.0`. 🤓
+
+///
+
+{* ../../docs_src/separate_openapi_schemas/tutorial002_py310.py hl[10] *}",wilson,1,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,16,tutorial/schema-extra-example-4,tutorial/schema-extra-example.md,`examples` in JSON Schema - OpenAPI { #examples-in-json-schema-openapi },"## `examples` in JSON Schema - OpenAPI { #examples-in-json-schema-openapi }
+
+When using any of:
+
+* `Path()`
+* `Query()`
+* `Header()`
+* `Cookie()`
+* `Body()`
+* `Form()`
+* `File()`
+
+you can also declare a group of `examples` with additional information that will be added to their **JSON Schemas** inside of **OpenAPI**.",wilson,1,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,18,advanced/behind-a-proxy-20,advanced/behind-a-proxy.md,Additional servers { #additional-servers },"## Additional servers { #additional-servers }
+
+/// warning
+
+This is a more advanced use case. Feel free to skip it.
+
+///
+
+By default, **FastAPI** will create a `server` in the OpenAPI schema with the URL for the `root_path`.
+
+But you can also provide other alternative `servers`, for example if you want *the same* docs UI to interact with both a staging and a production environment.
+
+If you pass a custom list of `servers` and there's a `root_path` (because your API lives behind a proxy), **FastAPI** will insert a ""server"" with this `root_path` at the beginning of the list.
+
+For example:
+
+{* ../../docs_src/behind_a_proxy/tutorial003_py310.py hl[4:7] *}
+
+Will generate an OpenAPI schema like:
+
+```JSON hl_lines=""5-7""
+{
+    ""openapi"": ""3.1.0"",
+    // More stuff here
+    ""servers"": [
+        {
+            ""url"": ""/api/v1""
+        },
+        {
+            ""url"": ""https://stag.example.com"",
+            ""description"": ""Staging environment""
+        },
+        {
+            ""url"": ""https://prod.example.com"",
+            ""description"": ""Production environment""
+        }
+    ],
+    ""paths"": {
+            // More stuff here
+    }
+}
+```
+
+/// tip
+
+Notice the auto-generated server with a `url` value of `/api/v1`, taken from the `root_path`.
+
+///",wilson,1,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,25,tutorial/schema-extra-example-15,tutorial/schema-extra-example.md,Swagger UI and OpenAPI-specific `examples` { #swagger-ui-and-openapi-specific-examples },"### Swagger UI and OpenAPI-specific `examples` { #swagger-ui-and-openapi-specific-examples }
+
+Now, as Swagger UI didn't support multiple JSON Schema examples (as of 2023-08-26), users didn't have a way to show multiple examples in the docs.
+
+To solve that, FastAPI `0.103.0` **added support** for declaring the same old **OpenAPI-specific** `examples` field with the new parameter `openapi_examples`. 🤓",wilson,1,
+q30,advanced,How can I customize or extend the generated OpenAPI schema in FastAPI?,31,tutorial/schema-extra-example-14,tutorial/schema-extra-example.md,Pydantic and FastAPI `examples` { #pydantic-and-fastapi-examples },"### Pydantic and FastAPI `examples` { #pydantic-and-fastapi-examples }
+
+When you add `examples` inside a Pydantic model, using `schema_extra` or `Field(examples=[""something""])` that example is added to the **JSON Schema** for that Pydantic model.
+
+And that **JSON Schema** of the Pydantic model is included in the **OpenAPI** of your API, and then it's used in the docs UI.
+
+In versions of FastAPI before 0.99.0 (0.99.0 and above use the newer OpenAPI 3.1.0) when you used `example` or `examples` with any of the other utilities (`Query()`, `Body()`, etc.) those examples were not added to the JSON Schema that describes that data (not even to OpenAPI's own version of JSON Schema), they were added directly to the *path operation* declaration in OpenAPI (outside the parts of OpenAPI that use JSON Schema).
+
+But now that FastAPI 0.99.0 and above uses OpenAPI 3.1.0, that uses JSON Schema 2020-12, and Swagger UI 5.0.0 and above, everything is more consistent and the examples are included in JSON Schema.",wilson,1,

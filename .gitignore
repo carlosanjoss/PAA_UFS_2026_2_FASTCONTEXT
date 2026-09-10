@@ -102,3 +102,11 @@ experiments/processed_results/*
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+# Local experimental backups
+.adjudication_pristine_backup/
+.annotation_encoding_backup/
+.annotation_normalized/
+.annotation_pre_normalization_backup/
+.annotation_returned_backup/
+.benchmark_checkpoint_backup/
+benchmark_final_backup/

@@ -1,0 +1,743 @@
+query_id,category,question,candidate_order,chunk_id,source_path,section_title,content,adjudicator,adjudicated_relevance,adjudication_notes
+q02,tutorial,How can I declare and validate query parameters in FastAPI?,22,reference/parameters-0,reference/parameters.md,Request Parameters,"# Request Parameters
+
+Here's the reference information for the request parameters.
+
+These are the special functions that you can put in *path operation function* parameters or dependency functions with `Annotated` to get data from the request.
+
+It includes:
+
+* `Query()`
+* `Path()`
+* `Body()`
+* `Cookie()`
+* `Header()`
+* `Form()`
+* `File()`
+
+You can import them all directly from `fastapi`:
+
+```python
+from fastapi import Body, Cookie, File, Form, Header, Path, Query
+```
+
+::: fastapi.Query
+
+::: fastapi.Path
+
+::: fastapi.Body
+
+::: fastapi.Cookie
+
+::: fastapi.Header
+
+::: fastapi.Form
+
+::: fastapi.File",matheus,1,
+q03,tutorial,How do I define a request body using a Pydantic model in FastAPI?,6,tutorial/body-fields-0,tutorial/body-fields.md,Body - Fields { #body-fields },"# Body - Fields { #body-fields }
+
+The same way you can declare additional validation and metadata in *path operation function* parameters with `Query`, `Path` and `Body`, you can declare validation and metadata inside of Pydantic models using Pydantic's `Field`.",matheus,1,
+q03,tutorial,How do I define a request body using a Pydantic model in FastAPI?,17,alternatives-22,alternatives.md,[Pydantic](https://pydantic.dev/docs/) { #pydantic },"### [Pydantic](https://pydantic.dev/docs/) { #pydantic }
+
+Pydantic is a library to define data validation, serialization and documentation (using JSON Schema) based on Python type hints.
+
+That makes it extremely intuitive.
+
+It is comparable to Marshmallow. Although it's faster than Marshmallow in benchmarks. And as it is based on the same Python type hints, the editor support is great.
+
+/// tip | **FastAPI** uses it to
+
+Handle all the data validation, data serialization and automatic model documentation (based on JSON Schema).
+
+**FastAPI** then takes that JSON Schema data and puts it in OpenAPI, apart from all the other things it does.
+
+///",matheus,0,
+q03,tutorial,How do I define a request body using a Pydantic model in FastAPI?,21,advanced/additional-responses-1,advanced/additional-responses.md,Additional Response with `model` { #additional-response-with-model },"## Additional Response with `model` { #additional-response-with-model }
+
+You can pass to your *path operation decorators* a parameter `responses`.
+
+It receives a `dict`: the keys are status codes for each response (like `200`), and the values are other `dict`s with the information for each of them.
+
+Each of those response `dict`s can have a key `model`, containing a Pydantic model, just like `response_model`.
+
+**FastAPI** will take that model, generate its JSON Schema and include it in the correct place in OpenAPI.
+
+For example, to declare another response with a status code `404` and a Pydantic model `Message`, you can write:
+
+{* ../../docs_src/additional_responses/tutorial001_py310.py hl[18,22] *}
+
+/// note
+
+Keep in mind that you have to return the `JSONResponse` directly.
+
+///
+
+/// note
+
+The `model` key is not part of OpenAPI.
+
+**FastAPI** will take the Pydantic model from there, generate the JSON Schema, and put it in the correct place.
+
+The correct place is:",matheus,0,
+q03,tutorial,How do I define a request body using a Pydantic model in FastAPI?,23,tutorial/query-param-models-4,tutorial/query-param-models.md,Summary { #summary },"## Summary { #summary }
+
+You can use **Pydantic models** to declare **query parameters** in **FastAPI**. 😎
+
+/// tip
+
+Spoiler alert: you can also use Pydantic models to declare cookies and headers, but you will read about that later in the tutorial. 🤫
+
+///",matheus,0,
+q03,tutorial,How do I define a request body using a Pydantic model in FastAPI?,29,tutorial/body-nested-models-6,tutorial/body-nested-models.md,Define a submodel { #define-a-submodel },"### Define a submodel { #define-a-submodel }
+
+For example, we can define an `Image` model:
+
+{* ../../docs_src/body_nested_models/tutorial004_py310.py hl[7:9] *}",matheus,1,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,3,tutorial/response-status-code-1,tutorial/response-status-code.md,About HTTP status codes { #about-http-status-codes },"## About HTTP status codes { #about-http-status-codes }
+
+/// note
+
+If you already know what HTTP status codes are, skip to the next section.
+
+///
+
+In HTTP, you send a numeric status code of 3 digits as part of the response.
+
+These status codes have an associated name to help recognize them, but the important part is the number.
+
+In short:
+
+* `100 - 199` are for ""Information"". You rarely use them directly.  Responses with these status codes cannot have a body.
+* **`200 - 299`** are for ""Successful"" responses. These are the ones you would use the most.
+    * `200` is the default status code, which means everything was ""OK"".
+    * Another example would be `201`, ""Created"". It is commonly used after creating a new record in the database.
+    * A special case is `204`, ""No Content"".  This response is used when there is no content to return to the client, and so the response must not have a body.
+* **`300 - 399`** are for ""Redirection"".  Responses with these status codes may or may not have a body, except for `304`, ""Not Modified"", which must not have one.
+* **`400 - 499`** are for ""Client error"" responses. These are the second type you would probably use the most.
+    * An example is `404`, for a ""Not Found"" response.
+    * For generic errors from the client, you can just use `400`.
+* `500 - 599` are for server errors. You almost never use them directly. When something goes wrong at some part in your application code, or server, it will automatically return one of these status codes.
+
+/// tip",matheus,1,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,5,advanced/custom-response-8,advanced/custom-response.md,`Response` { #response },"### `Response` { #response }
+
+The main `Response` class, all the other responses inherit from it.
+
+You can return it directly.
+
+It accepts the following parameters:
+
+* `content` - A `str` or `bytes`.
+* `status_code` - An `int` HTTP status code.
+* `headers` - A `dict` of strings.
+* `media_type` - A `str` giving the media type. E.g. `""text/html""`.
+
+FastAPI (actually Starlette) will automatically include a Content-Length header. It will also include a Content-Type header, based on the `media_type` and appending a charset for text types.
+
+{* ../../docs_src/response_directly/tutorial002_py310.py hl[1,18] *}",matheus,1,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,7,how-to/authentication-error-status-code-0,how-to/authentication-error-status-code.md,Use Old 403 Authentication Error Status Codes { #use-old-403-authentication-error-status-codes },"# Use Old 403 Authentication Error Status Codes { #use-old-403-authentication-error-status-codes }
+
+Before FastAPI version `0.122.0`, when the integrated security utilities returned an error to the client after a failed authentication, they used the HTTP status code `403 Forbidden`.
+
+Starting with FastAPI version `0.122.0`, they use the more appropriate HTTP status code `401 Unauthorized`, and return a sensible `WWW-Authenticate` header in the response, following the HTTP specifications, [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235#section-3.1), [RFC 9110](https://datatracker.ietf.org/doc/html/rfc9110#name-401-unauthorized).
+
+But if for some reason your clients depend on the old behavior, you can revert to it by overriding the method `make_not_authenticated_error` in your security classes.
+
+For example, you can create a subclass of `HTTPBearer` that returns a `403 Forbidden` error instead of the default `401 Unauthorized` error:
+
+{* ../../docs_src/authentication_error_status_code/tutorial001_an_py310.py hl[9:13] *}
+
+/// tip
+
+Notice that the function returns the exception instance, it doesn't raise it. The raising is done in the rest of the internal code.
+
+///",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,13,tutorial/handling-errors-4,tutorial/handling-errors.md,The resulting response { #the-resulting-response },"### The resulting response { #the-resulting-response }
+
+If the client requests `http://example.com/items/foo` (an `item_id` `""foo""`), that client will receive an HTTP status code of 200, and a JSON response of:
+
+```JSON
+{
+  ""item"": ""The Foo Wrestlers""
+}
+```
+
+But if the client requests `http://example.com/items/bar` (a non-existent `item_id` `""bar""`), that client will receive an HTTP status code of 404 (the ""not found"" error), and a JSON response of:
+
+```JSON
+{
+  ""detail"": ""Item not found""
+}
+```
+
+/// tip
+
+When raising an `HTTPException`, you can pass any value that can be converted to JSON as the parameter `detail`, not only `str`.
+
+You could pass a `dict`, a `list`, etc.
+
+They are handled automatically by **FastAPI** and converted to JSON.
+
+///",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,15,advanced/custom-response-0,advanced/custom-response.md,"Custom Response - HTML, Stream, File, others { #custom-response-html-stream-file-others }","# Custom Response - HTML, Stream, File, others { #custom-response-html-stream-file-others }
+
+By default, **FastAPI** will return JSON responses.
+
+You can override it by returning a `Response` directly as seen in [Return a Response directly](response-directly.md).
+
+But if you return a `Response` directly (or any subclass, like `JSONResponse`), the data won't be automatically converted (even if you declare a `response_model`), and the documentation won't be automatically generated (for example, including the specific ""media type"", in the HTTP header `Content-Type` as part of the generated OpenAPI).
+
+But you can also declare the `Response` that you want to be used (e.g. any `Response` subclass), in the *path operation decorator* using the `response_class` parameter.
+
+The contents that you return from your *path operation function* will be put inside of that `Response`.
+
+/// note
+
+If you use a response class with no media type, FastAPI will expect your response to have no content, so it will not document the response format in its generated OpenAPI docs.
+
+///",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,18,advanced/response-cookies-1,advanced/response-cookies.md,Use a `Response` parameter { #use-a-response-parameter },"## Use a `Response` parameter { #use-a-response-parameter }
+
+You can declare a parameter of type `Response` in your *path operation function*.
+
+And then you can set cookies in that *temporary* response object.
+
+{* ../../docs_src/response_cookies/tutorial002_py310.py hl[1, 8:9] *}
+
+And then you can return any object you need, as you normally would (a `dict`, a database model, etc).
+
+And if you declared a `response_model`, it will still be used to filter and convert the object you returned.
+
+**FastAPI** will use that *temporary* response to extract the cookies (also headers and status code), and will put them in the final response that contains the value you returned, filtered by any `response_model`.
+
+You can also declare the `Response` parameter in dependencies, and set cookies (and headers) in them.",matheus,1,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,19,reference/status-0,reference/status.md,Status Codes,"# Status Codes
+
+You can import the `status` module from `fastapi`:
+
+```python
+from fastapi import status
+```
+
+`status` is provided directly by Starlette.
+
+It contains a group of named constants (variables) with integer status codes.
+
+For example:
+
+* 200: `status.HTTP_200_OK`
+* 403: `status.HTTP_403_FORBIDDEN`
+* etc.
+
+It can be convenient to quickly access HTTP (and WebSocket) status codes in your app, using autocompletion for the name without having to memorize the integer status codes.
+
+Read more about it in the [FastAPI docs about Response Status Code](https://fastapi.tiangolo.com/tutorial/response-status-code/).",matheus,1,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,20,tutorial/path-operation-configuration-6,tutorial/path-operation-configuration.md,Response description { #response-description },"## Response description { #response-description }
+
+You can specify the response description with the parameter `response_description`:
+
+{* ../../docs_src/path_operation_configuration/tutorial005_py310.py hl[18] *}
+
+/// note
+
+Notice that `response_description` refers specifically to the response, the `description` refers to the *path operation* in general.
+
+///
+
+/// tip
+
+OpenAPI specifies that each *path operation* requires a response description.
+
+So, if you don't provide one, **FastAPI** will automatically generate one of ""Successful response"".
+
+///
+
+<img src=""/img/tutorial/path-operation-configuration/image03.png"">",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,21,reference/responses-0,reference/responses.md,"Custom Response Classes - File, HTML, Redirect, Streaming, etc.","# Custom Response Classes - File, HTML, Redirect, Streaming, etc.
+
+There are several custom response classes you can use to create an instance and return them directly from your *path operations*.
+
+Read more about it in the [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/).
+
+You can import them directly from `fastapi.responses`:
+
+```python
+from fastapi.responses import (
+    FileResponse,
+    HTMLResponse,
+    JSONResponse,
+    ORJSONResponse,
+    PlainTextResponse,
+    RedirectResponse,
+    Response,
+    StreamingResponse,
+    UJSONResponse,
+)
+```",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,27,advanced/response-directly-2,advanced/response-directly.md,Using the `jsonable_encoder` in a `Response` { #using-the-jsonable-encoder-in-a-response },"## Using the `jsonable_encoder` in a `Response` { #using-the-jsonable-encoder-in-a-response }
+
+Because **FastAPI** doesn't make any changes to a `Response` you return, you have to make sure its contents are ready for it.
+
+For example, you cannot put a Pydantic model in a `JSONResponse` without first converting it to a `dict` with all the data types (like `datetime`, `UUID`, etc) converted to JSON-compatible types.
+
+For those cases, you can use the `jsonable_encoder` to convert your data before passing it to a response:
+
+{* ../../docs_src/response_directly/tutorial001_py310.py hl[5:6,20:21] *}
+
+/// note | Technical Details
+
+You could also use `from starlette.responses import JSONResponse`.
+
+**FastAPI** provides the same `starlette.responses` as `fastapi.responses` just as a convenience for you, the developer. But most of the available responses come directly from Starlette.
+
+///",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,28,advanced/additional-responses-0,advanced/additional-responses.md,Additional Responses in OpenAPI { #additional-responses-in-openapi },"# Additional Responses in OpenAPI { #additional-responses-in-openapi }
+
+/// warning
+
+This is a rather advanced topic.
+
+If you are starting with **FastAPI**, you might not need this.
+
+///
+
+You can declare additional responses, with additional status codes, media types, descriptions, etc.
+
+Those additional responses will be included in the OpenAPI schema, so they will also appear in the API docs.
+
+But for those additional responses you have to make sure you return a `Response` like `JSONResponse` directly, with your status code and content.",matheus,0,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,29,tutorial/response-status-code-2,tutorial/response-status-code.md,About HTTP status codes { #about-http-status-codes },"/// tip
+
+To know more about each status code and which code is for what, check the [<abbr title=""Mozilla Developer Network"">MDN</abbr> documentation about HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
+
+///",matheus,1,
+q04,tutorial,How can I customize the response status code of a FastAPI endpoint?,30,advanced/response-headers-1,advanced/response-headers.md,Use a `Response` parameter { #use-a-response-parameter },"## Use a `Response` parameter { #use-a-response-parameter }
+
+You can declare a parameter of type `Response` in your *path operation function* (as you can do for cookies).
+
+And then you can set headers in that *temporary* response object.
+
+{* ../../docs_src/response_headers/tutorial002_py310.py hl[1, 7:8] *}
+
+And then you can return any object you need, as you normally would (a `dict`, a database model, etc).
+
+And if you declared a `response_model`, it will still be used to filter and convert the object you returned.
+
+**FastAPI** will use that *temporary* response to extract the headers (also cookies and status code), and will put them in the final response that contains the value you returned, filtered by any `response_model`.
+
+You can also declare the `Response` parameter in dependencies, and set headers (and cookies) in them.",matheus,1,
+q05,tutorial,How should I handle errors and raise HTTP exceptions in FastAPI?,30,index-35,index.md,Recap { #recap },"---
+
+Coming back to the previous code example, **FastAPI** will:
+
+* Validate that there is an `item_id` in the path for `GET` and `PUT` requests.
+* Validate that the `item_id` is of type `int` for `GET` and `PUT` requests.
+    * If it is not, the client will see a useful, clear error.
+* Check if there is an optional query parameter named `q` (as in `http://127.0.0.1:8000/items/foo?q=somequery`) for `GET` requests.
+    * As the `q` parameter is declared with `= None`, it is optional.
+    * Without the `None` it would be required (as is the body in the case with `PUT`).
+* For `PUT` requests to `/items/{item_id}`, read the body as JSON:
+    * Check that it has a required attribute `name` that should be a `str`.
+    * Check that it has a required attribute `price` that has to be a `float`.
+    * Check that it has an optional attribute `is_offer`, that should be a `bool`, if present.
+    * All this would also work for deeply nested JSON objects.
+* Convert from and to JSON automatically.
+* Document everything with OpenAPI, that can be used by:
+    * Interactive documentation systems.
+    * Automatic client code generation systems, for many languages.
+* Provide 2 interactive documentation web interfaces directly.
+
+---
+
+We just scratched the surface, but you already get the idea of how it all works.
+
+Try changing the line with:
+
+```Python
+    return {""item_name"": item.name, ""item_id"": item_id}
+```
+
+...from:",matheus,0,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,4,advanced/testing-dependencies-3,advanced/testing-dependencies.md,Use the `app.dependency_overrides` attribute { #use-the-app-dependency-overrides-attribute },"### Use the `app.dependency_overrides` attribute { #use-the-app-dependency-overrides-attribute }
+
+For these cases, your **FastAPI** application has an attribute `app.dependency_overrides`, it is a simple `dict`.
+
+To override a dependency for testing, you put as a key the original dependency (a function), and as the value, your dependency override (another function).
+
+And then **FastAPI** will call that override instead of the original dependency.
+
+{* ../../docs_src/dependency_testing/tutorial001_an_py310.py hl[26:27,30] *}
+
+/// tip
+
+You can set a dependency override for a dependency used anywhere in your **FastAPI** application.
+
+The original dependency could be used in a *path operation function*, a *path operation decorator* (when you don't use the return value), a `.include_router()` call, etc.
+
+FastAPI will still be able to override it.
+
+///
+
+Then you can reset your overrides (remove them) by setting `app.dependency_overrides` to be an empty `dict`:
+
+```Python
+app.dependency_overrides = {}
+```
+
+/// tip
+
+If you want to override a dependency only during some tests, you can set the override at the beginning of the test (inside the test function) and reset it at the end (at the end of the test function).
+
+///",matheus,0,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,8,tutorial/dependencies/dependencies-with-yield-2,tutorial/dependencies/dependencies-with-yield.md,A dependency with `yield` and `try` { #a-dependency-with-yield-and-try },"## A dependency with `yield` and `try` { #a-dependency-with-yield-and-try }
+
+If you use a `try` block in a dependency with `yield`, you'll receive any exception that was thrown when using the dependency.
+
+For example, if some code at some point in the middle, in another dependency or in a *path operation*, made a database transaction ""rollback"" or created any other exception, you would receive the exception in your dependency.
+
+So, you can look for that specific exception inside the dependency with `except SomeException`.
+
+In the same way, you can use `finally` to make sure the exit steps are executed, no matter if there was an exception or not.
+
+{* ../../docs_src/dependencies/tutorial007_py310.py hl[3,5] *}",matheus,0,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,22,advanced/security/oauth2-scopes-5,advanced/security/oauth2-scopes.md,Declare scopes in *path operations* and dependencies { #declare-scopes-in-path-operations-and-dependencies },"## Declare scopes in *path operations* and dependencies { #declare-scopes-in-path-operations-and-dependencies }
+
+Now we declare that the *path operation* for `/users/me/items/` requires the scope `items`.
+
+For this, we import and use `Security` from `fastapi`.
+
+You can use `Security` to declare dependencies (just like `Depends`), but `Security` also receives a parameter `scopes` with a list of scopes (strings).
+
+In this case, we pass a dependency function `get_current_active_user` to `Security` (the same way we would do with `Depends`).
+
+But we also pass a `list` of scopes, in this case with just one scope: `items` (it could have more).
+
+And the dependency function `get_current_active_user` can also declare sub-dependencies, not only with `Depends` but also with `Security`. Declaring its own sub-dependency function (`get_current_user`), and more scope requirements.
+
+In this case, it requires the scope `me` (it could require more than one scope).
+
+/// note
+
+You don't necessarily need to add different scopes in different places.
+
+We are doing it here to demonstrate how **FastAPI** handles scopes declared at different levels.
+
+///
+
+{* ../../docs_src/security/tutorial005_an_py310.py hl[5,141,172] *}
+
+/// note | Technical Details
+
+`Security` is actually a subclass of `Depends`, and it has just one extra parameter that we'll see later.",matheus,0,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,23,reference/dependencies-2,reference/dependencies.md,`Security()`,"## `Security()`
+
+For many scenarios, you can handle security (authorization, authentication, etc.) with dependencies, using `Depends()`.
+
+But when you want to also declare OAuth2 scopes, you can use `Security()` instead of `Depends()`.
+
+You can import `Security()` directly from `fastapi`:
+
+```python
+from fastapi import Security
+```
+
+::: fastapi.Security",matheus,0,
+q06,dependencies,How do I declare a reusable dependency with Depends in FastAPI?,27,alternatives-19,alternatives.md,[APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 },"### [APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 }
+
+Right before deciding to build **FastAPI** I found **APIStar** server. It had almost everything I was looking for and had a great design.
+
+It was one of the first implementations of a framework using Python type hints to declare parameters and requests that I ever saw (before NestJS and Molten). I found it more or less at the same time as Hug. But APIStar used the OpenAPI standard.
+
+It had automatic data validation, data serialization and OpenAPI schema generation based on the same type hints in several places.
+
+Body schema definitions didn't use the same Python type hints like Pydantic, it was a bit more similar to Marshmallow, so, editor support wouldn't be as good, but still, APIStar was the best available option.
+
+It had the best performance benchmarks at the time (only surpassed by Starlette).
+
+At first, it didn't have an automatic API documentation web UI, but I knew I could add Swagger UI to it.
+
+It had a dependency injection system. It required pre-registration of components, as other tools discussed above. But still, it was a great feature.
+
+I was never able to use it in a full project, as it didn't have security integration, so, I couldn't replace all the features I was having with the full-stack generators based on Flask-apispec. I had in my backlog of projects to create a pull request adding that functionality.
+
+But then, the project's focus shifted.
+
+It was no longer an API web framework, as the creator needed to focus on Starlette.
+
+Now APIStar is a set of tools to validate OpenAPI specifications, not a web framework.",matheus,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,5,reference/security/index-6,reference/security/index.md,OAuth2 Security Scopes in Dependencies,"## OAuth2 Security Scopes in Dependencies
+
+::: fastapi.security.SecurityScopes",matheus,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,6,tutorial/security/first-steps-0,tutorial/security/first-steps.md,Security - First Steps { #security-first-steps },"# Security - First Steps { #security-first-steps }
+
+Let's imagine that you have your **backend** API in some domain.
+
+And you have a **frontend** in another domain or in a different path of the same domain (or in a mobile application).
+
+And you want to have a way for the frontend to authenticate with the backend, using a **username** and **password**.
+
+We can use **OAuth2** to build that with **FastAPI**.
+
+But let's save you the time of reading the full long specification just to find those little pieces of information you need.
+
+Let's use the tools provided by **FastAPI** to handle security.",matheus,1,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,14,tutorial/security/oauth2-jwt-13,tutorial/security/oauth2-jwt.md,Advanced usage with `scopes` { #advanced-usage-with-scopes },"## Advanced usage with `scopes` { #advanced-usage-with-scopes }
+
+OAuth2 has the notion of ""scopes"".
+
+You can use them to add a specific set of permissions to a JWT token.
+
+Then you can give this token to a user directly or a third party, to interact with your API with a set of restrictions.
+
+You can learn how to use them and how they are integrated into **FastAPI** later in the **Advanced User Guide**.",matheus,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,19,reference/security/index-3,reference/security/index.md,HTTP Credentials,"## HTTP Credentials
+
+::: fastapi.security.HTTPAuthorizationCredentials
+
+::: fastapi.security.HTTPBasicCredentials",matheus,0,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,21,advanced/security/oauth2-scopes-16,advanced/security/oauth2-scopes.md,About third party integrations { #about-third-party-integrations },"## About third party integrations { #about-third-party-integrations }
+
+In this example we are using the OAuth2 ""password"" flow.
+
+This is appropriate when we are logging in to our own application, probably with our own frontend.
+
+Because we can trust it to receive the `username` and `password`, as we control it.
+
+But if you are building an OAuth2 application that others would connect to (i.e., if you are building an authentication provider equivalent to Facebook, Google, GitHub, etc.) you should use one of the other flows.
+
+The most common is the implicit flow.
+
+The most secure is the code flow, but it's more complex to implement as it requires more steps. As it is more complex, many providers end up suggesting the implicit flow.
+
+/// note
+
+It's common that each authentication provider names their flows in a different way, to make it part of their brand.
+
+But in the end, they are implementing the same OAuth2 standard.
+
+///
+
+**FastAPI** includes utilities for all these OAuth2 authentication flows in `fastapi.security.oauth2`.",matheus,1,
+q10,security,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,25,advanced/security/oauth2-scopes-0,advanced/security/oauth2-scopes.md,OAuth2 scopes { #oauth2-scopes },"# OAuth2 scopes { #oauth2-scopes }
+
+You can use OAuth2 scopes directly with **FastAPI**, they are integrated to work seamlessly.
+
+This would allow you to have a more fine-grained permission system, following the OAuth2 standard, integrated into your OpenAPI application (and the API docs).
+
+OAuth2 with scopes is the mechanism used by many big authentication providers, like Facebook, Google, GitHub, Microsoft, X (Twitter), etc. They use it to provide specific permissions to users and applications.
+
+Every time you ""log in with"" Facebook, Google, GitHub, Microsoft, X (Twitter), that application is using OAuth2 with scopes.
+
+In this section you will see how to manage authentication and authorization with the same OAuth2 with scopes in your **FastAPI** application.
+
+/// warning
+
+This is a more or less advanced section. If you are just starting, you can skip it.
+
+You don't necessarily need OAuth2 scopes, and you can handle authentication and authorization however you want.
+
+But OAuth2 with scopes can be nicely integrated into your API (with OpenAPI) and your API docs.
+
+Nevertheless, you still enforce those scopes, or any other security/authorization requirement, however you need, in your code.
+
+In many cases, OAuth2 with scopes can be an overkill.
+
+But if you know you need it, or you are curious, keep reading.
+
+///",matheus,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,6,tutorial/handling-errors-9,tutorial/handling-errors.md,Override the `HTTPException` error handler { #override-the-httpexception-error-handler },"### Override the `HTTPException` error handler { #override-the-httpexception-error-handler }
+
+The same way, you can override the `HTTPException` handler.
+
+For example, you could want to return a plain text response instead of JSON for these errors:
+
+{* ../../docs_src/handling_errors/tutorial004_py310.py hl[3:4,9:11,25] *}
+
+/// note | Technical Details
+
+You could also use `from starlette.responses import PlainTextResponse`.
+
+**FastAPI** provides the same `starlette.responses` as `fastapi.responses` just as a convenience for you, the developer. But most of the available responses come directly from Starlette.
+
+///
+
+/// warning
+
+Have in mind that the `RequestValidationError` contains the information of the file name and line where the validation error happens so that you can show it in your logs with the relevant information if you want to.
+
+But that means that if you just convert it to a string and return that information directly, you could be leaking a bit of information about your system, that's why here the code extracts and shows each error independently.
+
+///",matheus,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,9,advanced/security/oauth2-scopes-15,advanced/security/oauth2-scopes.md,Check it { #check-it },"## Check it { #check-it }
+
+If you open the API docs, you can authenticate and specify which scopes you want to authorize.
+
+<img src=""/img/tutorial/security/image11.png"">
+
+If you don't select any scope, you will be ""authenticated"", but when you try to access `/users/me/` or `/users/me/items/` you will get an error saying that you don't have enough permissions. You will still be able to access `/status/`.
+
+And if you select the scope `me` but not the scope `items`, you will be able to access `/users/me/` but not `/users/me/items/`.
+
+That's what would happen to a third party application that tried to access one of these *path operations* with a token provided by a user, depending on how many permissions the user gave the application.",matheus,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,14,alternatives-19,alternatives.md,[APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 },"### [APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 }
+
+Right before deciding to build **FastAPI** I found **APIStar** server. It had almost everything I was looking for and had a great design.
+
+It was one of the first implementations of a framework using Python type hints to declare parameters and requests that I ever saw (before NestJS and Molten). I found it more or less at the same time as Hug. But APIStar used the OpenAPI standard.
+
+It had automatic data validation, data serialization and OpenAPI schema generation based on the same type hints in several places.
+
+Body schema definitions didn't use the same Python type hints like Pydantic, it was a bit more similar to Marshmallow, so, editor support wouldn't be as good, but still, APIStar was the best available option.
+
+It had the best performance benchmarks at the time (only surpassed by Starlette).
+
+At first, it didn't have an automatic API documentation web UI, but I knew I could add Swagger UI to it.
+
+It had a dependency injection system. It required pre-registration of components, as other tools discussed above. But still, it was a great feature.
+
+I was never able to use it in a full project, as it didn't have security integration, so, I couldn't replace all the features I was having with the full-stack generators based on Flask-apispec. I had in my backlog of projects to create a pull request adding that functionality.
+
+But then, the project's focus shifted.
+
+It was no longer an API web framework, as the creator needed to focus on Starlette.
+
+Now APIStar is a set of tools to validate OpenAPI specifications, not a web framework.",matheus,0,
+q11,security,How can I create and validate JWT access tokens in FastAPI?,22,advanced/security/oauth2-scopes-4,advanced/security/oauth2-scopes.md,JWT token with scopes { #jwt-token-with-scopes },"## JWT token with scopes { #jwt-token-with-scopes }
+
+Now, modify the token *path operation* to return the scopes requested.
+
+We are still using the same `OAuth2PasswordRequestForm`. It includes a property `scopes` with a `list` of `str`, with each scope it received in the request.
+
+And we return the scopes as part of the JWT token.
+
+/// danger
+
+For simplicity, here we are just adding the scopes received directly to the token.
+
+But in your application, for security, you should make sure you only add the scopes that the user is actually able to have, or the ones you have predefined.
+
+///
+
+{* ../../docs_src/security/tutorial005_an_py310.py hl[157] *}",matheus,1,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,1,features-8,features.md,Security and authentication { #security-and-authentication },"### Security and authentication { #security-and-authentication }
+
+Security and authentication integrated. Without any compromise with databases or data models.
+
+All the security schemes defined in OpenAPI, including:
+
+* HTTP Basic.
+* **OAuth2** (also with **JWT tokens**). Check the tutorial on [OAuth2 with JWT](tutorial/security/oauth2-jwt.md).
+* API keys in:
+    * Headers.
+    * Query parameters.
+    * Cookies, etc.
+
+Plus all the security features from Starlette (including **session cookies**).
+
+All built as reusable tools and components that are easy to integrate with your systems, data stores, relational and NoSQL databases, etc.",matheus,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,4,reference/security/index-1,reference/security/index.md,API Key Security Schemes,"## API Key Security Schemes
+
+::: fastapi.security.APIKeyCookie
+
+::: fastapi.security.APIKeyHeader
+
+::: fastapi.security.APIKeyQuery",matheus,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,9,tutorial/security/first-steps-0,tutorial/security/first-steps.md,Security - First Steps { #security-first-steps },"# Security - First Steps { #security-first-steps }
+
+Let's imagine that you have your **backend** API in some domain.
+
+And you have a **frontend** in another domain or in a different path of the same domain (or in a mobile application).
+
+And you want to have a way for the frontend to authenticate with the backend, using a **username** and **password**.
+
+We can use **OAuth2** to build that with **FastAPI**.
+
+But let's save you the time of reading the full long specification just to find those little pieces of information you need.
+
+Let's use the tools provided by **FastAPI** to handle security.",matheus,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,17,reference/security/index-4,reference/security/index.md,OAuth2 Authentication,"## OAuth2 Authentication
+
+::: fastapi.security.OAuth2
+
+::: fastapi.security.OAuth2AuthorizationCodeBearer
+
+::: fastapi.security.OAuth2PasswordBearer",matheus,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,19,tutorial/security/index-6,tutorial/security/index.md,OpenAPI { #openapi },"## OpenAPI { #openapi }
+
+OpenAPI (previously known as Swagger) is the open specification for building APIs (now part of the Linux Foundation).
+
+**FastAPI** is based on **OpenAPI**.
+
+That's what makes it possible to have multiple automatic interactive documentation interfaces, code generation, etc.
+
+OpenAPI has a way to define multiple security ""schemes"".
+
+By using them, you can take advantage of all these standard-based tools, including these interactive documentation systems.
+
+OpenAPI defines the following security schemes:
+
+* `apiKey`: an application specific key that can come from:
+    * A query parameter.
+    * A header.
+    * A cookie.
+* `http`: standard HTTP authentication systems, including:
+    * `bearer`: a header `Authorization` with a value of `Bearer ` plus a token. This is inherited from OAuth2.
+    * HTTP Basic authentication.
+    * HTTP Digest, etc.
+* `oauth2`: all the OAuth2 ways to handle security (called ""flows"").
+    * Several of these flows are appropriate for building an OAuth 2.0 authentication provider (like Google, Facebook, X (Twitter), GitHub, etc):
+        * `implicit`
+        * `clientCredentials`
+        * `authorizationCode`
+    * But there is one specific ""flow"" that can be perfectly used for handling authentication in the same application directly:
+        * `password`: some next chapters will cover examples of this.
+* `openIdConnect`: has a way to define how to discover OAuth2 authentication data automatically.
+    * This automatic discovery is what is defined in the OpenID Connect specification.
+
+/// tip
+
+Integrating other authentication/authorization providers like Google, Facebook, X (Twitter), GitHub, etc. is also possible and relatively easy.",matheus,0,
+q12,security,How do OAuth2 scopes work with FastAPI Security dependencies?,21,advanced/security/oauth2-scopes-16,advanced/security/oauth2-scopes.md,About third party integrations { #about-third-party-integrations },"## About third party integrations { #about-third-party-integrations }
+
+In this example we are using the OAuth2 ""password"" flow.
+
+This is appropriate when we are logging in to our own application, probably with our own frontend.
+
+Because we can trust it to receive the `username` and `password`, as we control it.
+
+But if you are building an OAuth2 application that others would connect to (i.e., if you are building an authentication provider equivalent to Facebook, Google, GitHub, etc.) you should use one of the other flows.
+
+The most common is the implicit flow.
+
+The most secure is the code flow, but it's more complex to implement as it requires more steps. As it is more complex, many providers end up suggesting the implicit flow.
+
+/// note
+
+It's common that each authentication provider names their flows in a different way, to make it part of their brand.
+
+But in the end, they are implementing the same OAuth2 standard.
+
+///
+
+**FastAPI** includes utilities for all these OAuth2 authentication flows in `fastapi.security.oauth2`.",matheus,0,
+q14,middleware_cors,How do I configure CORS to allow requests from specific origins in FastAPI?,20,tutorial/cors-7,tutorial/cors.md,CORS preflight requests { #cors-preflight-requests },"### CORS preflight requests { #cors-preflight-requests }
+
+These are any `OPTIONS` request with `Origin` and `Access-Control-Request-Method` headers.
+
+In this case the middleware will intercept the incoming request and respond with appropriate CORS headers, and either a `200` or `400` response for informational purposes.",matheus,0,
+q25,testing,How do I test FastAPI endpoints using TestClient?,12,advanced/async-tests-0,advanced/async-tests.md,Async Tests { #async-tests },"# Async Tests { #async-tests }
+
+You have already seen how to test your **FastAPI** applications using the provided `TestClient`. Up to now, you have only seen how to write synchronous tests, without using `async` functions.
+
+Being able to use asynchronous functions in your tests could be useful, for example, when you're querying your database asynchronously. Imagine you want to test sending requests to your FastAPI application and then verify that your backend successfully wrote the correct data in the database, while using an async database library.
+
+Let's look at how we can make that work.",matheus,1,
+q25,testing,How do I test FastAPI endpoints using TestClient?,30,tutorial/testing-2,tutorial/testing.md,Using `TestClient` { #using-testclient },"**FastAPI** provides the same `starlette.testclient` as `fastapi.testclient` just as a convenience for you, the developer. But it comes directly from Starlette.
+
+///
+
+/// tip
+
+If you want to call `async` functions in your tests apart from sending requests to your FastAPI application (e.g. asynchronous database functions), have a look at the [Async Tests](../advanced/async-tests.md) in the advanced tutorial.
+
+///",matheus,1,
