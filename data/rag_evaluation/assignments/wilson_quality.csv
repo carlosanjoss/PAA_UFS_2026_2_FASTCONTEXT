@@ -1,0 +1,56 @@
+﻿blind_id,question,answer,correctness,completeness,clarity,hallucination_present,notes
+Q-9838169810D2,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,"Define a user model, create a password hashing function, and use PyJWT for token generation in your FastAPI route.",1,1,1,0,Resposta parcialmente relevante
+Q-65B67B8AC287,How do I add middleware to a FastAPI application?,"To add middleware to a FastAPI application, you use the decorator `@app.middleware(""http"")` on top of a function. The middleware function receives the `request`, a function `call_next` that will receive the `request` as a parameter, and you can then further modify the `response` before returning it.",2,2,2,0,
+Q-83BA44740E87,How do I include and organize APIRouter instances in a larger FastAPI application?,"To include and organize APIRouter instances in a larger FastAPI application, you can use the `app.include_router()` method. This method allows you to add an `APIRouter` instance to the main `FastAPI` application, making all the routes from that router part of the main application.",2,2,2,0,
+Q-B99BBE679C06,How do I create a WebSocket endpoint in FastAPI?,Define a WebSocket endpoint using `WebSocket` in the route handler and use `WebSocketRoute` for route registration.,2,2,2,0,
+Q-63C668B6E5F8,How can I protect an endpoint using an API key in FastAPI?,Create a decorator that checks for an API key in headers or query parameters before allowing access to the endpoint.,1,1,1,0,Resposta parcialmente relevante
+Q-19E6C0C332CB,How do I add dependencies to a path operation decorator when I do not need their return values?,Use the `Depends` function to inject dependencies without requiring them in the path operation's return type.,2,2,2,0,
+Q-29CA00A48738,How can I customize or extend the generated OpenAPI schema in FastAPI?,"There are some cases where you might need to modify the generated OpenAPI schema. In this section you will see how. demonstrates how to extend the OpenAPI schema. shows how to add a custom `x-logo` to the `info` ""object"" in the OpenAPI schema. explains how to cache the OpenAPI schema to avoid generating it on each request.",2,2,2,0,
+Q-030BC3434AB5,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","These deployment concepts should be considered: Security - HTTPS, Running on startup, Restarts, Replication (the number of processes running), Memory.",2,2,2,0,
+Q-CA1895AC637D,How can I apply a dependency to every path operation in a FastAPI application?,Use the `dependencies` parameter in the route decorator to apply a dependency to every path operation.,2,2,2,0,
+Q-76BF8BDBA3D0,How can I customize or extend the generated OpenAPI schema in FastAPI?,"You can customize or extend the generated OpenAPI schema in FastAPI by using the parameter `openapi_extra`. For more details, refer to the documentation in.",2,2,2,0,
+Q-9560DDF5B47D,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,A FastAPI application can manage multiple WebSocket clients and disconnected connections by catching the `WebSocketDisconnect` exception and broadcasting messages to the remaining connected clients.,2,2,2,0,
+Q-711BE5C6D784,How can I customize the response status code of a FastAPI endpoint?,You can customize the response status code of a FastAPI endpoint by using the `status_code` parameter in the path operation function. This parameter can receive a number with the HTTP status code or an `IntEnum` such as Python's `http.HTTPStatus`.,2,2,2,0,
+Q-60DBEC22FA4E,How can I run work after returning a response using BackgroundTasks in FastAPI?,"You can run work after returning a response using `BackgroundTasks` in FastAPI by declaring a parameter of type `BackgroundTasks` in your *path operation function* or dependency function. This allows you to schedule background tasks to be executed after the response is sent, as described in.",2,2,2,0,
+Q-EF2A3A8CB87F,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,"FastAPI should be configured by setting the `root_path` parameter when creating your FastAPI app, as described in.",1,1,1,0,Resposta parcialmente relevante
+Q-FDDE0E64709E,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,"Use asyncio for asynchronous handling, manage connections with `WebSocket` class, and implement reconnect logic for disconnected clients.",2,2,2,0,
+Q-D740A6893EE9,How do I create a basic FastAPI application and define my first path operation?,"To create a basic FastAPI application and define your first path operation, you can follow these steps:
+
+1. Create a path operation to test it, as described in and.
+
+2. Use the provided code snippets in the respective files to set up your application.
+
+3. Start your FastAPI application and test the path operation to ensure it works as expected.",2,2,2,0,
+Q-D151D3156026,How do I test FastAPI endpoints using TestClient?,Use the TestClient to send HTTP requests to your FastAPI endpoints for testing.,2,1,1,0,
+Q-0418C76EE0D2,How can one FastAPI dependency depend on another dependency?,"Create a dependency function that depends on another, and use the outer dependency function in the inner one.",2,2,2,0,
+Q-C2D849900772,How should I handle errors and raise HTTP exceptions in FastAPI?,"To handle errors and raise HTTP exceptions in FastAPI, you can override the default exception handlers by importing and using `HTTPException` from `fastapi`. This allows you to customize the error responses, such as returning plain text responses instead of JSON for certain errors.",2,2,2,0,
+Q-9A53D82CABCC,How can I customize the response status code of a FastAPI endpoint?,Use the `status_code` parameter in the `response_model` decorator or directly in the function to customize the response status code.,2,2,2,0,
+Q-07B492531259,How can I deploy a FastAPI application in a Docker container?,"Deploy your FastAPI application in a Docker container using Docker Compose in a single server, with a Kubernetes cluster, a Docker Swarm Mode cluster, another tool like Nomad, or with a cloud service that deploys your container image.",2,2,2,0,
+Q-07E868E2FC34,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","Security - HTTPS, Running on startup, Restarts, Replication (the number of processes running), Memory.",2,2,2,0,
+Q-ABA88B34C8B3,How do I test FastAPI endpoints using TestClient?,"You can test FastAPI endpoints using the `TestClient` class by importing it from `fastapi.testclient` and creating a `TestClient` object by passing your FastAPI application to it. Then, you can use the `TestClient` object to call your FastAPI endpoints, similar to how you would use `httpx` for making HTTP requests.",2,2,2,0,
+Q-A8DB5CE851E4,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,"To implement OAuth2 password authentication with bearer tokens in FastAPI, you can use the `OAuth2PasswordBearer` class. This class makes **FastAPI** aware of the security scheme, allowing it to be added to OpenAPI. You can create an instance of `OAuth2PasswordBearer` by passing the `tokenUrl` parameter, which is the URL where the client (frontend) sends the `username` and `password` to obtain a token.",2,2,2,0,
+Q-F842B34A75B9,How can I override dependencies during FastAPI tests?,"You can override dependencies during FastAPI tests by using the `app.dependency_overrides` attribute, which is a simple `dict`. To override a dependency for testing, you put as a key the original dependency (a function), and as the value, your dependency override (another function).",2,2,2,0,
+Q-24AD29BB4391,How do I configure CORS to allow requests from specific origins in FastAPI?,Configure CORS in FastAPI by installing `fastapi-cors` and adding it to your app with appropriate origins in the `include_cors` function.,2,2,2,0,
+Q-F1C70D5AA944,How can I customize the response status code of a FastAPI endpoint?,You can customize the response status code of a FastAPI endpoint by either setting the `status_code` parameter in your *path operation function* or by returning a `Response` object directly and setting the `status_code` directly.,2,2,2,0,
+Q-E6267F75081B,How can I create a custom exception handler in FastAPI?,You can create a custom exception handler in FastAPI by adding a custom exception handler with `@app.exception_handler()` as shown in.,2,2,2,0,
+Q-0B916C635840,How can I declare and validate query parameters in FastAPI?,Use the `Query` function from FastAPI to declare and validate query parameters.,2,1,1,0,
+Q-0AC255AC50A5,How can I use lifespan events to initialize and clean up shared resources in FastAPI?,"You can use lifespan events to initialize and clean up shared resources in FastAPI by defining event handlers (functions) that need to be executed before the application starts up, or when the application is shutting down. These functions can be declared with `async def` or normal `def`.",2,2,2,0,
+Q-2AF3517894F7,How should I handle errors and raise HTTP exceptions in FastAPI?,You can use the same dependency functions you use normally and raise HTTP exceptions like `HTTPException` from anywhere in your code to abort a request and show the error to the client. HTTP exceptions can be imported directly from `fastapi` and you should re-raise the original exception if caught in a dependency with `yield`.,2,2,2,0,
+Q-6351496AEABA,How can I run work after returning a response using BackgroundTasks in FastAPI?,Use BackgroundTasks to run work asynchronously after returning a response.,2,1,1,0,
+Q-6625991C35A9,How do I create a basic FastAPI application and define my first path operation?,"Create the main, top-level, FastAPI application and its path operations as follows:
+
+```Python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get(""/"")
+def read_root():
+return {""Hello"": ""World""}
+```
+
+This can be found in the main.py file created in the citation.",2,2,2,0,
+Q-DD5FF96CF5A8,How do I create a WebSocket endpoint in FastAPI?,"To create a WebSocket endpoint in FastAPI, you could use the `WebSocket` parameter type directly, as it is provided by Starlette.",2,2,2,0,
+Q-5FFDFB1AEDED,What are workers and when should I use multiple worker processes to run FastAPI?,"Workers are multiple processes of the same application that can run simultaneously to distribute requests among them. You should use multiple worker processes to run FastAPI when you have more clients than a single process can handle and your server has multiple cores, allowing for better request distribution and handling.",2,2,2,0,
+Q-D133442B7542,How can I override dependencies during FastAPI tests?,"Override dependencies in tests by defining a pytest fixture that returns the desired dependency, ensuring it's used in your test functions.",2,2,2,0,

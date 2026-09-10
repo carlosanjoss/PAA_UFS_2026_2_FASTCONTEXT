@@ -1,0 +1,2529 @@
+﻿blind_id,question,answer,retrieved_context,groundedness,notes
+G-530D1118C809,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,"Yes, FastAPI dependencies can add tasks to the same BackgroundTasks object. [tutorial/background-tasks-4]","Rank 1
+Chunk ID: tutorial/background-tasks-4
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Dependency Injection { #dependency-injection }
+
+Using `BackgroundTasks` also works with the dependency injection system, you can declare a parameter of type `BackgroundTasks` at multiple levels: in a *path operation function*, in a dependency (dependable), in a sub-dependency, etc.
+
+**FastAPI** knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards:
+
+
+{* ../../docs_src/background_tasks/tutorial002_an_py310.py hl[13,15,22,25] *}
+
+
+In this example, the messages will be written to the `log.txt` file *after* the response is sent.
+
+If there was a query in the request, it will be written to the log in a background task.
+
+And then another background task generated at the *path operation function* will write a message using the `email` path parameter.
+
+---
+
+Rank 2
+Chunk ID: tutorial/background-tasks-5
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Technical Details { #technical-details }
+
+The class `BackgroundTasks` comes directly from [`starlette.background`](https://starlette.dev/background/).
+
+It is imported/included directly into FastAPI so that you can import it from `fastapi` and avoid accidentally importing the alternative `BackgroundTask` (without the `s` at the end) from `starlette.background`.
+
+By only using `BackgroundTasks` (and not `BackgroundTask`), it's then possible to use it as a *path operation function* parameter and have **FastAPI** handle the rest for you, just like when using the `Request` object directly.
+
+It's still possible to use `BackgroundTask` alone in FastAPI, but you have to create the object in your code and return a Starlette `Response` including it.
+
+You can see more details in [Starlette's official docs for Background Tasks](https://starlette.dev/background/).
+
+---
+
+Rank 3
+Chunk ID: tutorial/background-tasks-1
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Using `BackgroundTasks` { #using-backgroundtasks }
+
+First, import `BackgroundTasks` and define a parameter in your *path operation function* with a type declaration of `BackgroundTasks`:
+
+{* ../../docs_src/background_tasks/tutorial001_py310.py hl[1,13] *}
+
+**FastAPI** will create the object of type `BackgroundTasks` for you and pass it as that parameter.
+
+---
+
+Rank 4
+Chunk ID: reference/background-0
+Source: reference/background.md
+Section: Untitled
+# Background Tasks - `BackgroundTasks`
+
+You can declare a parameter in a *path operation function* or dependency function with the type `BackgroundTasks`, and then you can use it to schedule the execution of background tasks after the response is sent.
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import BackgroundTasks
+```
+
+::: fastapi.BackgroundTasks
+
+---
+
+Rank 5
+Chunk ID: tutorial/background-tasks-7
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Recap { #recap }
+
+Import and use `BackgroundTasks` with parameters in *path operation functions* and dependencies to add background tasks.",2,
+G-541884332516,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,"FastAPI should be configured by setting the `root_path` parameter when creating your FastAPI app, as described in [advanced/behind-a-proxy-11].","Rank 1
+Chunk ID: advanced/behind-a-proxy-6
+Source: advanced/behind-a-proxy.md
+Section: Untitled
+## Proxy with a stripped path prefix { #proxy-with-a-stripped-path-prefix }
+
+You could have a proxy that adds a path prefix to your application.
+
+In these cases you can use `root_path` to configure your application.
+
+The `root_path` is a mechanism provided by the ASGI specification (that FastAPI is built on, through Starlette).
+
+The `root_path` is used to handle these specific cases.
+
+And it's also used internally when mounting sub-applications.
+
+Having a proxy with a stripped path prefix, in this case, means that you could declare a path at `/app` in your code, but then, you add a layer on top (the proxy) that would put your **FastAPI** application under a path like `/api/v1`.
+
+In this case, the original path `/app` would actually be served at `/api/v1/app`.
+
+Even though all your code is written assuming there's just `/app`.
+
+{* ../../docs_src/behind_a_proxy/tutorial001_py310.py hl[6] *}
+
+And the proxy would be **""stripping""** the **path prefix** on the fly before transmitting the request to the app server (probably Uvicorn via FastAPI CLI), keeping your application convinced that it is being served at `/app`, so that you don't have to update all your code to include the prefix `/api/v1`.
+
+Up to here, everything would work as normally.
+
+---
+
+Rank 2
+Chunk ID: advanced/sub-applications-6
+Source: advanced/sub-applications.md
+Section: Untitled
+### Technical Details: `root_path` { #technical-details-root-path }
+
+When you mount a sub-application as described above, FastAPI will take care of communicating the mount path for the sub-application using a mechanism from the ASGI specification called a `root_path`.
+
+That way, the sub-application will know to use that path prefix for the docs UI.
+
+And the sub-application could also have its own mounted sub-applications and everything would work correctly, because FastAPI handles all these `root_path`s automatically.
+
+You will learn more about the `root_path` and how to use it explicitly in the section about [Behind a Proxy](behind-a-proxy.md).
+
+---
+
+Rank 3
+Chunk ID: advanced/behind-a-proxy-23
+Source: advanced/behind-a-proxy.md
+Section: Untitled
+## Mounting a sub-application { #mounting-a-sub-application }
+
+If you need to mount a sub-application (as described in [Sub Applications - Mounts](sub-applications.md)) while also using a proxy with `root_path`, you can do it normally, as you would expect.
+
+FastAPI will internally use the `root_path` smartly, so it will just work. ✨
+
+---
+
+Rank 4
+Chunk ID: advanced/behind-a-proxy-11
+Source: advanced/behind-a-proxy.md
+Section: Untitled
+### Setting the `root_path` in the FastAPI app { #setting-the-root-path-in-the-fastapi-app }
+
+Alternatively, if you don't have a way to provide a command line option like `--root-path` or equivalent, you can set the `root_path` parameter when creating your FastAPI app:
+
+{* ../../docs_src/behind_a_proxy/tutorial002_py310.py hl[3] *}
+
+Passing the `root_path` to `FastAPI` would be the equivalent of passing the `--root-path` command line option to Uvicorn or Hypercorn.
+
+---
+
+Rank 5
+Chunk ID: advanced/behind-a-proxy-22
+Source: advanced/behind-a-proxy.md
+Section: Untitled
+### Disable automatic server from `root_path` { #disable-automatic-server-from-root-path }
+
+If you don't want **FastAPI** to include an automatic server using the `root_path`, you can use the parameter `root_path_in_servers=False`:
+
+{* ../../docs_src/behind_a_proxy/tutorial004_py310.py hl[9] *}
+
+and then it won't include it in the OpenAPI schema.",2,
+G-D68670F61ACD,How do I declare a reusable dependency with Depends in FastAPI?,"The `Depends()` function in FastAPI can be used to declare a reusable dependency, as shown in the tutorial where a dependency function `get_current_active_user` is used with `Depends` to declare a sub-dependency. [tutorial/dependencies/index-5]","Rank 1
+Chunk ID: reference/dependencies-1
+Source: reference/dependencies.md
+Section: Untitled
+## `Depends()`
+
+Dependencies are handled mainly with the special function `Depends()` that takes a callable.
+
+Here is the reference for it and its parameters.
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import Depends
+```
+
+::: fastapi.Depends
+
+---
+
+Rank 2
+Chunk ID: reference/dependencies-0
+Source: reference/dependencies.md
+Section: Untitled
+# Dependencies - `Depends()` and `Security()`
+
+---
+
+Rank 3
+Chunk ID: tutorial/dependencies/index-4
+Source: tutorial/dependencies/index.md
+Section: Untitled
+### Import `Depends` { #import-depends }
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[3] *}
+
+---
+
+Rank 4
+Chunk ID: advanced/security/oauth2-scopes-5
+Source: advanced/security/oauth2-scopes.md
+Section: Untitled
+## Declare scopes in *path operations* and dependencies { #declare-scopes-in-path-operations-and-dependencies }
+
+Now we declare that the *path operation* for `/users/me/items/` requires the scope `items`.
+
+For this, we import and use `Security` from `fastapi`.
+
+You can use `Security` to declare dependencies (just like `Depends`), but `Security` also receives a parameter `scopes` with a list of scopes (strings).
+
+In this case, we pass a dependency function `get_current_active_user` to `Security` (the same way we would do with `Depends`).
+
+But we also pass a `list` of scopes, in this case with just one scope: `items` (it could have more).
+
+And the dependency function `get_current_active_user` can also declare sub-dependencies, not only with `Depends` but also with `Security`. Declaring its own sub-dependency function (`get_current_user`), and more scope requirements.
+
+In this case, it requires the scope `me` (it could require more than one scope).
+
+/// note
+
+You don't necessarily need to add different scopes in different places.
+
+We are doing it here to demonstrate how **FastAPI** handles scopes declared at different levels.
+
+///
+
+{* ../../docs_src/security/tutorial005_an_py310.py hl[5,141,172] *}
+
+/// note | Technical Details
+
+`Security` is actually a subclass of `Depends`, and it has just one extra parameter that we'll see later.
+
+---
+
+Rank 5
+Chunk ID: tutorial/dependencies/index-5
+Source: tutorial/dependencies/index.md
+Section: Untitled
+### Declare the dependency, in the ""dependant"" { #declare-the-dependency-in-the-dependant }
+
+The same way you use `Body`, `Query`, etc. with your *path operation function* parameters, use `Depends` with a new parameter:
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[13,18] *}
+
+Although you use `Depends` in the parameters of your function the same way you use `Body`, `Query`, etc, `Depends` works a bit differently.
+
+You only give `Depends` a single parameter.
+
+This parameter must be something like a function.
+
+You **don't call it** directly (don't add the parenthesis at the end), you just pass it as a parameter to `Depends()`.
+
+And that function takes parameters in the same way that *path operation functions* do.
+
+/// tip
+
+You'll see what other ""things"", apart from functions, can be used as dependencies in the next chapter.
+
+///
+
+Whenever a new request arrives, **FastAPI** will take care of:
+
+* Calling your dependency (""dependable"") function with the correct parameters.
+* Get the result from your function.
+* Assign that result to the parameter in your *path operation function*.
+
+```mermaid
+graph TB
+common_parameters([""common_parameters""])
+read_items[""/items/""]
+read_users[""/users/""]
+common_parameters --> read_items
+common_parameters --> read_users
+```
+
+This way you write shared code once and **FastAPI** takes care of calling it for your *path operations*.
+
+/// tip",2,
+G-06E51D5716F0,How can I create and validate JWT access tokens in FastAPI?,"To create and validate JWT access tokens in FastAPI, you can import the necessary modules and use the `SECRET_KEY`, `ALGORITHM`, and `ACCESS_TOKEN_EXPIRE_MINUTES` variables defined earlier. You can then create a utility function to generate a new access token and another function to validate the token, as shown in the tutorials and features documentation.","Rank 1
+Chunk ID: tutorial/security/oauth2-jwt-0
+Source: tutorial/security/oauth2-jwt.md
+Section: Untitled
+# OAuth2 with Password (and hashing), Bearer with JWT tokens { #oauth2-with-password-and-hashing-bearer-with-jwt-tokens }
+
+Now that we have all the security flow, let's make the application actually secure, using <abbr title=""JSON Web Tokens"">JWT</abbr> tokens and secure password hashing.
+
+This code is something you can actually use in your application, save the password hashes in your database, etc.
+
+We are going to start from where we left in the previous chapter and increment it.
+
+---
+
+Rank 2
+Chunk ID: tutorial/security/oauth2-jwt-8
+Source: tutorial/security/oauth2-jwt.md
+Section: Untitled
+## Handle JWT tokens { #handle-jwt-tokens }
+
+Import the modules installed.
+
+Create a random secret key that will be used to sign the JWT tokens.
+
+To generate a secure random secret key use the command:
+
+<div class=""termy"">
+
+```console
+$ openssl rand -hex 32
+
+09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+```
+
+</div>
+
+And copy the output to the variable `SECRET_KEY` (don't use the one in the example).
+
+Create a variable `ALGORITHM` with the algorithm used to sign the JWT token and set it to `""HS256""`.
+
+Create a variable for the expiration of the token.
+
+Define a Pydantic Model that will be used in the token endpoint for the response.
+
+Create a utility function to generate a new access token.
+
+{* ../../docs_src/security/tutorial004_an_py310.py hl[4,7,13:15,29:31,82:90] *}
+
+---
+
+Rank 3
+Chunk ID: tutorial/security/oauth2-jwt-1
+Source: tutorial/security/oauth2-jwt.md
+Section: Untitled
+## About JWT { #about-jwt }
+
+JWT means ""JSON Web Tokens"".
+
+It's a standard to codify a JSON object in a long dense string without spaces. It looks like this:
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+
+It is not encrypted, so, anyone could recover the information from the contents.
+
+But it's signed. So, when you receive a token that you issued, you can verify that it was you who issued it.
+
+That way, you can create a token with an expiration of, let's say, 1 week. And then when the user comes back the next day with the token, you know that user is still logged in to your system.
+
+After a week, the token will be expired and the user will not be authorized and will have to sign in again to get a new token. And if the user (or a third party) tried to modify the token to change the expiration, you would be able to discover it, because the signatures would not match.
+
+If you want to play with JWT tokens and see how they work, check [https://jwt.io](https://jwt.io/).
+
+---
+
+Rank 4
+Chunk ID: tutorial/security/simple-oauth2-17
+Source: tutorial/security/simple-oauth2.md
+Section: Untitled
+## Recap { #recap }
+
+You now have the tools to implement a complete security system based on `username` and `password` for your API.
+
+Using these tools, you can make the security system compatible with any database and with any user or data model.
+
+The only detail missing is that it is not actually ""secure"" yet.
+
+In the next chapter you'll see how to use a secure password hashing library and <abbr title=""JSON Web Tokens"">JWT</abbr> tokens.
+
+---
+
+Rank 5
+Chunk ID: features-8
+Source: features.md
+Section: Untitled
+### Security and authentication { #security-and-authentication }
+
+Security and authentication integrated. Without any compromise with databases or data models.
+
+All the security schemes defined in OpenAPI, including:
+
+* HTTP Basic.
+* **OAuth2** (also with **JWT tokens**). Check the tutorial on [OAuth2 with JWT](tutorial/security/oauth2-jwt.md).
+* API keys in:
+    * Headers.
+    * Query parameters.
+    * Cookies, etc.
+
+Plus all the security features from Starlette (including **session cookies**).
+
+All built as reusable tools and components that are easy to integrate with your systems, data stores, relational and NoSQL databases, etc.",2,
+G-26C8FF464A54,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,"To implement OAuth2 password authentication with bearer tokens in FastAPI, you can use the `OAuth2PasswordBearer` from the `fastapi.security` module, as discussed in [tutorial/security/simple-oauth2-0] and [tutorial/security/simple-oauth2-17].","Rank 1
+Chunk ID: tutorial/security/oauth2-jwt-0
+Source: tutorial/security/oauth2-jwt.md
+Section: Untitled
+# OAuth2 with Password (and hashing), Bearer with JWT tokens { #oauth2-with-password-and-hashing-bearer-with-jwt-tokens }
+
+Now that we have all the security flow, let's make the application actually secure, using <abbr title=""JSON Web Tokens"">JWT</abbr> tokens and secure password hashing.
+
+This code is something you can actually use in your application, save the password hashes in your database, etc.
+
+We are going to start from where we left in the previous chapter and increment it.
+
+---
+
+Rank 2
+Chunk ID: tutorial/security/simple-oauth2-0
+Source: tutorial/security/simple-oauth2.md
+Section: Untitled
+# Simple OAuth2 with Password and Bearer { #simple-oauth2-with-password-and-bearer }
+
+Now let's build from the previous chapter and add the missing parts to have a complete security flow.
+
+---
+
+Rank 3
+Chunk ID: tutorial/security/simple-oauth2-17
+Source: tutorial/security/simple-oauth2.md
+Section: Untitled
+## Recap { #recap }
+
+You now have the tools to implement a complete security system based on `username` and `password` for your API.
+
+Using these tools, you can make the security system compatible with any database and with any user or data model.
+
+The only detail missing is that it is not actually ""secure"" yet.
+
+In the next chapter you'll see how to use a secure password hashing library and <abbr title=""JSON Web Tokens"">JWT</abbr> tokens.
+
+---
+
+Rank 4
+Chunk ID: reference/security/index-4
+Source: reference/security/index.md
+Section: Untitled
+## OAuth2 Authentication
+
+::: fastapi.security.OAuth2
+
+::: fastapi.security.OAuth2AuthorizationCodeBearer
+
+::: fastapi.security.OAuth2PasswordBearer
+
+---
+
+Rank 5
+Chunk ID: tutorial/security/index-6
+Source: tutorial/security/index.md
+Section: Untitled
+## OpenAPI { #openapi }
+
+OpenAPI (previously known as Swagger) is the open specification for building APIs (now part of the Linux Foundation).
+
+**FastAPI** is based on **OpenAPI**.
+
+That's what makes it possible to have multiple automatic interactive documentation interfaces, code generation, etc.
+
+OpenAPI has a way to define multiple security ""schemes"".
+
+By using them, you can take advantage of all these standard-based tools, including these interactive documentation systems.
+
+OpenAPI defines the following security schemes:
+
+* `apiKey`: an application specific key that can come from:
+    * A query parameter.
+    * A header.
+    * A cookie.
+* `http`: standard HTTP authentication systems, including:
+    * `bearer`: a header `Authorization` with a value of `Bearer ` plus a token. This is inherited from OAuth2.
+    * HTTP Basic authentication.
+    * HTTP Digest, etc.
+* `oauth2`: all the OAuth2 ways to handle security (called ""flows"").
+    * Several of these flows are appropriate for building an OAuth 2.0 authentication provider (like Google, Facebook, X (Twitter), GitHub, etc):
+        * `implicit`
+        * `clientCredentials`
+        * `authorizationCode`
+    * But there is one specific ""flow"" that can be perfectly used for handling authentication in the same application directly:
+        * `password`: some next chapters will cover examples of this.
+* `openIdConnect`: has a way to define how to discover OAuth2 authentication data automatically.
+    * This automatic discovery is what is defined in the OpenID Connect specification.
+
+/// tip
+
+Integrating other authentication/authorization providers like Google, Facebook, X (Twitter), GitHub, etc. is also possible and relatively easy.",2,
+G-88834C6BB041,How can I run work after returning a response using BackgroundTasks in FastAPI?,"You can run work after returning a response using `BackgroundTasks` in FastAPI by declaring a parameter of type `BackgroundTasks` in your *path operation function* or dependency function. This allows you to schedule background tasks to be executed after the response is sent, as described in [tutorial/background-tasks-0].","Rank 1
+Chunk ID: reference/background-0
+Source: reference/background.md
+Section: Untitled
+# Background Tasks - `BackgroundTasks`
+
+You can declare a parameter in a *path operation function* or dependency function with the type `BackgroundTasks`, and then you can use it to schedule the execution of background tasks after the response is sent.
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import BackgroundTasks
+```
+
+::: fastapi.BackgroundTasks
+
+---
+
+Rank 2
+Chunk ID: tutorial/background-tasks-0
+Source: tutorial/background-tasks.md
+Section: Untitled
+# Background Tasks { #background-tasks }
+
+You can define background tasks to be run *after* returning a response.
+
+This is useful for operations that need to happen after a request, but that the client doesn't really have to be waiting for the operation to complete before receiving the response.
+
+This includes, for example:
+
+* Email notifications sent after performing an action:
+    * As connecting to an email server and sending an email tends to be ""slow"" (several seconds), you can return the response right away and send the email notification in the background.
+* Processing data:
+    * For example, let's say you receive a file that must go through a slow process, you can return a response of ""Accepted"" (HTTP 202) and process the file in the background.
+
+---
+
+Rank 3
+Chunk ID: tutorial/background-tasks-5
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Technical Details { #technical-details }
+
+The class `BackgroundTasks` comes directly from [`starlette.background`](https://starlette.dev/background/).
+
+It is imported/included directly into FastAPI so that you can import it from `fastapi` and avoid accidentally importing the alternative `BackgroundTask` (without the `s` at the end) from `starlette.background`.
+
+By only using `BackgroundTasks` (and not `BackgroundTask`), it's then possible to use it as a *path operation function* parameter and have **FastAPI** handle the rest for you, just like when using the `Request` object directly.
+
+It's still possible to use `BackgroundTask` alone in FastAPI, but you have to create the object in your code and return a Starlette `Response` including it.
+
+You can see more details in [Starlette's official docs for Background Tasks](https://starlette.dev/background/).
+
+---
+
+Rank 4
+Chunk ID: tutorial/background-tasks-4
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Dependency Injection { #dependency-injection }
+
+Using `BackgroundTasks` also works with the dependency injection system, you can declare a parameter of type `BackgroundTasks` at multiple levels: in a *path operation function*, in a dependency (dependable), in a sub-dependency, etc.
+
+**FastAPI** knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards:
+
+
+{* ../../docs_src/background_tasks/tutorial002_an_py310.py hl[13,15,22,25] *}
+
+
+In this example, the messages will be written to the `log.txt` file *after* the response is sent.
+
+If there was a query in the request, it will be written to the log in a background task.
+
+And then another background task generated at the *path operation function* will write a message using the `email` path parameter.
+
+---
+
+Rank 5
+Chunk ID: tutorial/background-tasks-1
+Source: tutorial/background-tasks.md
+Section: Untitled
+## Using `BackgroundTasks` { #using-backgroundtasks }
+
+First, import `BackgroundTasks` and define a parameter in your *path operation function* with a type declaration of `BackgroundTasks`:
+
+{* ../../docs_src/background_tasks/tutorial001_py310.py hl[1,13] *}
+
+**FastAPI** will create the object of type `BackgroundTasks` for you and pass it as that parameter.",2,
+G-369928E824A1,How can I apply a dependency to every path operation in a FastAPI application?,"You can apply a dependency to every path operation in a FastAPI application by adding the dependency to the `FastAPI` application itself, similar to how you add `dependencies` to the *path operation decorators* [tutorial/dependencies/dependencies-in-path-operation-decorators-7].","Rank 1
+Chunk ID: tutorial/dependencies/dependencies-in-path-operation-decorators-7
+Source: tutorial/dependencies/dependencies-in-path-operation-decorators.md
+Section: Untitled
+## Global Dependencies { #global-dependencies }
+
+Next we will see how to add dependencies to the whole `FastAPI` application, so that they apply to each *path operation*.
+
+---
+
+Rank 2
+Chunk ID: tutorial/dependencies/index-10
+Source: tutorial/dependencies/index.md
+Section: Untitled
+## Simple usage { #simple-usage }
+
+If you look at it, *path operation functions* are declared to be used whenever a *path* and *operation* matches, and then **FastAPI** takes care of calling the function with the correct parameters, extracting the data from the request.
+
+Actually, all (or most) of the web frameworks work in this same way.
+
+You never call those functions directly. They are called by your framework (in this case, **FastAPI**).
+
+With the Dependency Injection system, you can also tell **FastAPI** that your *path operation function* also ""depends"" on something else that should be executed before your *path operation function*, and **FastAPI** will take care of executing it and ""injecting"" the results.
+
+Other common terms for this same idea of ""dependency injection"" are:
+
+* resources
+* providers
+* services
+* injectables
+* components
+
+---
+
+Rank 3
+Chunk ID: tutorial/dependencies/index-3
+Source: tutorial/dependencies/index.md
+Section: Untitled
+### Create a dependency, or ""dependable"" { #create-a-dependency-or-dependable }
+
+Let's first focus on the dependency.
+
+It is just a function that can take all the same parameters that a *path operation function* can take:
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[8:9] *}
+
+That's it.
+
+**2 lines**.
+
+And it has the same shape and structure that all your *path operation functions* have.
+
+You can think of it as a *path operation function* without the ""decorator"" (without the `@app.get(""/some-path"")`).
+
+And it can return anything you want.
+
+In this case, this dependency expects:
+
+* An optional query parameter `q` that is a `str`.
+* An optional query parameter `skip` that is an `int`, and by default is `0`.
+* An optional query parameter `limit` that is an `int`, and by default is `100`.
+
+And then it just returns a `dict` containing those values.
+
+/// note
+
+FastAPI added support for `Annotated` (and started recommending it) in version 0.95.0.
+
+If you have an older version, you would get errors when trying to use `Annotated`.
+
+Make sure you [Upgrade the FastAPI version](../../deployment/versions.md#upgrading-the-fastapi-versions) to at least 0.95.1 before using `Annotated`.
+
+///
+
+---
+
+Rank 4
+Chunk ID: tutorial/dependencies/global-dependencies-0
+Source: tutorial/dependencies/global-dependencies.md
+Section: Untitled
+# Global Dependencies { #global-dependencies }
+
+For some types of applications you might want to add dependencies to the whole application.
+
+Similar to the way you can [add `dependencies` to the *path operation decorators*](dependencies-in-path-operation-decorators.md), you can add them to the `FastAPI` application.
+
+In that case, they will be applied to all the *path operations* in the application:
+
+{* ../../docs_src/dependencies/tutorial012_an_py310.py hl[17] *}
+
+
+And all the ideas in the section about [adding `dependencies` to the *path operation decorators*](dependencies-in-path-operation-decorators.md) still apply, but in this case, to all of the *path operations* in the app.
+
+---
+
+Rank 5
+Chunk ID: tutorial/bigger-applications-23
+Source: tutorial/bigger-applications.md
+Section: Untitled
+### Include a *path operation* { #include-a-path-operation }
+
+We can also add *path operations* directly to the `FastAPI` app.
+
+Here we do it... just to show that we can 🤷:
+
+{* ../../docs_src/bigger_applications/app_an_py310/main.py hl[21:23] title[""app/main.py""] *}
+
+and it will work correctly, together with all the other *path operations* added with `app.include_router()`.
+
+/// note | Very Technical Details
+
+**Note**: this is a very technical detail that you probably can **just skip**.
+
+---
+
+The `APIRouter`s are not ""mounted"", they are not isolated from the rest of the application.
+
+This is because we want to include their *path operations* in the OpenAPI schema and the user interfaces.
+
+FastAPI keeps the original routers and path operations active, and combines the router prefixes, dependencies, tags, responses, and other metadata when handling requests and generating OpenAPI.
+
+///",2,
+G-BBF60ACFB4D1,How can I customize or extend the generated OpenAPI schema in FastAPI?,"There are some cases where you might need to modify the generated OpenAPI schema. In this section you will see how. [how-to/extending-openapi-0] demonstrates how to extend the OpenAPI schema. [how-to/extending-openapi-6] shows how to add a custom `x-logo` to the `info` ""object"" in the OpenAPI schema. [how-to/extending-openapi-7] explains how to cache the OpenAPI schema to avoid generating it on each request.","Rank 1
+Chunk ID: how-to/extending-openapi-5
+Source: how-to/extending-openapi.md
+Section: Untitled
+### Generate the OpenAPI schema { #generate-the-openapi-schema }
+
+Then, use the same utility function to generate the OpenAPI schema, inside a `custom_openapi()` function:
+
+{* ../../docs_src/extending_openapi/tutorial001_py310.py hl[2,15:21] *}
+
+---
+
+Rank 2
+Chunk ID: tutorial/first-steps-10
+Source: tutorial/first-steps.md
+Section: Untitled
+### OpenAPI { #openapi }
+
+**FastAPI** generates a ""schema"" with all your API using the **OpenAPI** standard for defining APIs.
+
+---
+
+Rank 3
+Chunk ID: how-to/extending-openapi-0
+Source: how-to/extending-openapi.md
+Section: Untitled
+# Extending OpenAPI { #extending-openapi }
+
+There are some cases where you might need to modify the generated OpenAPI schema.
+
+In this section you will see how.
+
+---
+
+Rank 4
+Chunk ID: how-to/extending-openapi-6
+Source: how-to/extending-openapi.md
+Section: Untitled
+### Modify the OpenAPI schema { #modify-the-openapi-schema }
+
+Now you can add the ReDoc extension, adding a custom `x-logo` to the `info` ""object"" in the OpenAPI schema:
+
+{* ../../docs_src/extending_openapi/tutorial001_py310.py hl[22:24] *}
+
+---
+
+Rank 5
+Chunk ID: how-to/extending-openapi-7
+Source: how-to/extending-openapi.md
+Section: Untitled
+### Cache the OpenAPI schema { #cache-the-openapi-schema }
+
+You can use the property `.openapi_schema` as a ""cache"", to store your generated schema.
+
+That way, your application won't have to generate the schema every time a user opens your API docs.
+
+It will be generated only once, and then the same cached schema will be used for the next requests.
+
+{* ../../docs_src/extending_openapi/tutorial001_py310.py hl[13:14,25:26] *}",2,
+G-C808DD93B574,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","Security - HTTPS, Running on startup, Restarts, Replication (the number of processes running), Memory. [deployment/concepts-0]","Rank 1
+Chunk ID: deployment/concepts-30
+Source: deployment/concepts.md
+Section: Untitled
+## Recap { #recap }
+
+You have been reading here some of the main concepts that you would probably need to keep in mind when deciding how to deploy your application:
+
+* Security - HTTPS
+* Running on startup
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Previous steps before starting
+
+Understanding these ideas and how to apply them should give you the intuition necessary to take any decisions when configuring and tweaking your deployments. 🤓
+
+In the next sections, I'll give you more concrete examples of possible strategies you can follow. 🚀
+
+---
+
+Rank 2
+Chunk ID: deployment/manually-11
+Source: deployment/manually.md
+Section: Untitled
+## Deployment Concepts { #deployment-concepts }
+
+These examples run the server program (e.g Uvicorn), starting **a single process**, listening on all the IPs (`0.0.0.0`) on a predefined port (e.g. `80`).
+
+This is the basic idea. But you will probably want to take care of some additional things, like:
+
+* Security - HTTPS
+* Running on startup
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Previous steps before starting
+
+I'll tell you more about each of these concepts, how to think about them, and some concrete examples with strategies to handle them in the next chapters. 🚀
+
+---
+
+Rank 3
+Chunk ID: deployment/server-workers-13
+Source: deployment/server-workers.md
+Section: Untitled
+## Deployment Concepts { #deployment-concepts }
+
+Here you saw how to use multiple **workers** to **parallelize** the execution of the application, take advantage of **multiple cores** in the CPU, and be able to serve **more requests**.
+
+From the list of deployment concepts from above, using workers would mainly help with the **replication** part, and a little bit with the **restarts**, but you still need to take care of the others:
+
+* **Security - HTTPS**
+* **Running on startup**
+* ***Restarts***
+* Replication (the number of processes running)
+* **Memory**
+* **Previous steps before starting**
+
+---
+
+Rank 4
+Chunk ID: deployment/docker-21
+Source: deployment/docker.md
+Section: Untitled
+## Deployment Concepts { #deployment-concepts }
+
+Let's talk again about some of the same [Deployment Concepts](concepts.md) in terms of containers.
+
+Containers are mainly a tool to simplify the process of **building and deploying** an application, but they don't enforce a particular approach to handle these **deployment concepts**, and there are several possible strategies.
+
+The **good news** is that with each different strategy there's a way to cover all of the deployment concepts. 🎉
+
+Let's review these **deployment concepts** in terms of containers:
+
+* HTTPS
+* Running on startup
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Previous steps before starting
+
+---
+
+Rank 5
+Chunk ID: deployment/concepts-0
+Source: deployment/concepts.md
+Section: Untitled
+# Deployments Concepts { #deployments-concepts }
+
+When deploying a **FastAPI** application, or actually, any type of web API, there are several concepts that you probably care about, and using them you can find the **most appropriate** way to **deploy your application**.
+
+Some of the important concepts are:
+
+* Security - HTTPS
+* Running on startup
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Previous steps before starting
+
+We'll see how they would affect **deployments**.
+
+In the end, the ultimate objective is to be able to **serve your API clients** in a way that is **secure**, to **avoid disruptions**, and to use the **compute resources** (for example remote servers/virtual machines) as efficiently as possible. 🚀
+
+I'll tell you a bit more about these **concepts** here, and that would hopefully give you the **intuition** you would need to decide how to deploy your API in very different environments, possibly even in **future** ones that don't exist yet.
+
+By considering these concepts, you will be able to **evaluate and design** the best way to deploy **your own APIs**.
+
+In the next chapters, I'll give you more **concrete recipes** to deploy FastAPI applications.
+
+But for now, let's check these important **conceptual ideas**. These concepts also apply to any other type of web API. 💡",2,
+G-0E7374F00AEE,How can I create a custom exception handler in FastAPI?,"You can create a custom exception handler in FastAPI by using the `@app.exception_handler()` decorator, as shown in the example from the documentation: [tutorial/handling-errors-6].","Rank 1
+Chunk ID: how-to/custom-request-and-route-6
+Source: how-to/custom-request-and-route.md
+Section: Untitled
+## Accessing the request body in an exception handler { #accessing-the-request-body-in-an-exception-handler }
+
+/// tip
+
+To solve this same problem, it's probably a lot easier to use the `body` in a custom handler for `RequestValidationError` ([Handling Errors](../tutorial/handling-errors.md#use-the-requestvalidationerror-body)).
+
+But this example is still valid and it shows how to interact with the internal components.
+
+///
+
+We can also use this same approach to access the request body in an exception handler.
+
+All we need to do is handle the request inside a `try`/`except` block:
+
+{* ../../docs_src/custom_request_and_route/tutorial002_an_py310.py hl[14,16] *}
+
+If an exception occurs, the `Request` instance will still be in scope, so we can read and make use of the request body when handling the error:
+
+{* ../../docs_src/custom_request_and_route/tutorial002_an_py310.py hl[17:19] *}
+
+---
+
+Rank 2
+Chunk ID: tutorial/handling-errors-6
+Source: tutorial/handling-errors.md
+Section: Untitled
+## Install custom exception handlers { #install-custom-exception-handlers }
+
+You can add custom exception handlers with [the same exception utilities from Starlette](https://starlette.dev/exceptions/).
+
+Let's say you have a custom exception `UnicornException` that you (or a library you use) might `raise`.
+
+And you want to handle this exception globally with FastAPI.
+
+You could add a custom exception handler with `@app.exception_handler()`:
+
+{* ../../docs_src/handling_errors/tutorial003_py310.py hl[5:7,13:18,24] *}
+
+Here, if you request `/unicorns/yolo`, the *path operation* will `raise` a `UnicornException`.
+
+But it will be handled by the `unicorn_exception_handler`.
+
+So, you will receive a clean error, with an HTTP status code of `418` and a JSON content of:
+
+```JSON
+{""message"": ""Oops! yolo did something. There goes a rainbow...""}
+```
+
+/// note | Technical Details
+
+You could also use `from starlette.requests import Request` and `from starlette.responses import JSONResponse`.
+
+**FastAPI** provides the same `starlette.responses` as `fastapi.responses` just as a convenience for you, the developer. But most of the available responses come directly from Starlette. The same with `Request`.
+
+///
+
+---
+
+Rank 3
+Chunk ID: tutorial/dependencies/dependencies-with-yield-5
+Source: tutorial/dependencies/dependencies-with-yield.md
+Section: Untitled
+## Dependencies with `yield` and `HTTPException` { #dependencies-with-yield-and-httpexception }
+
+You saw that you can use dependencies with `yield` and have `try` blocks that try to execute some code and then run some exit code after `finally`.
+
+You can also use `except` to catch the exception that was raised and do something with it.
+
+For example, you can raise a different exception, like `HTTPException`.
+
+/// tip
+
+This is a somewhat advanced technique, and in most of the cases you won't really need it, as you can raise exceptions (including `HTTPException`) from inside of the rest of your application code, for example, in the *path operation function*.
+
+But it's there for you if you need it. 🤓
+
+///
+
+{* ../../docs_src/dependencies/tutorial008b_an_py310.py hl[18:22,31] *}
+
+If you want to catch exceptions and create a custom response based on that, create a [Custom Exception Handler](../handling-errors.md#install-custom-exception-handlers).
+
+---
+
+Rank 4
+Chunk ID: tutorial/handling-errors-8
+Source: tutorial/handling-errors.md
+Section: Untitled
+### Override request validation exceptions { #override-request-validation-exceptions }
+
+When a request contains invalid data, **FastAPI** internally raises a `RequestValidationError`.
+
+And it also includes a default exception handler for it.
+
+To override it, import the `RequestValidationError` and use it with `@app.exception_handler(RequestValidationError)` to decorate the exception handler.
+
+The exception handler will receive a `Request` and the exception.
+
+{* ../../docs_src/handling_errors/tutorial004_py310.py hl[2,14:19] *}
+
+Now, if you go to `/items/foo`, instead of getting the default JSON error with:
+
+```JSON
+{
+    ""detail"": [
+        {
+            ""loc"": [
+                ""path"",
+                ""item_id""
+            ],
+            ""msg"": ""value is not a valid integer"",
+            ""type"": ""type_error.integer""
+        }
+    ]
+}
+```
+
+you will get a text version, with:
+
+```
+Validation errors:
+Field: ('path', 'item_id'), Error: Input should be a valid integer, unable to parse string as an integer
+```
+
+---
+
+Rank 5
+Chunk ID: advanced/advanced-dependencies-11
+Source: advanced/advanced-dependencies.md
+Section: Untitled
+### Dependencies with `yield` and `except`, Technical Details { #dependencies-with-yield-and-except-technical-details }
+
+Before FastAPI 0.110.0, if you used a dependency with `yield`, and then you captured an exception with `except` in that dependency, and you didn't raise the exception again, the exception would be automatically raised/forwarded to any exception handlers or the internal server error handler.
+
+This was changed in version 0.110.0 to fix unhandled memory consumption from forwarded exceptions without a handler (internal server errors), and to make it consistent with the behavior of regular Python code.",2,
+G-106ABF6FCA4B,How do I define a request body using a Pydantic model in FastAPI?,"You can define a request body using a Pydantic model in FastAPI by declaring the parameter as `Form`, `Cookie`, or a Pydantic model, depending on the type of parameter you want to use. [tutorial/request-form-models-1] demonstrates this for form fields. [tutorial/body-9] shows how to use a Pydantic model for a request body, path, and query parameters. [tutorial/cookie-param-models-1] and [tutorial/body-nested-models-0] also provide examples of using Pydantic models for cookies and nested models, respectively.","Rank 1
+Chunk ID: tutorial/body-8
+Source: tutorial/body.md
+Section: Untitled
+## Request body + path parameters { #request-body-path-parameters }
+
+You can declare path parameters and request body at the same time.
+
+**FastAPI** will recognize that the function parameters that match path parameters should be **taken from the path**, and that function parameters that are declared to be Pydantic models should be **taken from the request body**.
+
+{* ../../docs_src/body/tutorial003_py310.py hl[15:16] *}
+
+---
+
+Rank 2
+Chunk ID: tutorial/request-form-models-1
+Source: tutorial/request-form-models.md
+Section: Untitled
+## Pydantic Models for Forms { #pydantic-models-for-forms }
+
+You just need to declare a **Pydantic model** with the fields you want to receive as **form fields**, and then declare the parameter as `Form`:
+
+{* ../../docs_src/request_form_models/tutorial001_an_py310.py hl[9:11,15] *}
+
+**FastAPI** will **extract** the data for **each field** from the **form data** in the request and give you the Pydantic model you defined.
+
+---
+
+Rank 3
+Chunk ID: tutorial/body-9
+Source: tutorial/body.md
+Section: Untitled
+## Request body + path + query parameters { #request-body-path-query-parameters }
+
+You can also declare **body**, **path** and **query** parameters, all at the same time.
+
+**FastAPI** will recognize each of them and take the data from the correct place.
+
+{* ../../docs_src/body/tutorial004_py310.py hl[16] *}
+
+The function parameters will be recognized as follows:
+
+* If the parameter is also declared in the **path**, it will be used as a path parameter.
+* If the parameter is of a **singular type** (like `int`, `float`, `str`, `bool`, etc) it will be interpreted as a **query** parameter.
+* If the parameter is declared to be of the type of a **Pydantic model**, it will be interpreted as a request **body**.
+
+/// note
+
+FastAPI will know that the value of `q` is not required because of the default value `= None`.
+
+The `str | None` is not used by FastAPI to determine that the value is not required, it will know it's not required because it has a default value of `= None`.
+
+But adding the type annotations will allow your editor to give you better support and detect errors.
+
+///
+
+---
+
+Rank 4
+Chunk ID: tutorial/cookie-param-models-1
+Source: tutorial/cookie-param-models.md
+Section: Untitled
+## Cookies with a Pydantic Model { #cookies-with-a-pydantic-model }
+
+Declare the **cookie** parameters that you need in a **Pydantic model**, and then declare the parameter as `Cookie`:
+
+{* ../../docs_src/cookie_param_models/tutorial001_an_py310.py hl[9:12,16] *}
+
+**FastAPI** will **extract** the data for **each field** from the **cookies** received in the request and give you the Pydantic model you defined.
+
+---
+
+Rank 5
+Chunk ID: tutorial/body-nested-models-0
+Source: tutorial/body-nested-models.md
+Section: Untitled
+# Body - Nested Models { #body-nested-models }
+
+With **FastAPI**, you can define, validate, document, and use arbitrarily deeply nested models (thanks to Pydantic).",2,
+G-60614155AD17,How do I add dependencies to a path operation decorator when I do not need their return values?,"You can add dependencies to a path operation decorator by including a list of `Depends()` in the decorator, as described in [tutorial/dependencies/dependencies-in-path-operation-decorators-1] and [tutorial/dependencies/dependencies-in-path-operation-decorators-0].","Rank 1
+Chunk ID: tutorial/dependencies/dependencies-in-path-operation-decorators-1
+Source: tutorial/dependencies/dependencies-in-path-operation-decorators.md
+Section: Untitled
+## Add `dependencies` to the *path operation decorator* { #add-dependencies-to-the-path-operation-decorator }
+
+The *path operation decorator* receives an optional argument `dependencies`.
+
+It should be a `list` of `Depends()`:
+
+{* ../../docs_src/dependencies/tutorial006_an_py310.py hl[19] *}
+
+These dependencies will be executed/solved the same way as normal dependencies. But their value (if they return any) won't be passed to your *path operation function*.
+
+/// tip
+
+Some editors check for unused function parameters, and show them as errors.
+
+Using these `dependencies` in the *path operation decorator* you can make sure they are executed while avoiding editor/tooling errors.
+
+It might also help avoid confusion for new developers that see an unused parameter in your code and could think it's unnecessary.
+
+///
+
+/// note
+
+In this example we use invented custom headers `X-Key` and `X-Token`.
+
+But in real cases, when implementing security, you would get more benefits from using the integrated [Security utilities (the next chapter)](../security/index.md).
+
+///
+
+---
+
+Rank 2
+Chunk ID: tutorial/dependencies/dependencies-in-path-operation-decorators-0
+Source: tutorial/dependencies/dependencies-in-path-operation-decorators.md
+Section: Untitled
+# Dependencies in path operation decorators { #dependencies-in-path-operation-decorators }
+
+In some cases you don't really need the return value of a dependency inside your *path operation function*.
+
+Or the dependency doesn't return a value.
+
+But you still need it to be executed/solved.
+
+For those cases, instead of declaring a *path operation function* parameter with `Depends`, you can add a `list` of `dependencies` to the *path operation decorator*.
+
+---
+
+Rank 3
+Chunk ID: tutorial/dependencies/index-3
+Source: tutorial/dependencies/index.md
+Section: Untitled
+### Create a dependency, or ""dependable"" { #create-a-dependency-or-dependable }
+
+Let's first focus on the dependency.
+
+It is just a function that can take all the same parameters that a *path operation function* can take:
+
+{* ../../docs_src/dependencies/tutorial001_an_py310.py hl[8:9] *}
+
+That's it.
+
+**2 lines**.
+
+And it has the same shape and structure that all your *path operation functions* have.
+
+You can think of it as a *path operation function* without the ""decorator"" (without the `@app.get(""/some-path"")`).
+
+And it can return anything you want.
+
+In this case, this dependency expects:
+
+* An optional query parameter `q` that is a `str`.
+* An optional query parameter `skip` that is an `int`, and by default is `0`.
+* An optional query parameter `limit` that is an `int`, and by default is `100`.
+
+And then it just returns a `dict` containing those values.
+
+/// note
+
+FastAPI added support for `Annotated` (and started recommending it) in version 0.95.0.
+
+If you have an older version, you would get errors when trying to use `Annotated`.
+
+Make sure you [Upgrade the FastAPI version](../../deployment/versions.md#upgrading-the-fastapi-versions) to at least 0.95.1 before using `Annotated`.
+
+///
+
+---
+
+Rank 4
+Chunk ID: tutorial/bigger-applications-9
+Source: tutorial/bigger-applications.md
+Section: Untitled
+...the prefix must not include a final `/`.
+
+So, the prefix in this case is `/items`.
+
+We can also add a list of `tags` and extra `responses` that will be applied to all the *path operations* included in this router.
+
+And we can add a list of `dependencies` that will be added to all the *path operations* in the router and will be executed/solved for each request made to them.
+
+/// tip
+
+Note that, much like [dependencies in *path operation decorators*](dependencies/dependencies-in-path-operation-decorators.md), no value will be passed to your *path operation function*.
+
+///
+
+The end result is that the item paths are now:
+
+* `/items/`
+* `/items/{item_id}`
+
+...as we intended.
+
+* They will be marked with a list of tags that contain a single string `""items""`.
+    * These ""tags"" are especially useful for the automatic interactive documentation systems (using OpenAPI).
+* All of them will include the predefined `responses`.
+* All these *path operations* will have the list of `dependencies` evaluated/executed before them.
+    * If you also declare dependencies in a specific *path operation*, **they will be executed too**.
+    * The router dependencies are executed first, then the [`dependencies` in the decorator](dependencies/dependencies-in-path-operation-decorators.md), and then the normal parameter dependencies.
+    * You can also add [`Security` dependencies with `scopes`](../advanced/security/oauth2-scopes.md).
+
+/// tip
+
+---
+
+Rank 5
+Chunk ID: tutorial/dependencies/global-dependencies-0
+Source: tutorial/dependencies/global-dependencies.md
+Section: Untitled
+# Global Dependencies { #global-dependencies }
+
+For some types of applications you might want to add dependencies to the whole application.
+
+Similar to the way you can [add `dependencies` to the *path operation decorators*](dependencies-in-path-operation-decorators.md), you can add them to the `FastAPI` application.
+
+In that case, they will be applied to all the *path operations* in the application:
+
+{* ../../docs_src/dependencies/tutorial012_an_py310.py hl[17] *}
+
+
+And all the ideas in the section about [adding `dependencies` to the *path operation decorators*](dependencies-in-path-operation-decorators.md) still apply, but in this case, to all of the *path operations* in the app.",2,
+G-FAB5DD4D03AC,How do I create a WebSocket endpoint in FastAPI?,"To create a WebSocket endpoint in FastAPI, you could use the `WebSocket` parameter type directly, as it is provided by Starlette. [reference/websockets-0]","Rank 1
+Chunk ID: advanced/websockets-4
+Source: advanced/websockets.md
+Section: Untitled
+## Create a `websocket` { #create-a-websocket }
+
+In your **FastAPI** application, create a `websocket`:
+
+{* ../../docs_src/websockets_/tutorial001_py310.py hl[1,46:47] *}
+
+/// note | Technical Details
+
+You could also use `from starlette.websockets import WebSocket`.
+
+**FastAPI** provides the same `WebSocket` directly just as a convenience for you, the developer. But it comes directly from Starlette.
+
+///
+
+---
+
+Rank 2
+Chunk ID: reference/websockets-0
+Source: reference/websockets.md
+Section: Untitled
+# WebSockets
+
+When defining WebSockets, you normally declare a parameter of type `WebSocket` and with it you can read data from the client and send data to it.
+
+Read more about it in the [FastAPI docs for WebSockets](https://fastapi.tiangolo.com/advanced/websockets/)
+
+It is provided directly by Starlette, but you can import it from `fastapi`:
+
+```python
+from fastapi import WebSocket
+```
+
+/// tip
+
+When you want to define dependencies that should be compatible with both HTTP and WebSockets, you can define a parameter that takes an `HTTPConnection` instead of a `Request` or a `WebSocket`.
+
+///
+
+::: fastapi.WebSocket
+    options:
+        members:
+            - scope
+            - app
+            - url
+            - base_url
+            - headers
+            - query_params
+            - path_params
+            - cookies
+            - client
+            - state
+            - url_for
+            - client_state
+            - application_state
+            - receive
+            - send
+            - accept
+            - receive_text
+            - receive_bytes
+            - receive_json
+            - iter_text
+            - iter_bytes
+            - iter_json
+            - send_text
+            - send_bytes
+            - send_json
+            - close
+
+---
+
+Rank 3
+Chunk ID: advanced/websockets-10
+Source: advanced/websockets.md
+Section: Untitled
+## More info { #more-info }
+
+To learn more about the options, check Starlette's documentation for:
+
+* [The `WebSocket` class](https://starlette.dev/websockets/).
+* [Class-based WebSocket handling](https://starlette.dev/endpoints/#websocketendpoint).
+
+---
+
+Rank 4
+Chunk ID: advanced/websockets-3
+Source: advanced/websockets.md
+Section: Untitled
+### In production { #in-production }
+
+In your production system, you probably have a frontend created with a modern framework like React, Vue.js or Angular.
+
+And to communicate using WebSockets with your backend you would probably use your frontend's utilities.
+
+Or you might have a native mobile application that communicates with your WebSocket backend directly, in native code.
+
+Or you might have any other way to communicate with the WebSocket endpoint.
+
+---
+
+But for this example, we'll use a very simple HTML document with some JavaScript, all inside a long string.
+
+This, of course, is not optimal and you wouldn't use it for production.
+
+In production you would have one of the options above.
+
+But it's the simplest way to focus on the server-side of WebSockets and have a working example:
+
+{* ../../docs_src/websockets_/tutorial001_py310.py hl[2,6:38,41:43] *}
+
+---
+
+Rank 5
+Chunk ID: alternatives-19
+Source: alternatives.md
+Section: Untitled
+### [APIStar](https://github.com/encode/apistar) (<= 0.5) { #apistar-0-5 }
+
+Right before deciding to build **FastAPI** I found **APIStar** server. It had almost everything I was looking for and had a great design.
+
+It was one of the first implementations of a framework using Python type hints to declare parameters and requests that I ever saw (before NestJS and Molten). I found it more or less at the same time as Hug. But APIStar used the OpenAPI standard.
+
+It had automatic data validation, data serialization and OpenAPI schema generation based on the same type hints in several places.
+
+Body schema definitions didn't use the same Python type hints like Pydantic, it was a bit more similar to Marshmallow, so, editor support wouldn't be as good, but still, APIStar was the best available option.
+
+It had the best performance benchmarks at the time (only surpassed by Starlette).
+
+At first, it didn't have an automatic API documentation web UI, but I knew I could add Swagger UI to it.
+
+It had a dependency injection system. It required pre-registration of components, as other tools discussed above. But still, it was a great feature.
+
+I was never able to use it in a full project, as it didn't have security integration, so, I couldn't replace all the features I was having with the full-stack generators based on Flask-apispec. I had in my backlog of projects to create a pull request adding that functionality.
+
+But then, the project's focus shifted.
+
+It was no longer an API web framework, as the creator needed to focus on Starlette.
+
+Now APIStar is a set of tools to validate OpenAPI specifications, not a web framework.",2,
+G-819FC0D48C0D,How can I customize or extend the generated OpenAPI schema in FastAPI?,"You can customize or extend the generated OpenAPI schema in FastAPI by using the parameter `openapi_extra`. For more details, refer to the documentation in [how-to/extending-openapi-0].","Rank 1
+Chunk ID: advanced/path-operation-advanced-configuration-6
+Source: advanced/path-operation-advanced-configuration.md
+Section: Untitled
+## OpenAPI Extra { #openapi-extra }
+
+When you declare a *path operation* in your application, **FastAPI** automatically generates the relevant metadata about that *path operation* to be included in the OpenAPI schema.
+
+/// note | Technical details
+
+In the OpenAPI specification it is called the [Operation Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#operation-object).
+
+///
+
+It has all the information about the *path operation* and is used to generate the automatic documentation.
+
+It includes the `tags`, `parameters`, `requestBody`, `responses`, etc.
+
+This *path operation*-specific OpenAPI schema is normally generated automatically by **FastAPI**, but you can also extend it.
+
+/// tip
+
+This is a low level extension point.
+
+If you only need to declare additional responses, a more convenient way to do it is with [Additional Responses in OpenAPI](additional-responses.md).
+
+///
+
+You can extend the OpenAPI schema for a *path operation* using the parameter `openapi_extra`.
+
+---
+
+Rank 2
+Chunk ID: how-to/extending-openapi-0
+Source: how-to/extending-openapi.md
+Section: Untitled
+# Extending OpenAPI { #extending-openapi }
+
+There are some cases where you might need to modify the generated OpenAPI schema.
+
+In this section you will see how.
+
+---
+
+Rank 3
+Chunk ID: how-to/extending-openapi-7
+Source: how-to/extending-openapi.md
+Section: Untitled
+### Cache the OpenAPI schema { #cache-the-openapi-schema }
+
+You can use the property `.openapi_schema` as a ""cache"", to store your generated schema.
+
+That way, your application won't have to generate the schema every time a user opens your API docs.
+
+It will be generated only once, and then the same cached schema will be used for the next requests.
+
+{* ../../docs_src/extending_openapi/tutorial001_py310.py hl[13:14,25:26] *}
+
+---
+
+Rank 4
+Chunk ID: tutorial/first-steps-14
+Source: tutorial/first-steps.md
+Section: Untitled
+#### OpenAPI and JSON Schema { #openapi-and-json-schema }
+
+OpenAPI defines an API schema for your API. And that schema includes definitions (or ""schemas"") of the data sent and received by your API using **JSON Schema**, the standard for JSON data schemas.
+
+---
+
+Rank 5
+Chunk ID: how-to/general-9
+Source: how-to/general.md
+Section: Untitled
+## OpenAPI Custom URL { #openapi-custom-url }
+
+To customize the OpenAPI URL (or remove it), read the docs for [Tutorial - Metadata and Docs URLs](../tutorial/metadata.md#openapi-url).",2,
+G-40FC2FFF068B,How can I customize the response status code of a FastAPI endpoint?,You can customize the response status code of a FastAPI endpoint by either setting the `status_code` parameter in your *path operation function* or by returning a `Response` object directly and setting the `status_code` directly. [advanced/response-change-status-code-2],"Rank 1
+Chunk ID: advanced/additional-status-codes-0
+Source: advanced/additional-status-codes.md
+Section: Untitled
+# Additional Status Codes { #additional-status-codes }
+
+By default, **FastAPI** will return the responses using a `JSONResponse`, putting the content you return from your *path operation* inside of that `JSONResponse`.
+
+It will use the default status code or the one you set in your *path operation*.
+
+---
+
+Rank 2
+Chunk ID: tutorial/path-operation-configuration-1
+Source: tutorial/path-operation-configuration.md
+Section: Untitled
+## Response Status Code { #response-status-code }
+
+You can define the (HTTP) `status_code` to be used in the response of your *path operation*.
+
+You can pass directly the `int` code, like `404`.
+
+But if you don't remember what each number code is for, you can use the shortcut constants in `status`:
+
+{* ../../docs_src/path_operation_configuration/tutorial001_py310.py hl[1,15] *}
+
+That status code will be used in the response and will be added to the OpenAPI schema.
+
+/// note | Technical Details
+
+You could also use `from starlette import status`.
+
+**FastAPI** provides the same `starlette.status` as `fastapi.status` just as a convenience for you, the developer. But it comes directly from Starlette.
+
+///
+
+---
+
+Rank 3
+Chunk ID: tutorial/response-status-code-0
+Source: tutorial/response-status-code.md
+Section: Untitled
+# Response Status Code { #response-status-code }
+
+The same way you can specify a response model, you can also declare the HTTP status code used for the response with the parameter `status_code` in any of the *path operations*:
+
+* `@app.get()`
+* `@app.post()`
+* `@app.put()`
+* `@app.delete()`
+* etc.
+
+{* ../../docs_src/response_status_code/tutorial001_py310.py hl[6] *}
+
+/// note
+
+Notice that `status_code` is a parameter of the ""decorator"" method (`get`, `post`, etc). Not of your *path operation function*, like all the parameters and body.
+
+///
+
+The `status_code` parameter receives a number with the HTTP status code.
+
+/// note
+
+`status_code` can alternatively also receive an `IntEnum`, such as Python's [`http.HTTPStatus`](https://docs.python.org/3/library/http.html#http.HTTPStatus).
+
+///
+
+It will:
+
+* Return that status code in the response.
+* Document it as such in the OpenAPI schema (and so, in the user interfaces):
+
+<img src=""/img/tutorial/response-status-code/image01.png"">
+
+/// note
+
+Some response codes (see the next section) indicate that the response does not have a body.
+
+FastAPI knows this, and will produce OpenAPI docs that state there is no response body.
+
+///
+
+---
+
+Rank 4
+Chunk ID: advanced/response-change-status-code-2
+Source: advanced/response-change-status-code.md
+Section: Untitled
+## Use a `Response` parameter { #use-a-response-parameter }
+
+You can declare a parameter of type `Response` in your *path operation function* (as you can do for cookies and headers).
+
+And then you can set the `status_code` in that *temporary* response object.
+
+{* ../../docs_src/response_change_status_code/tutorial001_py310.py hl[1,9,12] *}
+
+And then you can return any object you need, as you normally would (a `dict`, a database model, etc).
+
+And if you declared a `response_model`, it will still be used to filter and convert the object you returned.
+
+**FastAPI** will use that *temporary* response to extract the status code (also cookies and headers), and will put them in the final response that contains the value you returned, filtered by any `response_model`.
+
+You can also declare the `Response` parameter in dependencies, and set the status code in them. But keep in mind that the last one to be set will win.
+
+---
+
+Rank 5
+Chunk ID: advanced/additional-status-codes-1
+Source: advanced/additional-status-codes.md
+Section: Untitled
+## Additional status codes { #additional-status-codes_1 }
+
+If you want to return additional status codes apart from the main one, you can do that by returning a `Response` directly, like a `JSONResponse`, and set the additional status code directly.
+
+For example, let's say that you want to have a *path operation* that allows updating items, and returns HTTP status codes of 200 ""OK"" when successful.
+
+But you also want it to accept new items. And when the items didn't exist before, it creates them, and returns an HTTP status code of 201 ""Created"".
+
+To achieve that, import `JSONResponse`, and return your content there directly, setting the `status_code` that you want:
+
+{* ../../docs_src/additional_status_codes/tutorial001_an_py310.py hl[4,25] *}
+
+/// warning
+
+When you return a `Response` directly, like in the example above, it will be returned directly.
+
+It won't be serialized with a model, etc.
+
+Make sure it has the data you want it to have, and that the values are valid JSON (if you are using `JSONResponse`).
+
+///
+
+/// note | Technical Details
+
+You could also use `from starlette.responses import JSONResponse`.
+
+**FastAPI** provides the same `starlette.responses` as `fastapi.responses` just as a convenience for you, the developer. But most of the available responses come directly from Starlette. The same with `status`.
+
+///",2,
+G-7AEF984FF08F,How can I override dependencies during FastAPI tests?,"To override dependencies during FastAPI tests, you can use the `app.dependency_overrides` attribute, which is a simple `dict`. You put the original dependency as a key and your dependency override as the value. Then, FastAPI will call the override instead of the original dependency. [advanced/testing-dependencies-3]","Rank 1
+Chunk ID: advanced/testing-dependencies-3
+Source: advanced/testing-dependencies.md
+Section: Untitled
+### Use the `app.dependency_overrides` attribute { #use-the-app-dependency-overrides-attribute }
+
+For these cases, your **FastAPI** application has an attribute `app.dependency_overrides`, it is a simple `dict`.
+
+To override a dependency for testing, you put as a key the original dependency (a function), and as the value, your dependency override (another function).
+
+And then **FastAPI** will call that override instead of the original dependency.
+
+{* ../../docs_src/dependency_testing/tutorial001_an_py310.py hl[26:27,30] *}
+
+/// tip
+
+You can set a dependency override for a dependency used anywhere in your **FastAPI** application.
+
+The original dependency could be used in a *path operation function*, a *path operation decorator* (when you don't use the return value), a `.include_router()` call, etc.
+
+FastAPI will still be able to override it.
+
+///
+
+Then you can reset your overrides (remove them) by setting `app.dependency_overrides` to be an empty `dict`:
+
+```Python
+app.dependency_overrides = {}
+```
+
+/// tip
+
+If you want to override a dependency only during some tests, you can set the override at the beginning of the test (inside the test function) and reset it at the end (at the end of the test function).
+
+///
+
+---
+
+Rank 2
+Chunk ID: advanced/testing-dependencies-0
+Source: advanced/testing-dependencies.md
+Section: Untitled
+# Testing Dependencies with Overrides { #testing-dependencies-with-overrides }
+
+---
+
+Rank 3
+Chunk ID: advanced/testing-dependencies-1
+Source: advanced/testing-dependencies.md
+Section: Untitled
+## Overriding dependencies during testing { #overriding-dependencies-during-testing }
+
+There are some scenarios where you might want to override a dependency during testing.
+
+You don't want the original dependency to run (nor any of the sub-dependencies it might have).
+
+Instead, you want to provide a different dependency that will be used only during tests (possibly only some specific tests), and will provide a value that can be used where the value of the original dependency was used.
+
+---
+
+Rank 4
+Chunk ID: index-42
+Source: index.md
+Section: Untitled
+## Dependencies { #dependencies }
+
+FastAPI depends on Pydantic and Starlette.
+
+---
+
+Rank 5
+Chunk ID: tutorial/dependencies/dependencies-in-path-operation-decorators-7
+Source: tutorial/dependencies/dependencies-in-path-operation-decorators.md
+Section: Untitled
+## Global Dependencies { #global-dependencies }
+
+Next we will see how to add dependencies to the whole `FastAPI` application, so that they apply to each *path operation*.",2,
+G-2E996D660ACC,How do I define a request body using a Pydantic model in FastAPI?,You can define a request body using a Pydantic model in FastAPI by declaring the parameter in a *path operation function* or dependency as `Request` and then defining a Pydantic model for the request body. Refer to the documentation in [reference/request-0] for more details.,"Rank 1
+Chunk ID: tutorial/body-0
+Source: tutorial/body.md
+Section: Untitled
+# Request Body { #request-body }
+
+When you need to send data from a client (let's say, a browser) to your API, you send it as a **request body**.
+
+A **request** body is data sent by the client to your API. A **response** body is the data your API sends to the client.
+
+Your API almost always has to send a **response** body. But clients don't necessarily need to send **request bodies** all the time, sometimes they only request a path, maybe with some query parameters, but don't send a body.
+
+To declare a **request** body, you use [Pydantic](https://pydantic.dev/docs/) models with all their power and benefits.
+
+/// note
+
+To send data, you should use one of: `POST` (the most common), `PUT`, `DELETE` or `PATCH`.
+
+Sending a body with a `GET` request has an undefined behavior in the specifications, nevertheless, it is supported by FastAPI, only for very complex/extreme use cases.
+
+As it is discouraged, the interactive docs with Swagger UI won't show the documentation for the body when using `GET`, and proxies in the middle might not support it.
+
+///
+
+---
+
+Rank 2
+Chunk ID: reference/request-0
+Source: reference/request.md
+Section: Untitled
+# `Request` class
+
+You can declare a parameter in a *path operation function* or dependency to be of type `Request` and then you can access the raw request object directly, without any validation, etc.
+
+Read more about it in the [FastAPI docs about using Request directly](https://fastapi.tiangolo.com/advanced/using-request-directly/)
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import Request
+```
+
+/// tip
+
+When you want to define dependencies that should be compatible with both HTTP and WebSockets, you can define a parameter that takes an `HTTPConnection` instead of a `Request` or a `WebSocket`.
+
+///
+
+::: fastapi.Request
+
+---
+
+Rank 3
+Chunk ID: tutorial/cookie-param-models-1
+Source: tutorial/cookie-param-models.md
+Section: Untitled
+## Cookies with a Pydantic Model { #cookies-with-a-pydantic-model }
+
+Declare the **cookie** parameters that you need in a **Pydantic model**, and then declare the parameter as `Cookie`:
+
+{* ../../docs_src/cookie_param_models/tutorial001_an_py310.py hl[9:12,16] *}
+
+**FastAPI** will **extract** the data for **each field** from the **cookies** received in the request and give you the Pydantic model you defined.
+
+---
+
+Rank 4
+Chunk ID: advanced/response-directly-0
+Source: advanced/response-directly.md
+Section: Untitled
+# Return a Response Directly { #return-a-response-directly }
+
+When you create a **FastAPI** *path operation* you can normally return any data from it: a `dict`, a `list`, a Pydantic model, a database model, etc.
+
+If you declare a [Response Model](../tutorial/response-model.md) FastAPI will use it to serialize the data to JSON, using Pydantic.
+
+If you don't declare a response model, FastAPI will use the `jsonable_encoder` explained in [JSON Compatible Encoder](../tutorial/encoder.md) and put it in a `JSONResponse`.
+
+You could also create a `JSONResponse` directly and return it.
+
+/// tip
+
+You will normally have much better performance using a [Response Model](../tutorial/response-model.md) than returning a `JSONResponse` directly, as that way it serializes the data using Pydantic, in Rust.
+
+///
+
+---
+
+Rank 5
+Chunk ID: tutorial/body-10
+Source: tutorial/body.md
+Section: Untitled
+## Without Pydantic { #without-pydantic }
+
+If you don't want to use Pydantic models, you can also use **Body** parameters. See the docs for [Body - Multiple Parameters: Singular values in body](body-multiple-params.md#singular-values-in-body).",2,
+G-F004A72A6E0C,How can I declare and validate query parameters in FastAPI?,"You can declare and validate query parameters in FastAPI by using the `Query` function inside an `Annotated` function, specifying the type and additional validation such as `max_length`. This is demonstrated in the [tutorial/query-params-str-validations-4] documentation.","Rank 1
+Chunk ID: tutorial/query-params-str-validations-0
+Source: tutorial/query-params-str-validations.md
+Section: Untitled
+# Query Parameters and String Validations { #query-parameters-and-string-validations }
+
+**FastAPI** allows you to declare additional information and validation for your parameters.
+
+Let's take this application as example:
+
+{* ../../docs_src/query_params_str_validations/tutorial001_py310.py hl[7] *}
+
+The query parameter `q` is of type `str | None`, that means that it's of type `str` but could also be `None`, and indeed, the default value is `None`, so FastAPI will know it's not required.
+
+/// note
+
+FastAPI will know that the value of `q` is not required because of the default value `= None`.
+
+Having `str | None` will allow your editor to give you better support and detect errors.
+
+///
+
+---
+
+Rank 2
+Chunk ID: tutorial/path-params-numeric-validations-9
+Source: tutorial/path-params-numeric-validations.md
+Section: Untitled
+## Recap { #recap }
+
+With `Query`, `Path` (and others you haven't seen yet) you can declare metadata and string validations in the same ways as with [Query Parameters and String Validations](query-params-str-validations.md).
+
+And you can also declare numeric validations:
+
+* `gt`: `g`reater `t`han
+* `ge`: `g`reater than or `e`qual
+* `lt`: `l`ess `t`han
+* `le`: `l`ess than or `e`qual
+
+/// note
+
+`Query`, `Path`, and other classes you will see later are subclasses of a common `Param` class.
+
+All of them share the same parameters for additional validation and metadata you have seen.
+
+///
+
+/// note | Technical Details
+
+When you import `Query`, `Path` and others from `fastapi`, they are actually functions.
+
+That when called, return instances of classes of the same name.
+
+So, you import `Query`, which is a function. And when you call it, it returns an instance of a class also named `Query`.
+
+These functions are there (instead of just using the classes directly) so that your editor doesn't mark errors about their types.
+
+That way you can use your normal editor and coding tools without having to add custom configurations to disregard those errors.
+
+///
+
+---
+
+Rank 3
+Chunk ID: tutorial/body-9
+Source: tutorial/body.md
+Section: Untitled
+## Request body + path + query parameters { #request-body-path-query-parameters }
+
+You can also declare **body**, **path** and **query** parameters, all at the same time.
+
+**FastAPI** will recognize each of them and take the data from the correct place.
+
+{* ../../docs_src/body/tutorial004_py310.py hl[16] *}
+
+The function parameters will be recognized as follows:
+
+* If the parameter is also declared in the **path**, it will be used as a path parameter.
+* If the parameter is of a **singular type** (like `int`, `float`, `str`, `bool`, etc) it will be interpreted as a **query** parameter.
+* If the parameter is declared to be of the type of a **Pydantic model**, it will be interpreted as a request **body**.
+
+/// note
+
+FastAPI will know that the value of `q` is not required because of the default value `= None`.
+
+The `str | None` is not used by FastAPI to determine that the value is not required, it will know it's not required because it has a default value of `= None`.
+
+But adding the type annotations will allow your editor to give you better support and detect errors.
+
+///
+
+---
+
+Rank 4
+Chunk ID: tutorial/query-params-str-validations-4
+Source: tutorial/query-params-str-validations.md
+Section: Untitled
+## Add `Query` to `Annotated` in the `q` parameter { #add-query-to-annotated-in-the-q-parameter }
+
+Now that we have this `Annotated` where we can put more information (in this case some additional validation), add `Query` inside of `Annotated`, and set the parameter `max_length` to `50`:
+
+{* ../../docs_src/query_params_str_validations/tutorial002_an_py310.py hl[9] *}
+
+Notice that the default value is still `None`, so the parameter is still optional.
+
+But now, having `Query(max_length=50)` inside of `Annotated`, we are telling FastAPI that we want it to have **additional validation** for this value, we want it to have maximum 50 characters. 😎
+
+/// tip
+
+Here we are using `Query()` because this is a **query parameter**. Later we will see others like `Path()`, `Body()`, `Header()`, and `Cookie()`, that also accept the same arguments as `Query()`.
+
+///
+
+FastAPI will now:
+
+* **Validate** the data making sure that the max length is 50 characters
+* Show a **clear error** for the client when the data is not valid
+* **Document** the parameter in the OpenAPI schema *path operation* (so it will show up in the **automatic docs UI**)
+
+---
+
+Rank 5
+Chunk ID: python-types-17
+Source: python-types.md
+Section: Untitled
+## Type hints in **FastAPI** { #type-hints-in-fastapi }
+
+**FastAPI** takes advantage of these type hints to do several things.
+
+With **FastAPI** you declare parameters with type hints and you get:
+
+* **Editor support**.
+* **Type checks**.
+
+...and **FastAPI** uses the same declarations to:
+
+* **Define requirements**: from request path parameters, query parameters, headers, bodies, dependencies, etc.
+* **Convert data**: from the request to the required type.
+* **Validate data**: coming from each request:
+    * Generating **automatic errors** returned to the client when the data is invalid.
+* **Document** the API using OpenAPI:
+    * which is then used by the automatic interactive documentation user interfaces.
+
+This might all sound abstract. Don't worry. You'll see all this in action in the [Tutorial - User Guide](tutorial/index.md).
+
+The important thing is that by using standard Python types, in a single place (instead of adding more classes, decorators, etc), **FastAPI** will do a lot of the work for you.
+
+/// note
+
+If you already went through all the tutorial and came back to see more about types, a good resource is [the ""cheat sheet"" from `mypy`](https://mypy.readthedocs.io/en/latest/cheat_sheet_py3.html).
+
+///",2,
+G-623782CEAF88,What are workers and when should I use multiple worker processes to run FastAPI?,Workers are multiple processes of the same application that run in parallel to distribute requests among them. You should use multiple worker processes to run FastAPI when you have more clients than a single process can handle and your server has multiple cores. [deployment/concepts-19],"Rank 1
+Chunk ID: deployment/concepts-19
+Source: deployment/concepts.md
+Section: Untitled
+### Multiple Processes - Workers { #multiple-processes-workers }
+
+If you have more clients than what a single process can handle (for example if the virtual machine is not too big) and you have **multiple cores** in the server's CPU, then you could have **multiple processes** running with the same application at the same time, and distribute all the requests among them.
+
+When you run **multiple processes** of the same API program, they are commonly called **workers**.
+
+---
+
+Rank 2
+Chunk ID: deployment/server-workers-1
+Source: deployment/server-workers.md
+Section: Untitled
+## Multiple Workers { #multiple-workers }
+
+You can start multiple workers with the `--workers` command line option:
+
+//// tab | `fastapi`
+
+If you use the `fastapi` command:
+
+<div class=""termy"">
+
+---
+
+Rank 3
+Chunk ID: deployment/server-workers-2
+Source: deployment/server-workers.md
+Section: Untitled
+## Multiple Workers { #multiple-workers }
+
+You can start multiple workers with the `--workers` command line option:
+
+//// tab | `fastapi`
+
+If you use the `fastapi` command:
+
+<div class=""termy"">
+
+---
+
+Rank 4
+Chunk ID: deployment/server-workers-15
+Source: deployment/server-workers.md
+Section: Untitled
+## Recap { #recap }
+
+You can use multiple worker processes with the `--workers` CLI option with the `fastapi` or `uvicorn` commands to take advantage of **multi-core CPUs**, to run **multiple processes in parallel**.
+
+You could use these tools and ideas if you are setting up **your own deployment system** while taking care of the other deployment concepts yourself.
+
+Check out the next chapter to learn about **FastAPI** with containers (e.g. Docker and Kubernetes). You will see that those tools have simple ways to solve the other **deployment concepts** as well. ✨
+
+---
+
+Rank 5
+Chunk ID: deployment/concepts-18
+Source: deployment/concepts.md
+Section: Untitled
+## Replication - Processes and Memory { #replication-processes-and-memory }
+
+With a FastAPI application, using a server program like the `fastapi` command that runs Uvicorn, running it once in **one process** can serve multiple clients concurrently.
+
+But in many cases, you will want to run several worker processes at the same time.",2,
+G-EF3022D77E43,How do I configure CORS to allow requests from specific origins in FastAPI?,"You can configure CORS to allow requests from specific origins in FastAPI by setting the `allow_origins` parameter in the `CORSMiddleware`. For example, you can set it to a list of origins that should be permitted to make cross-origin requests, such as `['https://example.org', 'https://www.example.org']`. You can also use `['*']` to allow any origin. [tutorial/cors-4]","Rank 1
+Chunk ID: tutorial/cors-4
+Source: tutorial/cors.md
+Section: Untitled
+## Use `CORSMiddleware` { #use-corsmiddleware }
+
+You can configure it in your **FastAPI** application using the `CORSMiddleware`.
+
+* Import `CORSMiddleware`.
+* Create a list of allowed origins (as strings).
+* Add it as a ""middleware"" to your **FastAPI** application.
+
+You can also specify whether your backend allows:
+
+* Credentials (Authorization headers, Cookies, etc).
+* Specific HTTP methods (`POST`, `PUT`) or all of them with the wildcard `""*""`.
+* Specific HTTP headers or all of them with the wildcard `""*""`.
+
+{* ../../docs_src/cors/tutorial001_py310.py hl[2,6:11,13:19] *}
+
+The default parameters used by the `CORSMiddleware` implementation are restrictive by default, so you'll need to explicitly enable particular origins, methods, or headers, in order for browsers to be permitted to use them in a Cross-Domain context.
+
+The following arguments are supported:
+
+---
+
+Rank 2
+Chunk ID: tutorial/cors-9
+Source: tutorial/cors.md
+Section: Untitled
+## More info { #more-info }
+
+For more info about <abbr title=""Cross-Origin Resource Sharing"">CORS</abbr>, check the [Mozilla CORS documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+
+/// note | Technical Details
+
+You could also use `from starlette.middleware.cors import CORSMiddleware`.
+
+**FastAPI** provides several middlewares in `fastapi.middleware` just as a convenience for you, the developer. But most of the available middlewares come directly from Starlette.
+
+///
+
+---
+
+Rank 3
+Chunk ID: tutorial/cors-6
+Source: tutorial/cors.md
+Section: Untitled
+None of `allow_origins`, `allow_methods` and `allow_headers` can be set to `['*']` if `allow_credentials` is set to `True`. All of them must be [explicitly specified](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#credentialed_requests_and_wildcards).
+
+* `expose_headers` - Indicate any response headers that should be made accessible to the browser. Defaults to `[]`.
+* `max_age` - Sets a maximum time in seconds for browsers to cache CORS responses. Defaults to `600`.
+
+The middleware responds to two particular types of HTTP request...
+
+---
+
+Rank 4
+Chunk ID: tutorial/cors-5
+Source: tutorial/cors.md
+Section: Untitled
+The default parameters used by the `CORSMiddleware` implementation are restrictive by default, so you'll need to explicitly enable particular origins, methods, or headers, in order for browsers to be permitted to use them in a Cross-Domain context.
+
+The following arguments are supported:
+
+* `allow_origins` - A list of origins that should be permitted to make cross-origin requests. E.g. `['https://example.org', 'https://www.example.org']`. You can use `['*']` to allow any origin.
+* `allow_origin_regex` - A regex string to match against origins that should be permitted to make cross-origin requests. e.g. `'https://.*\.example\.org'`.
+* `allow_methods` - A list of HTTP methods that should be allowed for cross-origin requests. Defaults to `['GET']`. You can use `['*']` to allow all standard methods.
+* `allow_headers` - A list of HTTP request headers that should be supported for cross-origin requests. Defaults to `[]`. You can use `['*']` to allow all headers. The `Accept`, `Accept-Language`, `Content-Language` and `Content-Type` headers are always allowed for [simple CORS requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests).
+* `allow_credentials` - Indicate that cookies should be supported for cross-origin requests. Defaults to `False`.
+
+---
+
+Rank 5
+Chunk ID: tutorial/cors-7
+Source: tutorial/cors.md
+Section: Untitled
+### CORS preflight requests { #cors-preflight-requests }
+
+These are any `OPTIONS` request with `Origin` and `Access-Control-Request-Method` headers.
+
+In this case the middleware will intercept the incoming request and respond with appropriate CORS headers, and either a `200` or `400` response for informational purposes.",2,
+G-FAC6087EF67E,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,A FastAPI application can manage multiple WebSocket clients and disconnected connections by catching the `WebSocketDisconnect` exception and broadcasting messages to the remaining connected clients. [reference/websockets-1],"Rank 1
+Chunk ID: advanced/websockets-9
+Source: advanced/websockets.md
+Section: Untitled
+## Handling disconnections and multiple clients { #handling-disconnections-and-multiple-clients }
+
+When a WebSocket connection is closed, the `await websocket.receive_text()` will raise a `WebSocketDisconnect` exception, which you can then catch and handle like in this example.
+
+{* ../../docs_src/websockets_/tutorial003_py310.py hl[79:81] *}
+
+To try it out:
+
+* Open the app with several browser tabs.
+* Write messages from them.
+* Then close one of the tabs.
+
+That will raise the `WebSocketDisconnect` exception, and all the other clients will receive a message like:
+
+```
+Client #1596980209979 left the chat
+```
+
+/// tip
+
+The app above is a minimal and simple example to demonstrate how to handle and broadcast messages to several WebSocket connections.
+
+But keep in mind that, as everything is handled in memory, in a single list, it will only work while the process is running, and will only work with a single process.
+
+If you need something easy to integrate with FastAPI but that is more robust, supported by Redis, PostgreSQL or others, check [encode/broadcaster](https://github.com/encode/broadcaster).
+
+///
+
+---
+
+Rank 2
+Chunk ID: reference/websockets-1
+Source: reference/websockets.md
+Section: Untitled
+## WebSockets - additional classes
+
+Additional classes for handling WebSockets.
+
+Provided directly by Starlette, but you can import them from `fastapi`:
+
+```python
+from fastapi.websockets import WebSocketDisconnect, WebSocketState
+```
+
+::: fastapi.websockets.WebSocketDisconnect
+
+When a client disconnects, a `WebSocketDisconnect` exception is raised, you can catch it.
+
+You can import it directly from `fastapi`:
+
+```python
+from fastapi import WebSocketDisconnect
+```
+
+Read more about it in the [FastAPI docs for WebSockets](https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients)
+
+::: fastapi.websockets.WebSocketState
+
+`WebSocketState` is an enumeration of the possible states of a WebSocket connection.
+
+---
+
+Rank 3
+Chunk ID: advanced/websockets-4
+Source: advanced/websockets.md
+Section: Untitled
+## Create a `websocket` { #create-a-websocket }
+
+In your **FastAPI** application, create a `websocket`:
+
+{* ../../docs_src/websockets_/tutorial001_py310.py hl[1,46:47] *}
+
+/// note | Technical Details
+
+You could also use `from starlette.websockets import WebSocket`.
+
+**FastAPI** provides the same `WebSocket` directly just as a convenience for you, the developer. But it comes directly from Starlette.
+
+///
+
+---
+
+Rank 4
+Chunk ID: advanced/websockets-0
+Source: advanced/websockets.md
+Section: Untitled
+# WebSockets { #websockets }
+
+You can use [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) with **FastAPI**.
+
+---
+
+Rank 5
+Chunk ID: tutorial/server-sent-events-9
+Source: tutorial/server-sent-events.md
+Section: Untitled
+## Technical Details { #technical-details }
+
+FastAPI implements some SSE best practices out of the box.
+
+* Send a **""keep alive"" `ping` comment** every 15 seconds when there hasn't been any message, to prevent some proxies from closing the connection, as suggested in the [HTML specification: Server-Sent Events](https://html.spec.whatwg.org/multipage/server-sent-events.html#authoring-notes).
+* Set the `Cache-Control: no-cache` header to **prevent caching** of the stream.
+* Set a special header `X-Accel-Buffering: no` to **prevent buffering** in some proxies like Nginx.
+
+You don't have to do anything about it, it works out of the box. 🤓",2,
+G-19F2B4A0F7D5,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,A FastAPI application can manage multiple WebSocket clients and disconnected connections by handling the `WebSocketDisconnect` exception and broadcasting messages to other connected clients. This is demonstrated in the example provided in [advanced/websockets-9].,"Rank 1
+Chunk ID: advanced/websockets-4
+Source: advanced/websockets.md
+Section: Untitled
+## Create a `websocket` { #create-a-websocket }
+
+In your **FastAPI** application, create a `websocket`:
+
+{* ../../docs_src/websockets_/tutorial001_py310.py hl[1,46:47] *}
+
+/// note | Technical Details
+
+You could also use `from starlette.websockets import WebSocket`.
+
+**FastAPI** provides the same `WebSocket` directly just as a convenience for you, the developer. But it comes directly from Starlette.
+
+///
+
+---
+
+Rank 2
+Chunk ID: advanced/websockets-9
+Source: advanced/websockets.md
+Section: Untitled
+## Handling disconnections and multiple clients { #handling-disconnections-and-multiple-clients }
+
+When a WebSocket connection is closed, the `await websocket.receive_text()` will raise a `WebSocketDisconnect` exception, which you can then catch and handle like in this example.
+
+{* ../../docs_src/websockets_/tutorial003_py310.py hl[79:81] *}
+
+To try it out:
+
+* Open the app with several browser tabs.
+* Write messages from them.
+* Then close one of the tabs.
+
+That will raise the `WebSocketDisconnect` exception, and all the other clients will receive a message like:
+
+```
+Client #1596980209979 left the chat
+```
+
+/// tip
+
+The app above is a minimal and simple example to demonstrate how to handle and broadcast messages to several WebSocket connections.
+
+But keep in mind that, as everything is handled in memory, in a single list, it will only work while the process is running, and will only work with a single process.
+
+If you need something easy to integrate with FastAPI but that is more robust, supported by Redis, PostgreSQL or others, check [encode/broadcaster](https://github.com/encode/broadcaster).
+
+///
+
+---
+
+Rank 3
+Chunk ID: deployment/concepts-19
+Source: deployment/concepts.md
+Section: Untitled
+### Multiple Processes - Workers { #multiple-processes-workers }
+
+If you have more clients than what a single process can handle (for example if the virtual machine is not too big) and you have **multiple cores** in the server's CPU, then you could have **multiple processes** running with the same application at the same time, and distribute all the requests among them.
+
+When you run **multiple processes** of the same API program, they are commonly called **workers**.
+
+---
+
+Rank 4
+Chunk ID: reference/websockets-0
+Source: reference/websockets.md
+Section: Untitled
+# WebSockets
+
+When defining WebSockets, you normally declare a parameter of type `WebSocket` and with it you can read data from the client and send data to it.
+
+Read more about it in the [FastAPI docs for WebSockets](https://fastapi.tiangolo.com/advanced/websockets/)
+
+It is provided directly by Starlette, but you can import it from `fastapi`:
+
+```python
+from fastapi import WebSocket
+```
+
+/// tip
+
+When you want to define dependencies that should be compatible with both HTTP and WebSockets, you can define a parameter that takes an `HTTPConnection` instead of a `Request` or a `WebSocket`.
+
+///
+
+::: fastapi.WebSocket
+    options:
+        members:
+            - scope
+            - app
+            - url
+            - base_url
+            - headers
+            - query_params
+            - path_params
+            - cookies
+            - client
+            - state
+            - url_for
+            - client_state
+            - application_state
+            - receive
+            - send
+            - accept
+            - receive_text
+            - receive_bytes
+            - receive_json
+            - iter_text
+            - iter_bytes
+            - iter_json
+            - send_text
+            - send_bytes
+            - send_json
+            - close
+
+---
+
+Rank 5
+Chunk ID: deployment/concepts-18
+Source: deployment/concepts.md
+Section: Untitled
+## Replication - Processes and Memory { #replication-processes-and-memory }
+
+With a FastAPI application, using a server program like the `fastapi` command that runs Uvicorn, running it once in **one process** can serve multiple clients concurrently.
+
+But in many cases, you will want to run several worker processes at the same time.",2,
+G-377428C0EDBB,How can I create and validate JWT access tokens in FastAPI?,"To create and validate JWT access tokens in FastAPI, you can use the `PyJWT` library directly, as **FastAPI** doesn't require any complex mechanisms to integrate external packages. You can use the `create_access_token` function provided by FastAPI to create JWT tokens and the `OAuth2PasswordBearer` class to handle the token validation. [tutorial/security/first-steps-7]","Rank 1
+Chunk ID: tutorial/security/simple-oauth2-11
+Source: tutorial/security/simple-oauth2.md
+Section: Untitled
+## Return the token { #return-the-token }
+
+The response of the `token` endpoint must be a JSON object.
+
+It should have a `token_type`. In our case, as we are using ""Bearer"" tokens, the token type should be ""`bearer`"".
+
+And it should have an `access_token`, with a string containing our access token.
+
+For this simple example, we are going to just be completely insecure and return the same `username` as the token.
+
+/// tip
+
+In the next chapter, you will see a real secure implementation, with password hashing and <abbr title=""JSON Web Tokens"">JWT</abbr> tokens.
+
+But for now, let's focus on the specific details we need.
+
+///
+
+{* ../../docs_src/security/tutorial003_an_py310.py hl[87] *}
+
+/// tip
+
+By the spec, you should return a JSON with an `access_token` and a `token_type`, the same as in this example.
+
+This is something that you have to do yourself in your code, and make sure you use those JSON keys.
+
+It's almost the only thing that you have to remember to do correctly yourself, to be compliant with the specifications.
+
+For the rest, **FastAPI** handles it for you.
+
+///
+
+---
+
+Rank 2
+Chunk ID: tutorial/security/first-steps-7
+Source: tutorial/security/first-steps.md
+Section: Untitled
+## **FastAPI**'s `OAuth2PasswordBearer` { #fastapis-oauth2passwordbearer }
+
+**FastAPI** provides several tools, at different levels of abstraction, to implement these security features.
+
+In this example we are going to use **OAuth2**, with the **Password** flow, using a **Bearer** token. We do that using the `OAuth2PasswordBearer` class.
+
+/// note
+
+A ""bearer"" token is not the only option.
+
+But it's the best one for our use case.
+
+And it might be the best for most use cases, unless you are an OAuth2 expert and know exactly why there's another option that better suits your needs.
+
+In that case, **FastAPI** also provides you with the tools to build it.
+
+///
+
+When we create an instance of the `OAuth2PasswordBearer` class we pass in the `tokenUrl` parameter. This parameter contains the URL that the client (the frontend running in the user's browser) will use to send the `username` and `password` in order to get a token.
+
+{* ../../docs_src/security/tutorial001_an_py310.py hl[8] *}
+
+/// tip
+
+Here `tokenUrl=""token""` refers to a relative URL `token` that we haven't created yet. As it's a relative URL, it's equivalent to `./token`.
+
+---
+
+Rank 3
+Chunk ID: tutorial/security/oauth2-jwt-13
+Source: tutorial/security/oauth2-jwt.md
+Section: Untitled
+## Advanced usage with `scopes` { #advanced-usage-with-scopes }
+
+OAuth2 has the notion of ""scopes"".
+
+You can use them to add a specific set of permissions to a JWT token.
+
+Then you can give this token to a user directly or a third party, to interact with your API with a set of restrictions.
+
+You can learn how to use them and how they are integrated into **FastAPI** later in the **Advanced User Guide**.
+
+---
+
+Rank 4
+Chunk ID: tutorial/security/oauth2-jwt-14
+Source: tutorial/security/oauth2-jwt.md
+Section: Untitled
+## Recap { #recap }
+
+With what you have seen up to now, you can set up a secure **FastAPI** application using standards like OAuth2 and JWT.
+
+In almost any framework handling the security becomes a rather complex subject quite quickly.
+
+Many packages that simplify it a lot have to make many compromises with the data model, database, and available features. And some of these packages that simplify things too much actually have security flaws underneath.
+
+---
+
+**FastAPI** doesn't make any compromise with any database, data model or tool.
+
+It gives you all the flexibility to choose the ones that fit your project the best.
+
+And you can use directly many well maintained and widely used packages like `pwdlib` and `PyJWT`, because **FastAPI** doesn't require any complex mechanisms to integrate external packages.
+
+But it provides you the tools to simplify the process as much as possible without compromising flexibility, robustness, or security.
+
+And you can use and implement secure, standard protocols, like OAuth2 in a relatively simple way.
+
+You can learn more in the **Advanced User Guide** about how to use OAuth2 ""scopes"", for a more fine-grained permission system, following these same standards. OAuth2 with scopes is the mechanism used by many big authentication providers, like Facebook, Google, GitHub, Microsoft, X (Twitter), etc. to authorize third party applications to interact with their APIs on behalf of their users.
+
+---
+
+Rank 5
+Chunk ID: tutorial/security/first-steps-6
+Source: tutorial/security/first-steps.md
+Section: Untitled
+But in this case, the same **FastAPI** application will handle the API and the authentication.
+
+So, let's review it from that simplified point of view:
+
+* The user types the `username` and `password` in the frontend, and hits `Enter`.
+* The frontend (running in the user's browser) sends that `username` and `password` to a specific URL in our API (declared with `tokenUrl=""token""`).
+* The API checks that `username` and `password`, and responds with a ""token"" (we haven't implemented any of this yet).
+    * A ""token"" is just a string with some content that we can use later to verify this user.
+    * Normally, a token is set to expire after some time.
+        * So, the user will have to log in again at some point later.
+        * And if the token is stolen, the risk is less. It is not like a permanent key that will work forever (in most of the cases).
+* The frontend stores that token temporarily somewhere.
+* The user clicks in the frontend to go to another section of the frontend web app.
+* The frontend needs to fetch some more data from the API.
+    * But it needs authentication for that specific endpoint.
+    * So, to authenticate with our API, it sends a header `Authorization` with a value of `Bearer ` plus the token.
+    * If the token contains `foobar`, the content of the `Authorization` header would be: `Bearer foobar`.",2,
+G-E885803F5F7B,How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?,"You can configure `TrustedHostMiddleware` in FastAPI by specifying the `allowed_hosts` argument to allow certain domain names, and setting `www_redirect` to `True` to redirect non-www to www versions of the allowed hosts. For enforcing HTTPS, you can use `HTTPSRedirectMiddleware` by ensuring all incoming requests are either `https` or `wss`.","Rank 1
+Chunk ID: advanced/behind-a-proxy-3
+Source: advanced/behind-a-proxy.md
+Section: Untitled
+### Redirects with HTTPS { #redirects-with-https }
+
+For example, let's say you define a *path operation* `/items/`:
+
+{* ../../docs_src/behind_a_proxy/tutorial001_01_py310.py hl[6] *}
+
+If the client tries to go to `/items`, by default, it would be redirected to `/items/`.
+
+But before setting the *CLI Option* `--forwarded-allow-ips` it could redirect to `http://localhost:8000/items/`.
+
+But maybe your application is hosted at `https://mysuperapp.com`, and the redirection should be to `https://mysuperapp.com/items/`.
+
+By setting `--proxy-headers` now FastAPI would be able to redirect to the right location. 😎
+
+```
+https://mysuperapp.com/items/
+```
+
+/// tip
+
+If you want to learn more about HTTPS, check the guide [About HTTPS](../deployment/https.md).
+
+///
+
+---
+
+Rank 2
+Chunk ID: tutorial/cors-4
+Source: tutorial/cors.md
+Section: Untitled
+## Use `CORSMiddleware` { #use-corsmiddleware }
+
+You can configure it in your **FastAPI** application using the `CORSMiddleware`.
+
+* Import `CORSMiddleware`.
+* Create a list of allowed origins (as strings).
+* Add it as a ""middleware"" to your **FastAPI** application.
+
+You can also specify whether your backend allows:
+
+* Credentials (Authorization headers, Cookies, etc).
+* Specific HTTP methods (`POST`, `PUT`) or all of them with the wildcard `""*""`.
+* Specific HTTP headers or all of them with the wildcard `""*""`.
+
+{* ../../docs_src/cors/tutorial001_py310.py hl[2,6:11,13:19] *}
+
+The default parameters used by the `CORSMiddleware` implementation are restrictive by default, so you'll need to explicitly enable particular origins, methods, or headers, in order for browsers to be permitted to use them in a Cross-Domain context.
+
+The following arguments are supported:
+
+---
+
+Rank 3
+Chunk ID: advanced/behind-a-proxy-5
+Source: advanced/behind-a-proxy.md
+Section: Untitled
+When **FastAPI CLI** is configured with `--forwarded-allow-ips`, it trusts these headers and uses them, for example to generate the correct URLs in redirects.
+
+---
+
+Rank 4
+Chunk ID: advanced/middleware-4
+Source: advanced/middleware.md
+Section: Untitled
+## `TrustedHostMiddleware` { #trustedhostmiddleware }
+
+Enforces that all incoming requests have a correctly set `Host` header, in order to guard against HTTP Host Header attacks.
+
+{* ../../docs_src/advanced_middleware/tutorial002_py310.py hl[2,6:8] *}
+
+The following arguments are supported:
+
+* `allowed_hosts` - A list of domain names that should be allowed as hostnames. Wildcard domains such as `*.example.com` are supported for matching subdomains. To allow any hostname either use `allowed_hosts=[""*""]` or omit the middleware.
+* `www_redirect` - If set to True, requests to non-www versions of the allowed hosts will be redirected to their www counterparts. Defaults to `True`.
+
+If an incoming request does not validate correctly then a `400` response will be sent.
+
+---
+
+Rank 5
+Chunk ID: advanced/middleware-3
+Source: advanced/middleware.md
+Section: Untitled
+## `HTTPSRedirectMiddleware` { #httpsredirectmiddleware }
+
+Enforces that all incoming requests must either be `https` or `wss`.
+
+Any incoming request to `http` or `ws` will be redirected to the secure scheme instead.
+
+{* ../../docs_src/advanced_middleware/tutorial001_py310.py hl[2,6] *}",2,

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-09T23:44:29.136532+00:00",
+  "source_results": "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\experiments\\raw_results\\results.csv",
+  "raw_result_rows": 2400,
+  "performance_table_rows": 16,
+  "quality_table_rows": 64,
+  "quality_available": true,
+  "generated_artifacts": [
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\tables\\performance_by_algorithm.csv",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\tables\\quality_by_algorithm.csv",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\corpus_size_vs_time.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\corpus_size_vs_memory.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\algorithm_vs_time.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\comparisons_vs_corpus_size.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\algorithm_vs_precision_at_10.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\k_vs_precision.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\k_vs_recall.png",
+    "C:\\Users\\carlo\\OneDrive\\Documents\\ESTUDOS\\MESTRADO\\2026.2\\Projeto e Análise de Algortimos\\PAA_UFS_2026_2_FastContext\\reports\\figures\\lexical_vs_semantic_tradeoff.png"
+  ],
+  "skipped_artifacts": {
+    "merge_vs_quick": "Quick Sort is not part of the main retrieval results schema. It requires a separate sorting experiment."
+  }
+}

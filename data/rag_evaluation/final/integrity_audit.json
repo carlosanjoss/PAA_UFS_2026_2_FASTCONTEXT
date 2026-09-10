@@ -1,0 +1,16 @@
+{
+  "agreement_metric_count": 5,
+  "completed_file_count": 10,
+  "condition_counts": {
+    "groundedness:optimized": 30,
+    "groundedness:semantic": 30,
+    "quality:no_rag": 30,
+    "quality:optimized": 30,
+    "quality:semantic": 30
+  },
+  "duplicate_completed_sha256": {},
+  "duplicate_completed_sha256_count": 0,
+  "final_item_count": 150,
+  "perfect_agreement_metric_count": 5,
+  "unique_completed_sha256": 10
+}

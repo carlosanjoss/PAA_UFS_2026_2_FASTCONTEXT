@@ -1,0 +1,41 @@
+human_evaluation:
+  seed: 42
+
+  annotators:
+    - carlos
+    - yann
+    - wilson
+    - matheus
+    - gabriela
+
+  judgments_per_item: 2
+
+  inputs:
+    generations_csv: "experiments/rag_results/generations.csv"
+    chunks_jsonl: "data/chunks/chunks.jsonl"
+
+    expected_generations_sha256: "77160C5A3B2F10EA7E76C01B755B289CED4C73ABC325141791400A6EA9B092B4"
+    expected_rows: 90
+    expected_model: "qwen2.5:3b"
+    expected_seed: 42
+    expected_corpus_fingerprint: "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d"
+
+    expected_condition_counts:
+      no_rag: 30
+      optimized: 30
+      semantic: 30
+
+  quality:
+    conditions:
+      - no_rag
+      - optimized
+      - semantic
+    strip_chunk_citations: true
+
+  groundedness:
+    conditions:
+      - optimized
+      - semantic
+
+  output:
+    directory: "data/rag_evaluation"

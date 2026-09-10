@@ -1,0 +1,6 @@
+﻿task_type,metric,items,exact_agreements,exact_agreement_rate,mean_absolute_difference,kappa_type,kappa
+quality,correctness,90,90,1.0,0.0,linear_weighted_cohen,1.0
+quality,completeness,90,90,1.0,0.0,linear_weighted_cohen,1.0
+quality,clarity,90,90,1.0,0.0,linear_weighted_cohen,1.0
+quality,hallucination_present,90,90,1.0,,unweighted_cohen,
+groundedness,groundedness,60,60,1.0,0.0,linear_weighted_cohen,1.0

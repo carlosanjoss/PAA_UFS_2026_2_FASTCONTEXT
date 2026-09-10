@@ -1,0 +1,1153 @@
+{
+  "all_prompts_identical": true,
+  "all_top_k_identical": true,
+  "lexical_conditions": [
+    "linear",
+    "indexed",
+    "optimized"
+  ],
+  "queries_checked": 30,
+  "records": [
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 3630,
+        "linear": 3630,
+        "optimized": 3630
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "f7919210d28eb5686e0b246f067e1eab90d7e2d3ba0819bf350e68aefe3df417",
+        "linear": "f7919210d28eb5686e0b246f067e1eab90d7e2d3ba0819bf350e68aefe3df417",
+        "optimized": "f7919210d28eb5686e0b246f067e1eab90d7e2d3ba0819bf350e68aefe3df417"
+      },
+      "prompts_identical": true,
+      "query_id": "q01",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/security/http-basic-auth-0",
+          "tutorial/first-steps-23",
+          "how-to/custom-docs-ui-assets-5",
+          "contributing-0",
+          "how-to/custom-docs-ui-assets-15"
+        ],
+        "linear": [
+          "advanced/security/http-basic-auth-0",
+          "tutorial/first-steps-23",
+          "how-to/custom-docs-ui-assets-5",
+          "contributing-0",
+          "how-to/custom-docs-ui-assets-15"
+        ],
+        "optimized": [
+          "advanced/security/http-basic-auth-0",
+          "tutorial/first-steps-23",
+          "how-to/custom-docs-ui-assets-5",
+          "contributing-0",
+          "how-to/custom-docs-ui-assets-15"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 4968,
+        "linear": 4968,
+        "optimized": 4968
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "39f5964d0078dedbeddafdfe099240f67d50fdfe2fb46a9b7eb1f3f3788b9778",
+        "linear": "39f5964d0078dedbeddafdfe099240f67d50fdfe2fb46a9b7eb1f3f3788b9778",
+        "optimized": "39f5964d0078dedbeddafdfe099240f67d50fdfe2fb46a9b7eb1f3f3788b9778"
+      },
+      "prompts_identical": true,
+      "query_id": "q02",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/query-param-models-1",
+          "tutorial/query-params-4",
+          "tutorial/body-multiple-params-4",
+          "tutorial/header-params-2",
+          "tutorial/query-param-models-0"
+        ],
+        "linear": [
+          "tutorial/query-param-models-1",
+          "tutorial/query-params-4",
+          "tutorial/body-multiple-params-4",
+          "tutorial/header-params-2",
+          "tutorial/query-param-models-0"
+        ],
+        "optimized": [
+          "tutorial/query-param-models-1",
+          "tutorial/query-params-4",
+          "tutorial/body-multiple-params-4",
+          "tutorial/header-params-2",
+          "tutorial/query-param-models-0"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5433,
+        "linear": 5433,
+        "optimized": 5433
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "9f75382a3db4fa8c2b21735912f7345ff9835ea95dae6e7b4bbdf952d417412b",
+        "linear": "9f75382a3db4fa8c2b21735912f7345ff9835ea95dae6e7b4bbdf952d417412b",
+        "optimized": "9f75382a3db4fa8c2b21735912f7345ff9835ea95dae6e7b4bbdf952d417412b"
+      },
+      "prompts_identical": true,
+      "query_id": "q03",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/body-0",
+          "reference/request-0",
+          "tutorial/cookie-param-models-1",
+          "advanced/response-directly-0",
+          "tutorial/body-10"
+        ],
+        "linear": [
+          "tutorial/body-0",
+          "reference/request-0",
+          "tutorial/cookie-param-models-1",
+          "advanced/response-directly-0",
+          "tutorial/body-10"
+        ],
+        "optimized": [
+          "tutorial/body-0",
+          "reference/request-0",
+          "tutorial/cookie-param-models-1",
+          "advanced/response-directly-0",
+          "tutorial/body-10"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 6055,
+        "linear": 6055,
+        "optimized": 6055
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "9b0ad03ab8c87589224c8908fc8684e30de6f77a4198f76b616064e36e20484f",
+        "linear": "9b0ad03ab8c87589224c8908fc8684e30de6f77a4198f76b616064e36e20484f",
+        "optimized": "9b0ad03ab8c87589224c8908fc8684e30de6f77a4198f76b616064e36e20484f"
+      },
+      "prompts_identical": true,
+      "query_id": "q04",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/response-change-status-code-0",
+          "tutorial/path-operation-configuration-1",
+          "reference/status-0",
+          "tutorial/response-status-code-0",
+          "tutorial/response-status-code-3"
+        ],
+        "linear": [
+          "advanced/response-change-status-code-0",
+          "tutorial/path-operation-configuration-1",
+          "reference/status-0",
+          "tutorial/response-status-code-0",
+          "tutorial/response-status-code-3"
+        ],
+        "optimized": [
+          "advanced/response-change-status-code-0",
+          "tutorial/path-operation-configuration-1",
+          "reference/status-0",
+          "tutorial/response-status-code-0",
+          "tutorial/response-status-code-3"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5283,
+        "linear": 5283,
+        "optimized": 5283
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "99600e47ffc2c62cc43df49efcee1930370234707a8d0dbe0c3698945090a4b5",
+        "linear": "99600e47ffc2c62cc43df49efcee1930370234707a8d0dbe0c3698945090a4b5",
+        "optimized": "99600e47ffc2c62cc43df49efcee1930370234707a8d0dbe0c3698945090a4b5"
+      },
+      "prompts_identical": true,
+      "query_id": "q05",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-4",
+          "reference/exceptions-0",
+          "tutorial/dependencies/dependencies-with-yield-7",
+          "tutorial/dependencies/dependencies-with-yield-5",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-2"
+        ],
+        "linear": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-4",
+          "reference/exceptions-0",
+          "tutorial/dependencies/dependencies-with-yield-7",
+          "tutorial/dependencies/dependencies-with-yield-5",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-2"
+        ],
+        "optimized": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-4",
+          "reference/exceptions-0",
+          "tutorial/dependencies/dependencies-with-yield-7",
+          "tutorial/dependencies/dependencies-with-yield-5",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-2"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5602,
+        "linear": 5602,
+        "optimized": 5602
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "725061fb0918b129c562f758b5c536b2b3bcf72f242ccce1e5973a4a217c89ba",
+        "linear": "725061fb0918b129c562f758b5c536b2b3bcf72f242ccce1e5973a4a217c89ba",
+        "optimized": "725061fb0918b129c562f758b5c536b2b3bcf72f242ccce1e5973a4a217c89ba"
+      },
+      "prompts_identical": true,
+      "query_id": "q06",
+      "top_k_by_condition": {
+        "indexed": [
+          "reference/dependencies-1",
+          "reference/dependencies-0",
+          "tutorial/dependencies/index-4",
+          "advanced/security/oauth2-scopes-5",
+          "tutorial/dependencies/index-5"
+        ],
+        "linear": [
+          "reference/dependencies-1",
+          "reference/dependencies-0",
+          "tutorial/dependencies/index-4",
+          "advanced/security/oauth2-scopes-5",
+          "tutorial/dependencies/index-5"
+        ],
+        "optimized": [
+          "reference/dependencies-1",
+          "reference/dependencies-0",
+          "tutorial/dependencies/index-4",
+          "advanced/security/oauth2-scopes-5",
+          "tutorial/dependencies/index-5"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 6757,
+        "linear": 6757,
+        "optimized": 6757
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "8beaaa29bbafbdb0f0ba36ca9f0f84c54cb796aab03fad40ebd56c140e816b92",
+        "linear": "8beaaa29bbafbdb0f0ba36ca9f0f84c54cb796aab03fad40ebd56c140e816b92",
+        "optimized": "8beaaa29bbafbdb0f0ba36ca9f0f84c54cb796aab03fad40ebd56c140e816b92"
+      },
+      "prompts_identical": true,
+      "query_id": "q07",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/dependencies/dependencies-with-yield-2",
+          "tutorial/dependencies/sub-dependencies-2",
+          "tutorial/security/get-current-user-2",
+          "advanced/testing-dependencies-3",
+          "tutorial/background-tasks-4"
+        ],
+        "linear": [
+          "tutorial/dependencies/dependencies-with-yield-2",
+          "tutorial/dependencies/sub-dependencies-2",
+          "tutorial/security/get-current-user-2",
+          "advanced/testing-dependencies-3",
+          "tutorial/background-tasks-4"
+        ],
+        "optimized": [
+          "tutorial/dependencies/dependencies-with-yield-2",
+          "tutorial/dependencies/sub-dependencies-2",
+          "tutorial/security/get-current-user-2",
+          "advanced/testing-dependencies-3",
+          "tutorial/background-tasks-4"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 6219,
+        "linear": 6219,
+        "optimized": 6219
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "d6b688cc557112c0db79e111ea22276e27bca4de106f5b6159f2766773225b80",
+        "linear": "d6b688cc557112c0db79e111ea22276e27bca4de106f5b6159f2766773225b80",
+        "optimized": "d6b688cc557112c0db79e111ea22276e27bca4de106f5b6159f2766773225b80"
+      },
+      "prompts_identical": true,
+      "query_id": "q08",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-1",
+          "advanced/security/oauth2-scopes-17",
+          "tutorial/path-operation-configuration-0",
+          "tutorial/first-steps-26"
+        ],
+        "linear": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-1",
+          "advanced/security/oauth2-scopes-17",
+          "tutorial/path-operation-configuration-0",
+          "tutorial/first-steps-26"
+        ],
+        "optimized": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-1",
+          "advanced/security/oauth2-scopes-17",
+          "tutorial/path-operation-configuration-0",
+          "tutorial/first-steps-26"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5202,
+        "linear": 5202,
+        "optimized": 5202
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "0cd3b475c7188987eb9d02f807db72e10664dcb2334df2b056497ca70f87e7e6",
+        "linear": "0cd3b475c7188987eb9d02f807db72e10664dcb2334df2b056497ca70f87e7e6",
+        "optimized": "0cd3b475c7188987eb9d02f807db72e10664dcb2334df2b056497ca70f87e7e6"
+      },
+      "prompts_identical": true,
+      "query_id": "q09",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-7",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+          "tutorial/dependencies/global-dependencies-0",
+          "tutorial/background-tasks-4",
+          "advanced/security/oauth2-scopes-13"
+        ],
+        "linear": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-7",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+          "tutorial/dependencies/global-dependencies-0",
+          "tutorial/background-tasks-4",
+          "advanced/security/oauth2-scopes-13"
+        ],
+        "optimized": [
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-7",
+          "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+          "tutorial/dependencies/global-dependencies-0",
+          "tutorial/background-tasks-4",
+          "advanced/security/oauth2-scopes-13"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5428,
+        "linear": 5428,
+        "optimized": 5428
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "9398be111fa39968de96af314f5c28413f0a79665b3a6d233d6d720f095a0243",
+        "linear": "9398be111fa39968de96af314f5c28413f0a79665b3a6d233d6d720f095a0243",
+        "optimized": "9398be111fa39968de96af314f5c28413f0a79665b3a6d233d6d720f095a0243"
+      },
+      "prompts_identical": true,
+      "query_id": "q10",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/security/oauth2-jwt-0",
+          "tutorial/security/simple-oauth2-0",
+          "tutorial/security/simple-oauth2-17",
+          "reference/security/index-4",
+          "tutorial/security/index-6"
+        ],
+        "linear": [
+          "tutorial/security/oauth2-jwt-0",
+          "tutorial/security/simple-oauth2-0",
+          "tutorial/security/simple-oauth2-17",
+          "reference/security/index-4",
+          "tutorial/security/index-6"
+        ],
+        "optimized": [
+          "tutorial/security/oauth2-jwt-0",
+          "tutorial/security/simple-oauth2-0",
+          "tutorial/security/simple-oauth2-17",
+          "reference/security/index-4",
+          "tutorial/security/index-6"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5858,
+        "linear": 5858,
+        "optimized": 5858
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "c6c1d341e16cd3449219ae039c02f7794d1b7f0feda218970792caee30fc95d3",
+        "linear": "c6c1d341e16cd3449219ae039c02f7794d1b7f0feda218970792caee30fc95d3",
+        "optimized": "c6c1d341e16cd3449219ae039c02f7794d1b7f0feda218970792caee30fc95d3"
+      },
+      "prompts_identical": true,
+      "query_id": "q11",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/security/oauth2-jwt-0",
+          "tutorial/security/oauth2-jwt-8",
+          "tutorial/security/oauth2-jwt-1",
+          "tutorial/security/simple-oauth2-17",
+          "features-8"
+        ],
+        "linear": [
+          "tutorial/security/oauth2-jwt-0",
+          "tutorial/security/oauth2-jwt-8",
+          "tutorial/security/oauth2-jwt-1",
+          "tutorial/security/simple-oauth2-17",
+          "features-8"
+        ],
+        "optimized": [
+          "tutorial/security/oauth2-jwt-0",
+          "tutorial/security/oauth2-jwt-8",
+          "tutorial/security/oauth2-jwt-1",
+          "tutorial/security/simple-oauth2-17",
+          "features-8"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 4918,
+        "linear": 4918,
+        "optimized": 4918
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "44e1ada26a6a2079470e0a832ed6d2c937c18c5adbf65a1f8157c16b28fe699e",
+        "linear": "44e1ada26a6a2079470e0a832ed6d2c937c18c5adbf65a1f8157c16b28fe699e",
+        "optimized": "44e1ada26a6a2079470e0a832ed6d2c937c18c5adbf65a1f8157c16b28fe699e"
+      },
+      "prompts_identical": true,
+      "query_id": "q12",
+      "top_k_by_condition": {
+        "indexed": [
+          "reference/security/index-6",
+          "advanced/security/oauth2-scopes-0",
+          "reference/security/index-4",
+          "reference/dependencies-2",
+          "advanced/security/oauth2-scopes-3"
+        ],
+        "linear": [
+          "reference/security/index-6",
+          "advanced/security/oauth2-scopes-0",
+          "reference/security/index-4",
+          "reference/dependencies-2",
+          "advanced/security/oauth2-scopes-3"
+        ],
+        "optimized": [
+          "reference/security/index-6",
+          "advanced/security/oauth2-scopes-0",
+          "reference/security/index-4",
+          "reference/dependencies-2",
+          "advanced/security/oauth2-scopes-3"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 6175,
+        "linear": 6175,
+        "optimized": 6175
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "b27d5e5855824f0085ebc73193fe1b778ac25663acb268f06e32336e15edfa3f",
+        "linear": "b27d5e5855824f0085ebc73193fe1b778ac25663acb268f06e32336e15edfa3f",
+        "optimized": "b27d5e5855824f0085ebc73193fe1b778ac25663acb268f06e32336e15edfa3f"
+      },
+      "prompts_identical": true,
+      "query_id": "q13",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/openapi-callbacks-1",
+          "advanced/openapi-callbacks-0",
+          "tutorial/first-steps-24",
+          "history-design-future-4",
+          "alternatives-19"
+        ],
+        "linear": [
+          "advanced/openapi-callbacks-1",
+          "advanced/openapi-callbacks-0",
+          "tutorial/first-steps-24",
+          "history-design-future-4",
+          "alternatives-19"
+        ],
+        "optimized": [
+          "advanced/openapi-callbacks-1",
+          "advanced/openapi-callbacks-0",
+          "tutorial/first-steps-24",
+          "history-design-future-4",
+          "alternatives-19"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5470,
+        "linear": 5470,
+        "optimized": 5470
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "fb6fd7d659172f00949128b24efaf90924edeed192bc8a9e4d71ffbe1db3768a",
+        "linear": "fb6fd7d659172f00949128b24efaf90924edeed192bc8a9e4d71ffbe1db3768a",
+        "optimized": "fb6fd7d659172f00949128b24efaf90924edeed192bc8a9e4d71ffbe1db3768a"
+      },
+      "prompts_identical": true,
+      "query_id": "q14",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/cors-5",
+          "tutorial/cors-7",
+          "tutorial/cors-4",
+          "tutorial/cors-9",
+          "advanced/middleware-0"
+        ],
+        "linear": [
+          "tutorial/cors-5",
+          "tutorial/cors-7",
+          "tutorial/cors-4",
+          "tutorial/cors-9",
+          "advanced/middleware-0"
+        ],
+        "optimized": [
+          "tutorial/cors-5",
+          "tutorial/cors-7",
+          "tutorial/cors-4",
+          "tutorial/cors-9",
+          "advanced/middleware-0"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5948,
+        "linear": 5948,
+        "optimized": 5948
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "7dd4aeebad96bbbc03af7d3c6de55766113dc6ed05819adfc33d15f67777c522",
+        "linear": "7dd4aeebad96bbbc03af7d3c6de55766113dc6ed05819adfc33d15f67777c522",
+        "optimized": "7dd4aeebad96bbbc03af7d3c6de55766113dc6ed05819adfc33d15f67777c522"
+      },
+      "prompts_identical": true,
+      "query_id": "q15",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/middleware-0",
+          "reference/middleware-0",
+          "tutorial/middleware-0",
+          "tutorial/middleware-1",
+          "tutorial/frontend-8"
+        ],
+        "linear": [
+          "advanced/middleware-0",
+          "reference/middleware-0",
+          "tutorial/middleware-0",
+          "tutorial/middleware-1",
+          "tutorial/frontend-8"
+        ],
+        "optimized": [
+          "advanced/middleware-0",
+          "reference/middleware-0",
+          "tutorial/middleware-0",
+          "tutorial/middleware-1",
+          "tutorial/frontend-8"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5976,
+        "linear": 5976,
+        "optimized": 5976
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "6977d408855855d367d3182cbacf07160f56d890bc4726cb405ccb6b745a9883",
+        "linear": "6977d408855855d367d3182cbacf07160f56d890bc4726cb405ccb6b745a9883",
+        "optimized": "6977d408855855d367d3182cbacf07160f56d890bc4726cb405ccb6b745a9883"
+      },
+      "prompts_identical": true,
+      "query_id": "q16",
+      "top_k_by_condition": {
+        "indexed": [
+          "reference/middleware-0",
+          "advanced/middleware-0",
+          "tutorial/middleware-1",
+          "tutorial/frontend-8",
+          "tutorial/middleware-0"
+        ],
+        "linear": [
+          "reference/middleware-0",
+          "advanced/middleware-0",
+          "tutorial/middleware-1",
+          "tutorial/frontend-8",
+          "tutorial/middleware-0"
+        ],
+        "optimized": [
+          "reference/middleware-0",
+          "advanced/middleware-0",
+          "tutorial/middleware-1",
+          "tutorial/frontend-8",
+          "tutorial/middleware-0"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5226,
+        "linear": 5226,
+        "optimized": 5226
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "4e446c55282c0d8152906e3f25b4e91ffd6b8f85a7e35275fdfe9d4aba621132",
+        "linear": "4e446c55282c0d8152906e3f25b4e91ffd6b8f85a7e35275fdfe9d4aba621132",
+        "optimized": "4e446c55282c0d8152906e3f25b4e91ffd6b8f85a7e35275fdfe9d4aba621132"
+      },
+      "prompts_identical": true,
+      "query_id": "q17",
+      "top_k_by_condition": {
+        "indexed": [
+          "tutorial/background-tasks-1",
+          "reference/background-0",
+          "reference/response-0",
+          "tutorial/background-tasks-4",
+          "advanced/response-cookies-2"
+        ],
+        "linear": [
+          "tutorial/background-tasks-1",
+          "reference/background-0",
+          "reference/response-0",
+          "tutorial/background-tasks-4",
+          "advanced/response-cookies-2"
+        ],
+        "optimized": [
+          "tutorial/background-tasks-1",
+          "reference/background-0",
+          "reference/response-0",
+          "tutorial/background-tasks-4",
+          "advanced/response-cookies-2"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 4678,
+        "linear": 4678,
+        "optimized": 4678
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "1ef19918f7aa3e77288fbe460f1e6e28b8d34d514cafeee11011f2e491f18164",
+        "linear": "1ef19918f7aa3e77288fbe460f1e6e28b8d34d514cafeee11011f2e491f18164",
+        "optimized": "1ef19918f7aa3e77288fbe460f1e6e28b8d34d514cafeee11011f2e491f18164"
+      },
+      "prompts_identical": true,
+      "query_id": "q18",
+      "top_k_by_condition": {
+        "indexed": [
+          "reference/background-0",
+          "tutorial/background-tasks-1",
+          "tutorial/background-tasks-7",
+          "tutorial/dependencies/dependencies-with-yield-12",
+          "tutorial/dependencies/global-dependencies-0"
+        ],
+        "linear": [
+          "reference/background-0",
+          "tutorial/background-tasks-1",
+          "tutorial/background-tasks-7",
+          "tutorial/dependencies/dependencies-with-yield-12",
+          "tutorial/dependencies/global-dependencies-0"
+        ],
+        "optimized": [
+          "reference/background-0",
+          "tutorial/background-tasks-1",
+          "tutorial/background-tasks-7",
+          "tutorial/dependencies/dependencies-with-yield-12",
+          "tutorial/dependencies/global-dependencies-0"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 6619,
+        "linear": 6619,
+        "optimized": 6619
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "146d58167469c1ff8e605892c1d3e70cc41ed871f119c01c0d4899da420b1b0e",
+        "linear": "146d58167469c1ff8e605892c1d3e70cc41ed871f119c01c0d4899da420b1b0e",
+        "optimized": "146d58167469c1ff8e605892c1d3e70cc41ed871f119c01c0d4899da420b1b0e"
+      },
+      "prompts_identical": true,
+      "query_id": "q19",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/websockets-4",
+          "reference/websockets-0",
+          "advanced/websockets-10",
+          "advanced/websockets-3",
+          "alternatives-19"
+        ],
+        "linear": [
+          "advanced/websockets-4",
+          "reference/websockets-0",
+          "advanced/websockets-10",
+          "advanced/websockets-3",
+          "alternatives-19"
+        ],
+        "optimized": [
+          "advanced/websockets-4",
+          "reference/websockets-0",
+          "advanced/websockets-10",
+          "advanced/websockets-3",
+          "alternatives-19"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5956,
+        "linear": 5956,
+        "optimized": 5956
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "7e966f94664d0722c4169b88dd3383e59a2407902b9e649d684bf11411fb1a89",
+        "linear": "7e966f94664d0722c4169b88dd3383e59a2407902b9e649d684bf11411fb1a89",
+        "optimized": "7e966f94664d0722c4169b88dd3383e59a2407902b9e649d684bf11411fb1a89"
+      },
+      "prompts_identical": true,
+      "query_id": "q20",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/websockets-4",
+          "advanced/websockets-9",
+          "deployment/concepts-19",
+          "reference/websockets-0",
+          "deployment/concepts-18"
+        ],
+        "linear": [
+          "advanced/websockets-4",
+          "advanced/websockets-9",
+          "deployment/concepts-19",
+          "reference/websockets-0",
+          "deployment/concepts-18"
+        ],
+        "optimized": [
+          "advanced/websockets-4",
+          "advanced/websockets-9",
+          "deployment/concepts-19",
+          "reference/websockets-0",
+          "deployment/concepts-18"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 3782,
+        "linear": 3782,
+        "optimized": 3782
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "7f2938432b797fdf9db579074ea28bfc470982b692224b94f88586aa22170d2e",
+        "linear": "7f2938432b797fdf9db579074ea28bfc470982b692224b94f88586aa22170d2e",
+        "optimized": "7f2938432b797fdf9db579074ea28bfc470982b692224b94f88586aa22170d2e"
+      },
+      "prompts_identical": true,
+      "query_id": "q21",
+      "top_k_by_condition": {
+        "indexed": [
+          "deployment/docker-36",
+          "deployment/server-workers-14",
+          "deployment/concepts-25",
+          "deployment/docker-16",
+          "tutorial/first-steps-30"
+        ],
+        "linear": [
+          "deployment/docker-36",
+          "deployment/server-workers-14",
+          "deployment/concepts-25",
+          "deployment/docker-16",
+          "tutorial/first-steps-30"
+        ],
+        "optimized": [
+          "deployment/docker-36",
+          "deployment/server-workers-14",
+          "deployment/concepts-25",
+          "deployment/docker-16",
+          "tutorial/first-steps-30"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5386,
+        "linear": 5386,
+        "optimized": 5386
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "e133d16d7a107270be440485a5aeb0d13d23c06b91eb92e2923e5c30965ec3b7",
+        "linear": "e133d16d7a107270be440485a5aeb0d13d23c06b91eb92e2923e5c30965ec3b7",
+        "optimized": "e133d16d7a107270be440485a5aeb0d13d23c06b91eb92e2923e5c30965ec3b7"
+      },
+      "prompts_identical": true,
+      "query_id": "q22",
+      "top_k_by_condition": {
+        "indexed": [
+          "deployment/concepts-19",
+          "deployment/server-workers-1",
+          "deployment/server-workers-2",
+          "deployment/docker-28",
+          "deployment/server-workers-0"
+        ],
+        "linear": [
+          "deployment/concepts-19",
+          "deployment/server-workers-1",
+          "deployment/server-workers-2",
+          "deployment/docker-28",
+          "deployment/server-workers-0"
+        ],
+        "optimized": [
+          "deployment/concepts-19",
+          "deployment/server-workers-1",
+          "deployment/server-workers-2",
+          "deployment/docker-28",
+          "deployment/server-workers-0"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5442,
+        "linear": 5442,
+        "optimized": 5442
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "113eefe38715e26e4150821cd0a777e188d7e4fba4daf2347102ae937b839a03",
+        "linear": "113eefe38715e26e4150821cd0a777e188d7e4fba4daf2347102ae937b839a03",
+        "optimized": "113eefe38715e26e4150821cd0a777e188d7e4fba4daf2347102ae937b839a03"
+      },
+      "prompts_identical": true,
+      "query_id": "q23",
+      "top_k_by_condition": {
+        "indexed": [
+          "deployment/server-workers-13",
+          "deployment/docker-21",
+          "deployment/manually-11",
+          "deployment/docker-23",
+          "deployment/concepts-30"
+        ],
+        "linear": [
+          "deployment/server-workers-13",
+          "deployment/docker-21",
+          "deployment/manually-11",
+          "deployment/docker-23",
+          "deployment/concepts-30"
+        ],
+        "optimized": [
+          "deployment/server-workers-13",
+          "deployment/docker-21",
+          "deployment/manually-11",
+          "deployment/docker-23",
+          "deployment/concepts-30"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5605,
+        "linear": 5605,
+        "optimized": 5605
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "18a3cd5b56b16441ef1b1e6a6e6b89f2d0cf85d515726a70b25a3ce93d456b25",
+        "linear": "18a3cd5b56b16441ef1b1e6a6e6b89f2d0cf85d515726a70b25a3ce93d456b25",
+        "optimized": "18a3cd5b56b16441ef1b1e6a6e6b89f2d0cf85d515726a70b25a3ce93d456b25"
+      },
+      "prompts_identical": true,
+      "query_id": "q24",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/behind-a-proxy-6",
+          "deployment/docker-12",
+          "advanced/behind-a-proxy-0",
+          "advanced/behind-a-proxy-13",
+          "deployment/https-20"
+        ],
+        "linear": [
+          "advanced/behind-a-proxy-6",
+          "deployment/docker-12",
+          "advanced/behind-a-proxy-0",
+          "advanced/behind-a-proxy-13",
+          "deployment/https-20"
+        ],
+        "optimized": [
+          "advanced/behind-a-proxy-6",
+          "deployment/docker-12",
+          "advanced/behind-a-proxy-0",
+          "advanced/behind-a-proxy-13",
+          "deployment/https-20"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5411,
+        "linear": 5411,
+        "optimized": 5411
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "999b817164019b320ad94b7ab33627aaf55a79a50978fed961a417cb13759ef9",
+        "linear": "999b817164019b320ad94b7ab33627aaf55a79a50978fed961a417cb13759ef9",
+        "optimized": "999b817164019b320ad94b7ab33627aaf55a79a50978fed961a417cb13759ef9"
+      },
+      "prompts_identical": true,
+      "query_id": "q25",
+      "top_k_by_condition": {
+        "indexed": [
+          "reference/testclient-0",
+          "tutorial/testing-1",
+          "advanced/async-tests-2",
+          "advanced/testing-websockets-0",
+          "advanced/async-tests-0"
+        ],
+        "linear": [
+          "reference/testclient-0",
+          "tutorial/testing-1",
+          "advanced/async-tests-2",
+          "advanced/testing-websockets-0",
+          "advanced/async-tests-0"
+        ],
+        "optimized": [
+          "reference/testclient-0",
+          "tutorial/testing-1",
+          "advanced/async-tests-2",
+          "advanced/testing-websockets-0",
+          "advanced/async-tests-0"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5411,
+        "linear": 5411,
+        "optimized": 5411
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "c9bb9a02146b2a04338bb320339c76ce600c0424cba6e93fb961b36238a5856a",
+        "linear": "c9bb9a02146b2a04338bb320339c76ce600c0424cba6e93fb961b36238a5856a",
+        "optimized": "c9bb9a02146b2a04338bb320339c76ce600c0424cba6e93fb961b36238a5856a"
+      },
+      "prompts_identical": true,
+      "query_id": "q26",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/testing-dependencies-1",
+          "advanced/testing-dependencies-3",
+          "advanced/async-tests-0",
+          "history-design-future-4",
+          "tutorial/testing-3"
+        ],
+        "linear": [
+          "advanced/testing-dependencies-1",
+          "advanced/testing-dependencies-3",
+          "advanced/async-tests-0",
+          "history-design-future-4",
+          "tutorial/testing-3"
+        ],
+        "optimized": [
+          "advanced/testing-dependencies-1",
+          "advanced/testing-dependencies-3",
+          "advanced/async-tests-0",
+          "history-design-future-4",
+          "tutorial/testing-3"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 5213,
+        "linear": 5213,
+        "optimized": 5213
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "f7e1902003a985c017c9ca504cb3eac55fb8168f8e41e91675e24f62054818ee",
+        "linear": "f7e1902003a985c017c9ca504cb3eac55fb8168f8e41e91675e24f62054818ee",
+        "optimized": "f7e1902003a985c017c9ca504cb3eac55fb8168f8e41e91675e24f62054818ee"
+      },
+      "prompts_identical": true,
+      "query_id": "q27",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/events-0",
+          "advanced/testing-events-0",
+          "advanced/events-9",
+          "resources/index-0",
+          "advanced/events-5"
+        ],
+        "linear": [
+          "advanced/events-0",
+          "advanced/testing-events-0",
+          "advanced/events-9",
+          "resources/index-0",
+          "advanced/events-5"
+        ],
+        "optimized": [
+          "advanced/events-0",
+          "advanced/testing-events-0",
+          "advanced/events-9",
+          "resources/index-0",
+          "advanced/events-5"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 7390,
+        "linear": 7390,
+        "optimized": 7390
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "b471418d9ea3646ce1ac0429fb5ec957952ac7ac9d6ce53b721d50f897faa5dd",
+        "linear": "b471418d9ea3646ce1ac0429fb5ec957952ac7ac9d6ce53b721d50f897faa5dd",
+        "optimized": "b471418d9ea3646ce1ac0429fb5ec957952ac7ac9d6ce53b721d50f897faa5dd"
+      },
+      "prompts_identical": true,
+      "query_id": "q28",
+      "top_k_by_condition": {
+        "indexed": [
+          "how-to/custom-request-and-route-6",
+          "tutorial/handling-errors-6",
+          "tutorial/dependencies/dependencies-with-yield-5",
+          "tutorial/handling-errors-8",
+          "advanced/advanced-dependencies-11"
+        ],
+        "linear": [
+          "how-to/custom-request-and-route-6",
+          "tutorial/handling-errors-6",
+          "tutorial/dependencies/dependencies-with-yield-5",
+          "tutorial/handling-errors-8",
+          "advanced/advanced-dependencies-11"
+        ],
+        "optimized": [
+          "how-to/custom-request-and-route-6",
+          "tutorial/handling-errors-6",
+          "tutorial/dependencies/dependencies-with-yield-5",
+          "tutorial/handling-errors-8",
+          "advanced/advanced-dependencies-11"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 6186,
+        "linear": 6186,
+        "optimized": 6186
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "9fdafbe9125644a8110e74a870d4f58321a995cf5ef65d77b378ef7c65a9727f",
+        "linear": "9fdafbe9125644a8110e74a870d4f58321a995cf5ef65d77b378ef7c65a9727f",
+        "optimized": "9fdafbe9125644a8110e74a870d4f58321a995cf5ef65d77b378ef7c65a9727f"
+      },
+      "prompts_identical": true,
+      "query_id": "q29",
+      "top_k_by_condition": {
+        "indexed": [
+          "reference/apirouter-0",
+          "tutorial/bigger-applications-27",
+          "tutorial/bigger-applications-6",
+          "tutorial/bigger-applications-20",
+          "tutorial/frontend-7"
+        ],
+        "linear": [
+          "reference/apirouter-0",
+          "tutorial/bigger-applications-27",
+          "tutorial/bigger-applications-6",
+          "tutorial/bigger-applications-20",
+          "tutorial/frontend-7"
+        ],
+        "optimized": [
+          "reference/apirouter-0",
+          "tutorial/bigger-applications-27",
+          "tutorial/bigger-applications-6",
+          "tutorial/bigger-applications-20",
+          "tutorial/frontend-7"
+        ]
+      },
+      "top_k_identical": true
+    },
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 4419,
+        "linear": 4419,
+        "optimized": 4419
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "35ead46d53206e9e522b85d02ae837751d8a7657c0999e2ff6d008cdefd8279f",
+        "linear": "35ead46d53206e9e522b85d02ae837751d8a7657c0999e2ff6d008cdefd8279f",
+        "optimized": "35ead46d53206e9e522b85d02ae837751d8a7657c0999e2ff6d008cdefd8279f"
+      },
+      "prompts_identical": true,
+      "query_id": "q30",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/path-operation-advanced-configuration-6",
+          "how-to/extending-openapi-0",
+          "how-to/extending-openapi-7",
+          "tutorial/first-steps-14",
+          "how-to/general-9"
+        ],
+        "linear": [
+          "advanced/path-operation-advanced-configuration-6",
+          "how-to/extending-openapi-0",
+          "how-to/extending-openapi-7",
+          "tutorial/first-steps-14",
+          "how-to/general-9"
+        ],
+        "optimized": [
+          "advanced/path-operation-advanced-configuration-6",
+          "how-to/extending-openapi-0",
+          "how-to/extending-openapi-7",
+          "tutorial/first-steps-14",
+          "how-to/general-9"
+        ]
+      },
+      "top_k_identical": true
+    }
+  ],
+  "top_k": 5
+}

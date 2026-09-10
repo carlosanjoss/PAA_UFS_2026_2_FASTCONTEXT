@@ -5,7 +5,7 @@ experiments:
 
   queries:
     expected_count: 30
-    ground_truth_file: "data/ground_truth/ground_truth.json"
+    ground_truth_file: "data/ground_truth/ground_truth.final.json"
 
   corpus_sizes:
     - 0.25

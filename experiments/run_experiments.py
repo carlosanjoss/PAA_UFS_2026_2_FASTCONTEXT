@@ -72,6 +72,10 @@ SCENARIO_METRICS = (
 )
 
 CHECKPOINT_SCHEMA_VERSION = 1
+CHECKPOINT_WRITE_INTERVAL = 25
+CHECKPOINT_REPLACE_ATTEMPTS = 8
+CHECKPOINT_REPLACE_BASE_DELAY_SECONDS = 0.05
+CHECKPOINT_REPLACE_MAX_DELAY_SECONDS = 1.0
 
 
 @dataclass(
@@ -963,37 +967,35 @@ def main() -> int:
                             run_id
                         )
 
-                        _write_checkpoint(
-                            checkpoint_output,
-                            signature=signature,
-                            signature_payload=(
-                                signature_payload
-                            ),
-                            expected_runs=(
-                                expected_runs
-                            ),
-                            completed_run_ids=(
-                                completed_run_ids
-                            ),
-                            status="in_progress",
-                            raw_output=(
-                                raw_output
-                            ),
-                            summary_output=(
-                                summary_output
-                            ),
-                        )
-
                         completed = len(
                             completed_run_ids
                         )
 
-                        if (
-                            completed % 25
-                            == 0
-                            or completed
-                            == expected_runs
+                        if _checkpoint_due(
+                            completed,
+                            expected_runs,
                         ):
+                            _write_checkpoint(
+                                checkpoint_output,
+                                signature=signature,
+                                signature_payload=(
+                                    signature_payload
+                                ),
+                                expected_runs=(
+                                    expected_runs
+                                ),
+                                completed_run_ids=(
+                                    completed_run_ids
+                                ),
+                                status="in_progress",
+                                raw_output=(
+                                    raw_output
+                                ),
+                                summary_output=(
+                                    summary_output
+                                ),
+                            )
+
                             print(
                                 "Progress: "
                                 f"{completed}/"
@@ -2512,6 +2514,106 @@ def _sha256_file(
     return digest.hexdigest()
 
 
+def _checkpoint_due(
+    completed_runs: int,
+    expected_runs: int,
+) -> bool:
+    """Return whether a durable checkpoint should be attempted now."""
+    if completed_runs < 0:
+        raise ValueError(
+            "completed_runs cannot be negative."
+        )
+
+    if expected_runs <= 0:
+        raise ValueError(
+            "expected_runs must be greater than zero."
+        )
+
+    if completed_runs > expected_runs:
+        raise ValueError(
+            "completed_runs cannot exceed expected_runs."
+        )
+
+    return (
+        completed_runs == expected_runs
+        or (
+            completed_runs > 0
+            and completed_runs
+            % CHECKPOINT_WRITE_INTERVAL
+            == 0
+        )
+    )
+
+
+def _replace_checkpoint_with_retry(
+    temporary_path: Path,
+    checkpoint_path: Path,
+) -> bool:
+    """Replace a checkpoint with retry for transient Windows file locks."""
+    delay = (
+        CHECKPOINT_REPLACE_BASE_DELAY_SECONDS
+    )
+    last_error: PermissionError | None = None
+
+    for attempt in range(
+        1,
+        CHECKPOINT_REPLACE_ATTEMPTS + 1,
+    ):
+        try:
+            os.replace(
+                temporary_path,
+                checkpoint_path,
+            )
+            return True
+        except PermissionError as exc:
+            last_error = exc
+
+            if (
+                attempt
+                < CHECKPOINT_REPLACE_ATTEMPTS
+            ):
+                time.sleep(
+                    delay
+                )
+                delay = min(
+                    delay * 2.0,
+                    CHECKPOINT_REPLACE_MAX_DELAY_SECONDS,
+                )
+
+    if checkpoint_path.exists():
+        try:
+            temporary_path.unlink(
+                missing_ok=True
+            )
+        except OSError:
+            pass
+
+        print(
+            "WARNING: checkpoint replacement remained "
+            "locked after "
+            f"{CHECKPOINT_REPLACE_ATTEMPTS} attempts; "
+            "the previous checkpoint was retained. "
+            "Raw results are durable and remain the "
+            "source of truth for --resume."
+        )
+        return False
+
+    try:
+        temporary_path.unlink(
+            missing_ok=True
+        )
+    except OSError:
+        pass
+
+    if last_error is None:
+        raise RuntimeError(
+            "Checkpoint replacement failed without "
+            "a captured PermissionError."
+        )
+
+    raise last_error
+
+
 def _write_checkpoint(
     path: Path,
     *,
@@ -2525,8 +2627,8 @@ def _write_checkpoint(
     status: str,
     raw_output: Path,
     summary_output: Path,
-) -> None:
-    """Atomically persist resume metadata after durable raw-result writes."""
+) -> bool:
+    """Persist resume metadata after durable raw-result writes."""
     if status not in {
         "in_progress",
         "complete",
@@ -2578,10 +2680,10 @@ def _write_checkpoint(
         exist_ok=True,
     )
 
-    temporary_path = (
-        _checkpoint_temp_path(
-            path
-        )
+    temporary_path = path.with_name(
+        f"{path.name}."
+        f"{os.getpid()}."
+        f"{time.time_ns()}.tmp"
     )
 
     with temporary_path.open(
@@ -2605,8 +2707,9 @@ def _write_checkpoint(
             file
         )
 
-    temporary_path.replace(
-        path
+    return _replace_checkpoint_with_retry(
+        temporary_path,
+        path,
     )
 
 

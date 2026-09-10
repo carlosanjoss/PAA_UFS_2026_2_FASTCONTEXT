@@ -1,0 +1,12 @@
+{
+  "completed_run_ids": [
+    "no_rag|q01",
+    "optimized|q01",
+    "semantic|q01"
+  ],
+  "completed_runs": 3,
+  "expected_runs": 3,
+  "experiment_signature": "4553917e52e34254a967f8f83ee5040c1561f36c7bdfdb11aad65089b9541e51",
+  "schema_version": 1,
+  "status": "complete"
+}

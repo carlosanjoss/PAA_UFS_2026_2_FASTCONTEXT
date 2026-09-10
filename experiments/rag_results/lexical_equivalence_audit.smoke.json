@@ -1,0 +1,51 @@
+{
+  "all_prompts_identical": true,
+  "all_top_k_identical": true,
+  "lexical_conditions": [
+    "linear",
+    "indexed",
+    "optimized"
+  ],
+  "queries_checked": 1,
+  "records": [
+    {
+      "prompt_bytes_by_condition": {
+        "indexed": 3630,
+        "linear": 3630,
+        "optimized": 3630
+      },
+      "prompt_sha256_by_condition": {
+        "indexed": "f7919210d28eb5686e0b246f067e1eab90d7e2d3ba0819bf350e68aefe3df417",
+        "linear": "f7919210d28eb5686e0b246f067e1eab90d7e2d3ba0819bf350e68aefe3df417",
+        "optimized": "f7919210d28eb5686e0b246f067e1eab90d7e2d3ba0819bf350e68aefe3df417"
+      },
+      "prompts_identical": true,
+      "query_id": "q01",
+      "top_k_by_condition": {
+        "indexed": [
+          "advanced/security/http-basic-auth-0",
+          "tutorial/first-steps-23",
+          "how-to/custom-docs-ui-assets-5",
+          "contributing-0",
+          "how-to/custom-docs-ui-assets-15"
+        ],
+        "linear": [
+          "advanced/security/http-basic-auth-0",
+          "tutorial/first-steps-23",
+          "how-to/custom-docs-ui-assets-5",
+          "contributing-0",
+          "how-to/custom-docs-ui-assets-15"
+        ],
+        "optimized": [
+          "advanced/security/http-basic-auth-0",
+          "tutorial/first-steps-23",
+          "how-to/custom-docs-ui-assets-5",
+          "contributing-0",
+          "how-to/custom-docs-ui-assets-15"
+        ]
+      },
+      "top_k_identical": true
+    }
+  ],
+  "top_k": 5
+}

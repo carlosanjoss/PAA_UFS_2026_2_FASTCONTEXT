@@ -2,17 +2,23 @@
 
 from __future__ import annotations
 
+import os
+
 import pytest
+
+import experiments.run_experiments as experiment_runner
 
 from experiments.run_experiments import (
     CHECKPOINT_SCHEMA_VERSION,
     EvaluationQuery,
     _build_nested_subsets,
+    _checkpoint_due,
     _build_run_id,
     _calculate_signature,
     _expected_run_ids,
     _load_checkpoint,
     _quality_fields,
+    _replace_checkpoint_with_retry,
     _raw_fieldnames,
     _read_raw_results,
     _summarize,
@@ -898,3 +904,204 @@ def test_complete_checkpoint_requires_complete_raw_results() -> None:
                 "run-1"
             },
         )
+
+
+def test_checkpoint_due_every_configured_interval() -> None:
+    assert _checkpoint_due(
+        1,
+        2400,
+    ) is False
+    assert _checkpoint_due(
+        24,
+        2400,
+    ) is False
+    assert _checkpoint_due(
+        25,
+        2400,
+    ) is True
+    assert _checkpoint_due(
+        26,
+        2400,
+    ) is False
+    assert _checkpoint_due(
+        2400,
+        2400,
+    ) is True
+    assert _checkpoint_due(
+        7,
+        7,
+    ) is True
+
+
+def test_checkpoint_replace_retries_transient_permission_error(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    checkpoint_path = (
+        tmp_path
+        / "checkpoint.json"
+    )
+    temporary_path = (
+        tmp_path
+        / "checkpoint.tmp"
+    )
+
+    checkpoint_path.write_text(
+        "old",
+        encoding="utf-8",
+    )
+    temporary_path.write_text(
+        "new",
+        encoding="utf-8",
+    )
+
+    real_replace = os.replace
+    attempts = 0
+
+    def flaky_replace(
+        source,
+        target,
+    ) -> None:
+        nonlocal attempts
+        attempts += 1
+
+        if attempts < 3:
+            raise PermissionError(
+                "transient lock"
+            )
+
+        real_replace(
+            source,
+            target,
+        )
+
+    monkeypatch.setattr(
+        experiment_runner.os,
+        "replace",
+        flaky_replace,
+    )
+    monkeypatch.setattr(
+        experiment_runner.time,
+        "sleep",
+        lambda _: None,
+    )
+
+    replaced = (
+        _replace_checkpoint_with_retry(
+            temporary_path,
+            checkpoint_path,
+        )
+    )
+
+    assert replaced is True
+    assert attempts == 3
+    assert checkpoint_path.read_text(
+        encoding="utf-8"
+    ) == "new"
+    assert not temporary_path.exists()
+
+
+def test_checkpoint_replace_retains_existing_checkpoint_after_lock(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    checkpoint_path = (
+        tmp_path
+        / "checkpoint.json"
+    )
+    temporary_path = (
+        tmp_path
+        / "checkpoint.tmp"
+    )
+
+    checkpoint_path.write_text(
+        "old",
+        encoding="utf-8",
+    )
+    temporary_path.write_text(
+        "new",
+        encoding="utf-8",
+    )
+
+    def locked_replace(
+        source,
+        target,
+    ) -> None:
+        del source, target
+        raise PermissionError(
+            "persistent lock"
+        )
+
+    monkeypatch.setattr(
+        experiment_runner.os,
+        "replace",
+        locked_replace,
+    )
+    monkeypatch.setattr(
+        experiment_runner.time,
+        "sleep",
+        lambda _: None,
+    )
+
+    replaced = (
+        _replace_checkpoint_with_retry(
+            temporary_path,
+            checkpoint_path,
+        )
+    )
+
+    assert replaced is False
+    assert checkpoint_path.read_text(
+        encoding="utf-8"
+    ) == "old"
+    assert not temporary_path.exists()
+
+
+def test_checkpoint_replace_requires_initial_checkpoint_on_persistent_lock(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    checkpoint_path = (
+        tmp_path
+        / "checkpoint.json"
+    )
+    temporary_path = (
+        tmp_path
+        / "checkpoint.tmp"
+    )
+
+    temporary_path.write_text(
+        "new",
+        encoding="utf-8",
+    )
+
+    def locked_replace(
+        source,
+        target,
+    ) -> None:
+        del source, target
+        raise PermissionError(
+            "persistent lock"
+        )
+
+    monkeypatch.setattr(
+        experiment_runner.os,
+        "replace",
+        locked_replace,
+    )
+    monkeypatch.setattr(
+        experiment_runner.time,
+        "sleep",
+        lambda _: None,
+    )
+
+    with pytest.raises(
+        PermissionError,
+        match="persistent lock",
+    ):
+        _replace_checkpoint_with_retry(
+            temporary_path,
+            checkpoint_path,
+        )
+
+    assert not temporary_path.exists()
