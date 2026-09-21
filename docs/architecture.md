@@ -394,7 +394,8 @@ O `FastContextService` centraliza as operações de:
 - retrieval;
 - retrieval + geração.
 
-A interface Streamlit reutiliza essa camada e não implementa algoritmos de domínio.
+A API FastAPI reutiliza essa camada e não implementa algoritmos de domínio. O
+cliente React/TypeScript consome apenas contratos HTTP tipados.
 
 ---
 
@@ -442,15 +443,19 @@ Se o provider estiver indisponível, retrieval-only continua funcionando.
 
 ---
 
-## 18. Streamlit
+## 18. Interface web
 
 Entrada:
 
 ```text
-app/streamlit_app.py
+frontend/src/App.tsx
+src/web_api.py
 ```
 
-A interface permite selecionar estratégia e `top-k`, executar retrieval ou RAG, visualizar métricas, chunks, resposta, citações e status do sistema.
+A interface React permite selecionar estratégia e `top-k`, executar retrieval
+ou RAG, visualizar métricas, chunks, resposta, citações e status do sistema. O
+dashboard compara desempenho, qualidade e ordenação a partir dos relatórios
+persistidos.
 
 A interface não altera corpus, ground truth, índice ou resultados experimentais.
 
@@ -490,6 +495,6 @@ Invariantes:
 3. retrieval separado de geração;
 4. `None` diferente de zero;
 5. índice semântico validado antes do reuso;
-6. Streamlit não escreve resultados experimentais;
+6. a interface web não escreve resultados experimentais;
 7. ground truth humano independente dos rankings;
 8. resultados brutos preservados.

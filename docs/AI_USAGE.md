@@ -36,7 +36,7 @@ A IA foi utilizada como apoio em tarefas como:
 - infraestrutura experimental;
 - revisão de metodologia;
 - consistência entre implementação e documentação;
-- planejamento e revisão da interface Streamlit;
+- planejamento e revisão da interface React/TypeScript;
 - preparação de material para relatório e apresentação.
 
 ---
@@ -104,9 +104,10 @@ Isso permite avaliar os algoritmos sem depender do comportamento do modelo gener
 
 ---
 
-## 8. Streamlit
+## 8. Interface web
 
-A implementação da interface Streamlit recebeu assistência de IA por meio do Codex.
+A migração da interface Streamlit para React/TypeScript e FastAPI recebeu
+assistência de IA por meio do Codex.
 
 A ferramenta foi instruída a:
 
@@ -123,7 +124,7 @@ A ferramenta foi instruída a:
 Handoff:
 
 ```text
-docs/STREAMLIT_IMPLEMENTATION_HANDOFF.md
+docs/WEB_IMPLEMENTATION_HANDOFF.md
 ```
 
 ---

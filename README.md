@@ -376,24 +376,30 @@ fastcontext ask "How can I create a FastAPI dependency?" --top-k 5
 
 ---
 
-## 13. Interface Streamlit
+## 13. Interface web TypeScript
 
-Execute:
+A interface é uma aplicação React + TypeScript servida pela API FastAPI. Para
+gerar o frontend e iniciar a aplicação completa:
 
 ```bash
-streamlit run app/streamlit_app.py
+cd frontend
+npm install
+npm run build
+cd ..
+uvicorn src.web_api:app --host 127.0.0.1 --port 8000
 ```
+
+Abra `http://127.0.0.1:8000`. Durante desenvolvimento, execute `npm run dev`
+em `frontend/`; o Vite encaminha chamadas `/api` para a porta `8000`.
 
 A interface permite:
 
-- selecionar algoritmo;
-- definir `Top-k`;
-- consultar a documentação;
-- visualizar chunks recuperados;
-- visualizar scores;
-- executar retrieval-only;
-- executar retrieval + LLM;
-- consultar relatórios experimentais persistidos.
+- fazer perguntas e ler a resposta antes da análise técnica;
+- escolher algoritmo, `Top-k` e modo retrieval/RAG;
+- inspecionar latência, comparações, memória, etapas e chunks recuperados;
+- comparar tempo, trabalho computacional, precisão, recall, MRR e hit rate;
+- explorar Merge Sort versus Quick Sort por tamanho e cenário de entrada;
+- consultar apenas relatórios persistidos, sem reexecutar experimentos.
 
 ---
 
@@ -1004,7 +1010,7 @@ docker compose up
 Executar testes:
 
 ```bash
-docker compose run --rm app python -m pytest -q
+docker compose run --rm tests python -m pytest -q
 ```
 
 Os nomes dos serviços podem variar de acordo com a versão atual do `docker-compose.yml`.
@@ -1015,8 +1021,12 @@ Os nomes dos serviços podem variar de acordo com a versão atual do `docker-com
 
 ```text
 .
-├── app/
-│   └── streamlit_app.py
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── App.tsx
+│   └── package.json
 │
 ├── config/
 │   ├── corpus.yaml
@@ -1308,7 +1318,8 @@ Sorting benchmark:         CONCLUÍDO
 RAG downstream:            CONCLUÍDO
 Human evaluation:          CONCLUÍDO
 Statistical analysis:      CONCLUÍDO
-Streamlit:                 CONCLUÍDO
+Frontend React/TypeScript: CONCLUÍDO
+API FastAPI:               CONCLUÍDO
 Tests:                     CONCLUÍDO
 Final report:              CONCLUÍDO
 Final commit:              PENDENTE DE REGISTRO

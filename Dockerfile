@@ -1,3 +1,15 @@
+FROM node:22-slim AS frontend-builder
+
+WORKDIR /frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+
+RUN npm ci
+
+COPY frontend/ .
+
+RUN npm run build
+
 # Shared stage with the Python runtime and project dependencies.
 FROM python:3.11-slim AS base
 
@@ -16,6 +28,8 @@ RUN python -m pip install --upgrade pip \
 
 COPY . .
 
+COPY --from=frontend-builder /frontend/dist ./frontend/dist
+
 # Validation stage: the image is built only when all tests pass.
 FROM base AS test
 
@@ -24,4 +38,4 @@ RUN python -m pytest -v
 # Runtime stage: keeps the application command separate from test execution.
 FROM base AS runtime
 
-CMD ["streamlit", "run", "app/streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+CMD ["uvicorn", "src.web_api:app", "--host=0.0.0.0", "--port=8000"]

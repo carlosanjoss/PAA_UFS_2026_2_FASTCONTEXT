@@ -110,3 +110,8 @@ experiments/processed_results/*
 .annotation_returned_backup/
 .benchmark_checkpoint_backup/
 benchmark_final_backup/
+
+# Frontend TypeScript
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo

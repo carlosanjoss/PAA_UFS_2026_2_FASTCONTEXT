@@ -49,4 +49,5 @@ temp/
 experiments/raw_results/
 experiments/processed_results/
 reports/figures/
-reports/tables/
+frontend/node_modules/
+frontend/dist/

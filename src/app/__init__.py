@@ -12,11 +12,9 @@ from src.app.models import (
     ComponentHealth,
     HealthState,
 )
-from src.app.streamlit_support import (
-    build_health_rows,
-    build_retrieval_rows,
-    format_duration_ns,
-    format_optional_number,
+from src.app.presentation import (
+    RetrievalTraceStep,
+    build_retrieval_trace,
 )
 
 __all__ = [
@@ -24,12 +22,10 @@ __all__ = [
     "ApplicationHealthReport",
     "ComponentHealth",
     "HealthState",
+    "RetrievalTraceStep",
     "build_default_retriever_registry",
-    "build_health_rows",
-    "build_retrieval_rows",
+    "build_retrieval_trace",
     "build_retriever_registry",
     "check_application_health",
     "create_application",
-    "format_duration_ns",
-    "format_optional_number",
 ]
