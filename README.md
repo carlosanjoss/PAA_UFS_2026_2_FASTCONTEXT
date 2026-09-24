@@ -1264,7 +1264,7 @@ A avaliação downstream mostrou vantagem descritiva do Semantic em groundedness
 A URL do vídeo final deve ser inserida aqui antes da entrega:
 
 ```text
-[[INSERIR URL DO VÍDEO](https://www.youtube.com/watch?v=wviXO29yymo&t=3s)]
+[(https://www.youtube.com/watch?v=wviXO29yymo&t=3s)]
 ```
 
 ---
