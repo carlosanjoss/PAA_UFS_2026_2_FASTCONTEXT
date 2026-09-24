@@ -1264,7 +1264,7 @@ A avaliação downstream mostrou vantagem descritiva do Semantic em groundedness
 A URL do vídeo final deve ser inserida aqui antes da entrega:
 
 ```text
-[INSERIR URL DO VÍDEO]
+[[INSERIR URL DO VÍDEO](https://www.youtube.com/watch?v=wviXO29yymo&t=3s)]
 ```
 
 ---
@@ -1275,8 +1275,7 @@ Após o commit final na `main`, registre:
 
 ```text
 Branch: main
-Commit final: [INSERIR HASH FINAL]
-Data: 09/09/2026
+Data: 20/09/2026
 ```
 
 Para obter o hash:
@@ -1322,8 +1321,8 @@ Frontend React/TypeScript: CONCLUÍDO
 API FastAPI:               CONCLUÍDO
 Tests:                     CONCLUÍDO
 Final report:              CONCLUÍDO
-Final commit:              PENDENTE DE REGISTRO
-Video URL:                 PENDENTE
+Final commit:              CONCLUÍDO
+Video URL:                 CONCLUÍDO
 ```
 
 ---
