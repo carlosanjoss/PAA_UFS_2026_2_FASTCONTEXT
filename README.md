@@ -1304,7 +1304,7 @@ git log -1 --oneline
 - Lewis et al. *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*.
 - FAISS documentation.
 - Sentence Transformers documentation.
-- BAAI/bge-small-en-v1.5 model documentation.
+- BAAI/bge-small-en-v1.5 model documentation .
 
 ---
 
