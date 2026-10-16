@@ -12,7 +12,7 @@ from src.string_matching.registry import (
 def test_default_registry() -> None:
     registry = create_default_registry()
 
-    assert registry.available_names() == ("naive",)
+    assert registry.available_names() == ("kmp", "naive")
     assert registry.contains("naive")
 
 

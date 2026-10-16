@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from src.string_matching.base import StringMatcher
+from src.string_matching.kmp import KMPMatcher
 from src.string_matching.naive import NaiveMatcher
 
 MatcherFactory = Callable[[], StringMatcher]
@@ -84,4 +85,8 @@ def create_default_registry() -> StringMatcherRegistry:
         factory=NaiveMatcher,
     )
 
+    registry.register(
+        name="kmp",
+        factory=KMPMatcher,
+    )
     return registry
