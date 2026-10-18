@@ -1,0 +1,105 @@
+{
+  "status": "ready",
+  "corpus": {
+    "name": "FastAPI Documentation",
+    "origin": "https://github.com/fastapi/fastapi/tree/0.141.0/docs/en/docs",
+    "version": "0.141.0",
+    "document_count": 153,
+    "chunk_count": 1305,
+    "fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+    "known_av1_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+    "matches_known_av1": true,
+    "expected_document_count": 153,
+    "expected_chunk_count": 1305
+  },
+  "patterns": [
+    {
+      "pattern_id": "P-SHORT-COMMON",
+      "pattern": "a",
+      "category": "short",
+      "description": "One-character, case-sensitive pattern intended to exercise frequent matches.",
+      "scope": "corpus",
+      "corpus_occurrences": 43612,
+      "verified": true
+    },
+    {
+      "pattern_id": "P-OAUTH2",
+      "pattern": "OAuth2",
+      "category": "medium",
+      "description": "Verified exact authentication term; the generated occurrence count is recorded below.",
+      "scope": "corpus",
+      "corpus_occurrences": 103,
+      "verified": true
+    },
+    {
+      "pattern_id": "P-DEPENDENCY",
+      "pattern": "dependency",
+      "category": "medium",
+      "description": "Verified exact lowercase documentation term; the generated occurrence count is recorded below.",
+      "scope": "corpus",
+      "corpus_occurrences": 220,
+      "verified": true
+    },
+    {
+      "pattern_id": "P-WEBSOCKET",
+      "pattern": "WebSocket",
+      "category": "medium",
+      "description": "Verified exact FastAPI feature term; the generated occurrence count is recorded below.",
+      "scope": "corpus",
+      "corpus_occurrences": 60,
+      "verified": true
+    },
+    {
+      "pattern_id": "P-LONG-BACKGROUND-TASKS",
+      "pattern": "background tasks",
+      "category": "long",
+      "description": "Longest real phrase among the selected PDF examples; verifies a multiword documentation pattern.",
+      "scope": "corpus",
+      "corpus_occurrences": 14,
+      "verified": true
+    },
+    {
+      "pattern_id": "P-ABSENT-SENTINEL",
+      "pattern": "FASTCONTEXT_AV2_ABSENT_SENTINEL_7F3C91",
+      "category": "absent",
+      "description": "Unique sentinel verified absent; generation fails if the literal occurs in the corpus.",
+      "scope": "corpus",
+      "corpus_occurrences": 0,
+      "verified": true
+    },
+    {
+      "pattern_id": "P-REPETITIVE",
+      "pattern": "AAAA",
+      "category": "repetitive",
+      "description": "Repeated-character stress case, evaluated only against its explicitly synthetic text.",
+      "scope": "synthetic",
+      "corpus_occurrences": 0,
+      "verified": true,
+      "synthetic_text": "AAAAAAAAAA",
+      "expected_positions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "pattern_id": "P-OVERLAPPING",
+      "pattern": "ABA",
+      "category": "overlapping",
+      "description": "Artificial overlap case outside the corpus; matches are expected at positions 0, 2, and 4.",
+      "scope": "synthetic",
+      "corpus_occurrences": 0,
+      "verified": true,
+      "synthetic_text": "ABABABA",
+      "expected_positions": [
+        0,
+        2,
+        4
+      ]
+    }
+  ]
+}

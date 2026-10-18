@@ -13,6 +13,11 @@ experiments:
     - 0.75
     - 1.00
 
+  av2_corpus_sizes:
+    - 0.25
+    - 0.50
+    - 1.00
+
   repetitions: 5
 
   warmup:

@@ -1,0 +1,56 @@
+{
+  "candidate_patterns": [
+    {
+      "pattern_id": "P-SHORT-COMMON",
+      "pattern": "a",
+      "category": "short",
+      "description": "One-character, case-sensitive pattern intended to exercise frequent matches."
+    },
+    {
+      "pattern_id": "P-OAUTH2",
+      "pattern": "OAuth2",
+      "category": "medium",
+      "description": "Verified exact authentication term; the generated occurrence count is recorded below."
+    },
+    {
+      "pattern_id": "P-DEPENDENCY",
+      "pattern": "dependency",
+      "category": "medium",
+      "description": "Verified exact lowercase documentation term; the generated occurrence count is recorded below."
+    },
+    {
+      "pattern_id": "P-WEBSOCKET",
+      "pattern": "WebSocket",
+      "category": "medium",
+      "description": "Verified exact FastAPI feature term; the generated occurrence count is recorded below."
+    },
+    {
+      "pattern_id": "P-LONG-BACKGROUND-TASKS",
+      "pattern": "background tasks",
+      "category": "long",
+      "description": "Longest real phrase among the selected PDF examples; verifies a multiword documentation pattern."
+    },
+    {
+      "pattern_id": "P-ABSENT-SENTINEL",
+      "pattern": "FASTCONTEXT_AV2_ABSENT_SENTINEL_7F3C91",
+      "category": "absent",
+      "description": "Unique sentinel verified absent; generation fails if the literal occurs in the corpus."
+    },
+    {
+      "pattern_id": "P-REPETITIVE",
+      "pattern": "AAAA",
+      "category": "repetitive",
+      "description": "Repeated-character stress case, evaluated only against its explicitly synthetic text.",
+      "synthetic_text": "AAAAAAAAAA",
+      "expected_positions": [0, 1, 2, 3, 4, 5, 6]
+    },
+    {
+      "pattern_id": "P-OVERLAPPING",
+      "pattern": "ABA",
+      "category": "overlapping",
+      "description": "Artificial overlap case outside the corpus; matches are expected at positions 0, 2, and 4.",
+      "synthetic_text": "ABABABA",
+      "expected_positions": [0, 2, 4]
+    }
+  ]
+}

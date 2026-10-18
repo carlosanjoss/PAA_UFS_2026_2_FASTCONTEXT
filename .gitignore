@@ -40,6 +40,8 @@ desktop.ini
 
 .pytest_cache/
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
 
 # ============================================================
@@ -54,6 +56,14 @@ htmlcov/
 
 .mypy_cache/
 .ruff_cache/
+.tox/
+.nox/
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
 
 # ============================================================
 # Dados gerados
