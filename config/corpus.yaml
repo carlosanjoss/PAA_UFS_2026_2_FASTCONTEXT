@@ -8,6 +8,11 @@ corpus:
     documentation_path: "docs/en/docs"
     language: "en"
 
+  av1_reference:
+    document_count: 153
+    chunk_count: 1305
+    fingerprint: "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d"
+
   download:
     method: "github_archive"
     save_original_files: true
