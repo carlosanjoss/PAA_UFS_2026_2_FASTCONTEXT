@@ -7,13 +7,16 @@ from unittest.mock import Mock, call
 
 import pytest
 
+from scripts.download_corpus import download_corpus
+from scripts.prepare_corpus import prepare_corpus
 from scripts.av2.prepare_inputs import (
     DEFAULT_PATTERN_CANDIDATES_PATH,
     iter_match_inputs,
     prepare_inputs,
 )
-from src.ingestion.chunk_loader import load_chunks_jsonl
+from src.ingestion.chunk_loader import DEFAULT_CHUNKS_PATH, load_chunks_jsonl
 from src.string_matching.naive import NaiveMatcher
+from src.utils.config import PROJECT_ROOT
 
 
 def _write_chunks(path: Path) -> None:
@@ -246,7 +249,15 @@ def test_shared_iterator_supplies_original_text_and_identical_pattern(
     assert result.positions[:7] == tuple(range(7))
 
 
-def test_frozen_corpus_manifest_matches_av1_reference(tmp_path: Path) -> None:
+def test_frozen_corpus_manifest_matches_av1_reference(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    if not DEFAULT_CHUNKS_PATH.is_file():
+        monkeypatch.chdir(PROJECT_ROOT)
+        download_corpus()
+        prepare_corpus()
+
     patterns_path = tmp_path / "patterns.json"
     scenarios_path = tmp_path / "scenarios.json"
 
