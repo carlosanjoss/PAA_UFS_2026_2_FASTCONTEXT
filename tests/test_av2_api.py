@@ -70,7 +70,12 @@ def test_available_algorithms(client: TestClient) -> None:
     )
 
     assert response.status_code == 200
-    assert response.json()["algorithms"] == ["kmp", "naive"]
+    assert response.json()["algorithms"] == [
+        "boyer-moore",
+        "kmp",
+        "naive",
+        "rabin-karp",
+    ]
     assert response.json()["corpus_size"] == 2
 
 
