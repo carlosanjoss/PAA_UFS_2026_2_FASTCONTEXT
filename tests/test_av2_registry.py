@@ -12,8 +12,15 @@ from src.string_matching.registry import (
 def test_default_registry() -> None:
     registry = create_default_registry()
 
-    assert registry.available_names() == ("kmp", "naive")
+    assert registry.available_names() == (
+        "boyer-moore",
+        "kmp",
+        "naive",
+        "rabin-karp",
+    )
     assert registry.contains("naive")
+    assert registry.contains("boyer-moore")
+    assert registry.contains("rabin-karp")
 
 
 def test_create_naive_matcher() -> None:
