@@ -37,6 +37,7 @@ export function QueryPage() {
   const [algorithm, setAlgorithm] = useState<Algorithm>("indexed");
   const [topK, setTopK] = useState(5);
   const [useRag, setUseRag] = useState(true);
+  const [temperature, setTemperature] = useState(0.3);
   const [result, setResult] = useState<QueryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -50,7 +51,7 @@ export function QueryPage() {
     setLoading(true);
     setError(null);
     try {
-      setResult(await api.query({ query: query.trim(), algorithm, top_k: topK, use_rag: useRag }));
+      setResult(await api.query({ query: query.trim(), algorithm, top_k: topK, use_rag: useRag, temperature }));
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Não foi possível concluir a consulta.");
     } finally {
@@ -81,6 +82,23 @@ export function QueryPage() {
           <label>Quantidade de contextos<select value={topK} onChange={(event) => setTopK(Number(event.target.value))}>{[1, 3, 5, 10].map((value) => <option key={value} value={value}>Top {value}</option>)}</select></label>
           <label className="toggle-label"><span><strong>Resposta com LLM</strong><small>mantém as evidências visíveis</small></span><input type="checkbox" checked={useRag} onChange={(event) => setUseRag(event.target.checked)} /><span className="toggle" /></label>
         </div>
+        {useRag && (
+          <div className="query-controls">
+            <label>
+              Temperatura
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={temperature}
+                onChange={(event) => setTemperature(Number(event.target.value))}
+              />
+              <span>{temperature.toFixed(1)}</span>
+            </label>
+            <small>0 = determinístico · 1 = mais criativo</small>
+          </div>
+        )}
         <div className="strategy-note"><Cpu size={17} /><span><strong>{ALGORITHM_LABELS[algorithm]}</strong> — {strategyDescriptions[algorithm]}</span></div>
       </form>
 

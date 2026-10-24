@@ -7,7 +7,7 @@ from functools import lru_cache
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from src.services.string_matching_service import (
     StringMatchingService,
@@ -24,7 +24,15 @@ class StringMatchingRequest(BaseModel):
 
     pattern: str = Field(min_length=1, max_length=2000)
     algorithm: str = Field(default="naive", min_length=1)
-    max_results: int = Field(default=20, ge=1, le=200)
+    max_results: int = Field(default=20, ge=1, le=50)
+
+    @field_validator("pattern")
+    @classmethod
+    def reject_blank_pattern(cls, value: str) -> str:
+        """Reject whitespace-only input without changing valid literals."""
+        if not value.strip():
+            raise ValueError("pattern cannot be blank")
+        return value
 
 
 @lru_cache(maxsize=1)
@@ -46,7 +54,7 @@ def list_algorithms(
     """Return available string matching algorithms."""
     return {
         "algorithms": list(
-            service._registry.available_names()
+            service.available_algorithms
         ),
         "corpus_size": service.corpus_size,
     }
@@ -75,6 +83,7 @@ def search_pattern(
             "chunk_id": match.chunk_id,
             "source_path": match.source_path,
             "section_title": match.section_title,
+            "content": match.content,
             "positions": list(match.positions),
             "occurrences": match.occurrences,
             "comparisons": match.comparisons,

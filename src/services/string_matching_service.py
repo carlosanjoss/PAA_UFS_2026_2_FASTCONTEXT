@@ -24,6 +24,7 @@ class ChunkMatch:
     chunk_id: str
     source_path: str
     section_title: str
+    content: str
     positions: tuple[int, ...]
     comparisons: int
 
@@ -69,6 +70,11 @@ class StringMatchingService:
         """Return the number of loaded chunks."""
         return len(self._chunks)
 
+    @property
+    def available_algorithms(self) -> tuple[str, ...]:
+        """Return canonical names exposed by the configured registry."""
+        return self._registry.available_names()
+
     def search(
         self,
         pattern: str,
@@ -112,6 +118,7 @@ class StringMatchingService:
                     chunk_id=chunk["chunk_id"],
                     source_path=chunk["source_path"],
                     section_title=chunk["section_title"],
+                    content=chunk["content"],
                     positions=result.positions,
                     comparisons=result.comparisons,
                 )

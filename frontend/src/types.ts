@@ -1,5 +1,6 @@
 export type Algorithm = "linear" | "indexed" | "optimized" | "semantic";
-export type AppView = "overview" | "ask" | "experiments";
+export type StringMatchingAlgorithm = "naive" | "kmp" | "boyer-moore" | "rabin-karp";
+export type AppView = "overview" | "ask" | "experiments" | "string-matching" | "av2-experiments";
 
 export interface HealthComponent {
   name: string;
@@ -104,4 +105,138 @@ export interface QueryRequest {
   algorithm: Algorithm;
   top_k: number;
   use_rag: boolean;
+  temperature?: number;
+}
+
+export interface StringMatchingAlgorithmsResponse {
+  algorithms: StringMatchingAlgorithm[];
+  corpus_size: number;
+}
+
+export interface StringMatchingChunk {
+  chunk_id: string;
+  source_path: string;
+  section_title: string;
+  content: string;
+  positions: number[];
+  occurrences: number;
+  comparisons: number;
+}
+
+export interface StringMatchingResponse {
+  algorithm: StringMatchingAlgorithm;
+  pattern: string;
+  total_chunks: number;
+  matching_chunks: number;
+  total_occurrences: number;
+  total_comparisons: number;
+  preprocessing_time_ns: number;
+  search_time_ns: number;
+  total_time_ns: number;
+  returned_chunks: number;
+  matches: StringMatchingChunk[];
+}
+
+export interface StringMatchingRequest {
+  pattern: string;
+  algorithm: StringMatchingAlgorithm;
+  max_results: number;
+}
+
+export interface AV2ExperimentMetadata {
+  algorithm_count: number;
+  pattern_count: number;
+  scenario_count: number;
+  timing_measurements: number;
+  timing_combinations: number;
+  memory_combinations: number;
+  corpus_chunks: number;
+  repetitions: number;
+  generated_from: string[];
+}
+
+export interface AV2Pattern {
+  pattern_id: string;
+  pattern: string;
+  category: string;
+  description: string;
+  scope: "corpus" | "synthetic";
+  corpus_occurrences: number;
+}
+
+export interface AV2Scenario {
+  scenario_id: string;
+  pattern_id: string;
+  pattern: string;
+  pattern_category: string;
+  scale: string;
+  corpus_fraction: number;
+  total_characters: number;
+  expected_occurrences: number;
+  description: string;
+}
+
+export interface AV2SummaryRow {
+  scenario_id: string;
+  pattern_id: string;
+  pattern_category: string;
+  scale: string;
+  corpus_fraction: number;
+  algorithm: StringMatchingAlgorithm;
+  repetitions: number;
+  input_count: number;
+  total_characters: number;
+  occurrences: number;
+  mean_time_ms: number;
+  median_time_ms: number;
+  std_time_ms: number;
+  min_time_ms: number;
+  max_time_ms: number;
+  mean_comparisons: number;
+  mean_preprocessing_ms: number;
+  mean_search_ms: number;
+}
+
+export interface AV2MemoryRow {
+  scenario_id: string;
+  pattern_id: string;
+  pattern_category: string;
+  scale: string;
+  corpus_fraction: number;
+  algorithm: StringMatchingAlgorithm;
+  total_characters: number;
+  peak_memory_mib: number;
+}
+
+export interface AV2SpeedupRow {
+  scenario_id: string;
+  pattern_id: string;
+  pattern_category: string;
+  scale: string;
+  corpus_fraction: number;
+  algorithm: StringMatchingAlgorithm;
+  repetitions: number;
+  total_characters: number;
+  occurrences: number;
+  mean_time_ms: number;
+  std_time_ms: number;
+  speedup_vs_naive: number;
+}
+
+export interface AV2ExperimentsResponse {
+  metadata: AV2ExperimentMetadata;
+  patterns: AV2Pattern[];
+  scenarios: AV2Scenario[];
+  summary: AV2SummaryRow[];
+  memory: AV2MemoryRow[];
+  speedups: AV2SpeedupRow[];
+  environment: {
+    project: string;
+    captured_at: string;
+    python: Record<string, string | boolean>;
+    system: Record<string, string | number>;
+    packages: Record<string, string>;
+    experimental_matrix: Record<string, unknown>;
+    notes: string[];
+  };
 }

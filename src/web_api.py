@@ -25,6 +25,8 @@ from src.retrieval.models import RetrievalResult
 from src.retrieval.registry import RetrieverRegistryError
 from src.services.factory import create_fastcontext_service
 from src.services.fastcontext import FastContextResult, RAGNotConfiguredError
+from src.string_matching.api import router as string_matching_router
+from src.string_matching.experiments_api import router as av2_experiments_router
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DIRECTORY = REPOSITORY_ROOT / "reports" / "tables"
@@ -40,6 +42,7 @@ class QueryRequest(BaseModel):
     algorithm: Algorithm = "indexed"
     top_k: int = Field(default=5, ge=1, le=10)
     use_rag: bool = True
+    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
 
 
 app = FastAPI(
@@ -57,6 +60,8 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
+app.include_router(string_matching_router)
+app.include_router(av2_experiments_router)
 
 
 @lru_cache(maxsize=1)
@@ -143,8 +148,8 @@ def query(request: QueryRequest) -> dict[str, Any]:
                 query=normalized_query,
                 top_k=request.top_k,
                 generation_config=GenerationConfig(
-                    temperature=0.0,
-                    max_tokens=256,
+                    temperature=request.temperature,
+                    max_tokens=2048,
                     think=False,
                 ),
             )

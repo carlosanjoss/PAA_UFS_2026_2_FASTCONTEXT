@@ -7,13 +7,13 @@ from unittest.mock import Mock, call
 
 import pytest
 
-from scripts.download_corpus import download_corpus
-from scripts.prepare_corpus import prepare_corpus
 from scripts.av2.prepare_inputs import (
     DEFAULT_PATTERN_CANDIDATES_PATH,
     iter_match_inputs,
     prepare_inputs,
 )
+from scripts.download_corpus import download_corpus
+from scripts.prepare_corpus import prepare_corpus
 from src.ingestion.chunk_loader import DEFAULT_CHUNKS_PATH, load_chunks_jsonl
 from src.string_matching.naive import NaiveMatcher
 from src.utils.config import PROJECT_ROOT

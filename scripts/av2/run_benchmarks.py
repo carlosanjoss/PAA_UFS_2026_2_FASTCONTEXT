@@ -76,7 +76,7 @@ def load_json(path: Path) -> dict[str, Any]:
         document = json.load(handle)
 
     if not isinstance(document, dict):
-        raise ValueError(f"Expected a JSON object: {path}")
+        raise TypeError(f"Expected a JSON object: {path}")
 
     return document
 

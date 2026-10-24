@@ -1328,3 +1328,62 @@ Video URL:                 CONCLUÍDO
 ---
 
 **FastContext — UFS / PROCC — 2026.2**
+
+---
+
+## 41. AV2 — Processamento de Cadeias
+
+A AV2 integra casamento exato de padrões ao mesmo backend e frontend da AV1,
+sem alterar o corpus congelado nem os resultados anteriores. As implementações
+manuais disponíveis são:
+
+- `naive`;
+- `kmp`;
+- `boyer-moore`, com heurística bad-character;
+- `rabin-karp`, com rolling hash e verificação de coincidências.
+
+### Interface
+
+A aplicação web possui cinco áreas: as três páginas da AV1, **Busca textual** e
+**Experimentos AV2**. A busca textual executa os algoritmos reais sobre os 1.305
+chunks, mostra ocorrências, offsets, comparações e tempos e permite uma comparação
+interativa dos quatro métodos. O dashboard lê apenas os artefatos persistidos e
+não executa benchmarks quando é aberto.
+
+### Rotas
+
+```text
+GET  /api/av2/string-matching/algorithms
+POST /api/av2/string-matching/search
+GET  /api/av2/experiments
+```
+
+As rotas anteriores permanecem disponíveis em `/api/health`, `/api/metrics` e
+`/api/query`. A documentação OpenAPI pode ser consultada em `/docs`.
+
+### Execução
+
+```bash
+uvicorn src.web_api:app --host 127.0.0.1 --port 8000
+
+cd frontend
+npm ci
+npm run dev
+```
+
+O Vite encaminha `/api` para a porta `8000`. Para servir o frontend pelo próprio
+FastAPI, execute `npm run build` antes de iniciar o Uvicorn.
+
+### Fontes experimentais
+
+O dashboard usa `experiments/av2/final/summary.csv`, os resultados de memória em
+`experiments/av2/memory_probe/`, as tabelas de `reports/tables/av2/` e os contratos
+de padrões e cenários em `data/av2/`. São 24 cenários, 480 medições temporais e 96
+combinações de memória. Os tempos são descritivos, com cinco repetições; a memória
+foi medida separadamente com `tracemalloc`. Entradas sintéticas não representam a
+documentação real, e casamento exato não equivale a recuperação semântica ou RAG.
+
+Detalhes de arquitetura e reprodução: `docs/av2/WEB_INTEGRATION.md`.
+
+Roteiro demonstrativo, resultados esperados e perguntas prováveis da banca:
+`docs/av2/APRESENTACAO.md`.

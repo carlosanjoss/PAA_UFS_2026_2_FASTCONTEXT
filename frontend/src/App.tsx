@@ -17,6 +17,16 @@ const ExperimentsPage = lazy(() =>
     default: module.ExperimentsPage,
   })),
 );
+const StringMatchingPage = lazy(() =>
+  import("./pages/StringMatchingPage").then((module) => ({
+    default: module.StringMatchingPage,
+  })),
+);
+const AV2ExperimentsPage = lazy(() =>
+  import("./pages/AV2ExperimentsPage").then((module) => ({
+    default: module.AV2ExperimentsPage,
+  })),
+);
 
 export function App() {
   const [view, setView] = useState<AppView>("overview");
@@ -45,6 +55,8 @@ export function App() {
         {view === "overview" && <OverviewPage health={health} metrics={metrics} error={dataError} onNavigate={setView} />}
         {view === "ask" && <QueryPage />}
         {view === "experiments" && <ExperimentsPage metrics={metrics} error={dataError} />}
+        {view === "string-matching" && <StringMatchingPage />}
+        {view === "av2-experiments" && <AV2ExperimentsPage />}
       </Suspense>
     </AppShell>
   );

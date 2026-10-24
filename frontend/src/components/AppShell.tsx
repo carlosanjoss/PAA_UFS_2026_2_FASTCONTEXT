@@ -3,6 +3,8 @@ import {
   BarChart3,
   BookOpenText,
   Braces,
+  FileSearch,
+  FlaskConical,
   LayoutDashboard,
   Menu,
   X,
@@ -10,10 +12,15 @@ import {
 import { useState, type ReactNode } from "react";
 import type { AppView, HealthResponse } from "../types";
 
-const navigation: Array<{ id: AppView; label: string; description: string; icon: typeof Activity }> = [
+const av1Navigation: Array<{ id: AppView; label: string; description: string; icon: typeof Activity }> = [
   { id: "overview", label: "Visão geral", description: "Resumo do estudo", icon: LayoutDashboard },
   { id: "ask", label: "Perguntar", description: "Resposta e evidências", icon: BookOpenText },
   { id: "experiments", label: "Comparações", description: "Métricas e gráficos", icon: BarChart3 },
+];
+
+const av2Navigation: Array<{ id: AppView; label: string; description: string; icon: typeof Activity }> = [
+  { id: "string-matching", label: "Busca textual", description: "Algoritmos da AV2", icon: FileSearch },
+  { id: "av2-experiments", label: "Experimentos AV2", description: "24 cenários medidos", icon: FlaskConical },
 ];
 
 interface AppShellProps {
@@ -51,8 +58,22 @@ export function AppShell({ activeView, health, onNavigate, children }: AppShellP
         </div>
 
         <nav className="navigation" aria-label="Navegação principal">
-          <span className="nav-caption">Laboratório</span>
-          {navigation.map((item) => {
+          <span className="nav-caption">AV1 · Recuperação</span>
+          {av1Navigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                className={`nav-item ${activeView === item.id ? "nav-item--active" : ""}`}
+                onClick={() => navigate(item.id)}
+              >
+                <Icon size={19} />
+                <span><strong>{item.label}</strong><small>{item.description}</small></span>
+              </button>
+            );
+          })}
+          <span className="nav-caption nav-caption--section">AV2 · Cadeias</span>
+          {av2Navigation.map((item) => {
             const Icon = item.icon;
             return (
               <button

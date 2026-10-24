@@ -7,20 +7,19 @@ import os
 import pytest
 
 import experiments.run_experiments as experiment_runner
-
 from experiments.run_experiments import (
     CHECKPOINT_SCHEMA_VERSION,
     EvaluationQuery,
     _build_nested_subsets,
-    _checkpoint_due,
     _build_run_id,
     _calculate_signature,
+    _checkpoint_due,
     _expected_run_ids,
     _load_checkpoint,
     _quality_fields,
-    _replace_checkpoint_with_retry,
     _raw_fieldnames,
     _read_raw_results,
+    _replace_checkpoint_with_retry,
     _summarize,
     _validate_checkpoint,
     _validate_existing_rows,
