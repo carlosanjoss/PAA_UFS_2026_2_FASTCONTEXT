@@ -16,10 +16,9 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from src.app.bootstrap import create_application
 from src.app.health import check_application_health
-from src.app.models import ApplicationContainer
 from src.app.presentation import build_retrieval_trace
+from src.app.runtime import get_application
 from src.rag.providers.base import GenerationConfig, LLMProviderError
 from src.retrieval.models import RetrievalResult
 from src.retrieval.registry import RetrieverRegistryError
@@ -62,13 +61,6 @@ app.add_middleware(
 )
 app.include_router(string_matching_router)
 app.include_router(av2_experiments_router)
-
-
-@lru_cache(maxsize=1)
-def get_application() -> ApplicationContainer:
-    """Build shared application resources once per API process."""
-
-    return create_application()
 
 
 @lru_cache(maxsize=4)

@@ -11,7 +11,7 @@ requisição HTTP modifica o corpus, os CSVs ou o protocolo experimental.
 
 ```text
 React/TypeScript
-  ├─ Busca textual ──────> /api/av2/string-matching/*
+  ├─ Busca textual ──────> /api/av2/string-matching/* ──> RAG opcional
   └─ Experimentos AV2 ───> /api/av2/experiments
                                  │
 FastAPI                          ├─ experiments/av2/final/*.csv
@@ -39,7 +39,11 @@ Entrada:
 {
   "pattern": "OAuth2",
   "algorithm": "boyer-moore",
-  "max_results": 10
+  "max_results": 10,
+  "use_llm": true,
+  "question": "Como OAuth2 é utilizado no FastAPI?",
+  "llm_context_limit": 5,
+  "temperature": 0.3
 }
 ```
 
@@ -49,6 +53,14 @@ dos chunks exibidos, posições em offsets Python, contagens e tempos em
 nanossegundos. A interface converte o conteúdo em pontos de código Unicode antes
 de realçar as posições, sem HTML injetado.
 
+Quando `use_llm` está ativo, `question` é obrigatória. O algoritmo continua
+processando o corpus completo; depois disso, até `llm_context_limit` chunks com
+correspondência exata são convertidos em contexto para o mesmo `RAGPipeline` da
+AV1. A resposta inclui `status`, texto, provedor, modelo, citações, validade das
+citações, tempo de geração e os IDs usados como contexto. Se não houver matches
+ou o provedor estiver indisponível, a busca exata continua sendo devolvida e o
+campo `llm` explica por que não houve geração.
+
 ### `GET /api/av2/experiments`
 
 Retorna metadados derivados, 8 padrões, 24 cenários, 96 resumos temporais, 96
@@ -57,7 +69,8 @@ são contadas para validação da matriz, mas não são enviadas ao navegador.
 
 ## Frontend
 
-- `StringMatchingPage.tsx`: busca real, comparação exploratória e evidências.
+- `StringMatchingPage.tsx`: busca real, comparação exploratória, evidências e
+  resposta RAG opcional fundamentada somente nos matches exatos.
 - `AV2ExperimentsPage.tsx`: sete gráficos, filtros, tabela, CSV e ambiente.
 - Os tipos AV1 e AV2 permanecem separados em `types.ts`.
 - As páginas usam lazy loading e o mesmo design system da AV1.
@@ -93,4 +106,6 @@ npm run dev
 - Objetos de saída fazem parte do pico rastreado.
 - Padrões sintéticos são microbenchmarks, não textos naturais.
 - Comparações de Rabin-Karp não incluem operações de rolling hash.
+- A resposta da LLM é uma etapa posterior e não integra as métricas controladas
+  dos quatro algoritmos de casamento.
 - Resultados dependem das entradas e implementações avaliadas.

@@ -4,18 +4,56 @@ from __future__ import annotations
 
 import json
 import sys
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
+from src.rag.pipeline import RAGPipeline
+from src.rag.providers.base import (
+    GenerationConfig,
+    LLMMessage,
+    LLMProvider,
+    LLMResponse,
+)
 from src.services.string_matching_service import StringMatchingService
+from src.string_matching import api as string_matching_api
 from src.string_matching import experiments_api
 from src.string_matching.api import get_string_matching_service
 from src.string_matching.experiments_api import load_av2_experiments
 from src.web_api import app
+
+
+class FakeAV2Provider(LLMProvider):
+    """Deterministic provider for the AV2 grounded-generation contract."""
+
+    def __init__(self, *, available: bool = True) -> None:
+        self.available = available
+        self.calls = 0
+
+    @property
+    def name(self) -> str:
+        return "fake-av2"
+
+    def is_available(self) -> bool:
+        return self.available
+
+    def generate(
+        self,
+        messages: Sequence[LLMMessage],
+        config: GenerationConfig | None = None,
+    ) -> LLMResponse:
+        self.calls += 1
+        assert messages
+        assert config is not None
+        return LLMResponse(
+            text="OAuth2 aparece no contexto selecionado [security-1].",
+            model="fake-model",
+            provider=self.name,
+        )
 
 
 @pytest.fixture
@@ -102,6 +140,109 @@ def test_unicode_positions_remain_python_code_point_offsets(
     )
     unicode_match = response.json()["matches"][1]
     assert unicode_match["positions"] == [1]
+
+
+def test_av2_can_generate_grounded_answer_from_exact_matches(
+    web_client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    provider = FakeAV2Provider()
+    runtime = SimpleNamespace(
+        provider=provider,
+        rag_pipeline=RAGPipeline(
+            provider,
+            max_truncation_retries=0,
+            max_citation_retries=0,
+        ),
+    )
+    monkeypatch.setattr(string_matching_api, "get_application", lambda: runtime)
+
+    response = web_client.post(
+        "/api/av2/string-matching/search",
+        json={
+            "pattern": "OAuth2",
+            "algorithm": "boyer-moore",
+            "max_results": 1,
+            "use_llm": True,
+            "question": "O que o contexto informa sobre OAuth2?",
+            "llm_context_limit": 1,
+            "temperature": 0.2,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["total_occurrences"] == 3
+    assert payload["llm"]["status"] == "generated"
+    assert payload["llm"]["answer"].startswith("OAuth2 aparece")
+    assert payload["llm"]["citations"] == ["security-1"]
+    assert payload["llm"]["citation_valid"] is True
+    assert payload["llm"]["context_chunk_ids"] == ["security-1"]
+    assert provider.calls == 1
+
+
+def test_av2_search_survives_unavailable_llm(
+    web_client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    provider = FakeAV2Provider(available=False)
+    runtime = SimpleNamespace(
+        provider=provider,
+        rag_pipeline=RAGPipeline(provider),
+    )
+    monkeypatch.setattr(string_matching_api, "get_application", lambda: runtime)
+
+    response = web_client.post(
+        "/api/av2/string-matching/search",
+        json={
+            "pattern": "OAuth2",
+            "use_llm": True,
+            "question": "Explique OAuth2.",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["total_occurrences"] == 3
+    assert response.json()["llm"]["status"] == "unavailable"
+    assert response.json()["llm"]["answer"] is None
+    assert provider.calls == 0
+
+
+def test_av2_does_not_call_llm_without_exact_context(
+    web_client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail_if_loaded() -> None:
+        raise AssertionError("LLM runtime should not load without exact matches")
+
+    monkeypatch.setattr(string_matching_api, "get_application", fail_if_loaded)
+    response = web_client.post(
+        "/api/av2/string-matching/search",
+        json={
+            "pattern": "MISSING_PATTERN",
+            "use_llm": True,
+            "question": "Há informação sobre este padrão?",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["total_occurrences"] == 0
+    assert response.json()["llm"]["status"] == "no_context"
+
+
+def test_av2_requires_question_when_llm_is_enabled(
+    web_client: TestClient,
+) -> None:
+    response = web_client.post(
+        "/api/av2/string-matching/search",
+        json={
+            "pattern": "OAuth2",
+            "use_llm": True,
+            "question": "   ",
+        },
+    )
+
+    assert response.status_code == 422
 
 
 def test_search_validation_and_unknown_algorithm(web_client: TestClient) -> None:

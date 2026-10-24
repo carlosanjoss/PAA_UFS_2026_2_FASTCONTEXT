@@ -135,12 +135,30 @@ export interface StringMatchingResponse {
   total_time_ns: number;
   returned_chunks: number;
   matches: StringMatchingChunk[];
+  llm: StringMatchingLLMResult;
 }
 
 export interface StringMatchingRequest {
   pattern: string;
   algorithm: StringMatchingAlgorithm;
   max_results: number;
+  use_llm: boolean;
+  question?: string;
+  llm_context_limit: number;
+  temperature?: number;
+}
+
+export interface StringMatchingLLMResult {
+  status: "disabled" | "generated" | "unavailable" | "no_context" | "error";
+  question: string | null;
+  answer: string | null;
+  provider: string | null;
+  model: string | null;
+  citations: string[];
+  citation_valid: boolean | null;
+  generation_time_ns: number | null;
+  context_chunk_ids: string[];
+  fallback_reason: string | null;
 }
 
 export interface AV2ExperimentMetadata {

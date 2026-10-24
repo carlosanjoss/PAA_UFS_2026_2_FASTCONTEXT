@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  Bot,
   CheckCircle2,
   ChevronDown,
   Clock3,
@@ -8,6 +9,7 @@ import {
   Hash,
   LoaderCircle,
   Search,
+  Sparkles,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { api } from "../api";
@@ -17,6 +19,7 @@ import { PageHeader } from "../components/PageHeader";
 import type {
   StringMatchingAlgorithm,
   StringMatchingChunk,
+  StringMatchingLLMResult,
   StringMatchingResponse,
 } from "../types";
 
@@ -35,6 +38,10 @@ export function StringMatchingPage() {
   const [algorithms, setAlgorithms] = useState<StringMatchingAlgorithm[]>(fallbackAlgorithms);
   const [maxResults, setMaxResults] = useState(10);
   const [compareAll, setCompareAll] = useState(false);
+  const [useLlm, setUseLlm] = useState(true);
+  const [question, setQuestion] = useState("O que a documentação explica sobre OAuth2?");
+  const [llmContextLimit, setLlmContextLimit] = useState(5);
+  const [temperature, setTemperature] = useState(0.3);
   const [results, setResults] = useState<StringMatchingResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +63,10 @@ export function StringMatchingPage() {
       setError("Digite um padrão não vazio.");
       return;
     }
+    if (useLlm && !question.trim()) {
+      setError("Digite uma pergunta para a LLM responder com os chunks encontrados.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -64,6 +75,10 @@ export function StringMatchingPage() {
         pattern: normalizedPattern,
         algorithm: name,
         max_results: maxResults,
+        use_llm: useLlm && name === algorithm,
+        question: useLlm && name === algorithm ? question.trim() : undefined,
+        llm_context_limit: llmContextLimit,
+        temperature,
       })));
       setResults(responses);
     } catch (requestError) {
@@ -98,14 +113,16 @@ export function StringMatchingPage() {
               {loading ? "Analisando…" : "Buscar no corpus"}
             </button>
           </div>
-          <div className="example-row"><span>Exemplos:</span>{examples.map((example) => <button key={example} onClick={() => setPattern(example)}>{example}</button>)}</div>
+          <div className="example-row"><span>Exemplos:</span>{examples.map((example) => <button key={example} onClick={() => { setPattern(example); setQuestion(`O que a documentação explica sobre ${example}?`); }}>{example}</button>)}</div>
         </div>
 
         <div className="query-controls av2-query-controls">
           <label>Algoritmo<select value={algorithm} onChange={(event) => setAlgorithm(event.target.value as StringMatchingAlgorithm)} disabled={compareAll}>{algorithms.map((name) => <option value={name} key={name}>{labels[name]}</option>)}</select></label>
           <label>Chunks exibidos<select value={maxResults} onChange={(event) => setMaxResults(Number(event.target.value))}>{[5, 10, 20, 50].map((value) => <option value={value} key={value}>{value}</option>)}</select></label>
           <label className="toggle-label"><span><strong>Comparar os quatro</strong><small>execução interativa, fora do benchmark</small></span><input type="checkbox" checked={compareAll} onChange={(event) => setCompareAll(event.target.checked)} /><span className="toggle" /></label>
+          <label className="toggle-label"><span><strong>Resposta com LLM</strong><small>usa somente chunks com match exato</small></span><input type="checkbox" checked={useLlm} onChange={(event) => setUseLlm(event.target.checked)} /><span className="toggle" /></label>
         </div>
+        {useLlm && <div className="av2-llm-panel"><div className="av2-llm-question"><label htmlFor="av2-question">Pergunta para a LLM</label><div className="query-input-wrap"><Bot size={20} /><textarea id="av2-question" value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ex.: Como OAuth2 é utilizado no FastAPI?" /></div></div><div className="av2-llm-options"><label>Chunks de contexto<select value={llmContextLimit} onChange={(event) => setLlmContextLimit(Number(event.target.value))}>{[1, 3, 5, 10].map((value) => <option value={value} key={value}>Top {value} matches</option>)}</select></label><label>Temperatura <span>{temperature.toFixed(1)}</span><input type="range" min="0" max="1" step="0.1" value={temperature} onChange={(event) => setTemperature(Number(event.target.value))} /></label></div><div className="llm-flow-note"><Sparkles size={16} /><span><strong>{labels[algorithm]}</strong> encontra posições exatas → os chunks correspondentes viram contexto → a LLM responde com citações. A LLM não altera as métricas do algoritmo.</span></div></div>}
         <div className="strategy-note"><AlertTriangle size={17} /><span>O limite controla somente os cards retornados. Totais de chunks, ocorrências e comparações são calculados sobre todo o corpus.</span></div>
       </section>
 
@@ -127,6 +144,8 @@ export function StringMatchingPage() {
             <div><span>Padrão</span><strong className="mono-value">{primary.pattern}</strong></div>
           </section>
 
+          {primary.llm.status !== "disabled" && <LLMAnswerCard llm={primary.llm} algorithm={primary.algorithm} />}
+
           {results.length > 1 && <InteractiveComparison results={results} equivalent={Boolean(equivalent)} />}
 
           <section className="panel evidence-panel">
@@ -137,6 +156,13 @@ export function StringMatchingPage() {
       )}
     </>
   );
+}
+
+function LLMAnswerCard({ llm, algorithm }: { llm: StringMatchingLLMResult; algorithm: StringMatchingAlgorithm }) {
+  if (llm.status !== "generated") {
+    return <section className="panel av2-llm-fallback"><div className="panel-heading"><div><h2>Resposta com LLM</h2><p>A busca exata foi concluída normalmente, mas a etapa generativa não produziu resposta.</p></div><AlertTriangle size={19} /></div><div className="method-note"><AlertTriangle size={18} /><p>{llm.fallback_reason ?? "A geração está indisponível."}</p></div></section>;
+  }
+  return <section className="answer-card av2-llm-answer"><div className="answer-topline"><span><Bot size={17} /> Resposta fundamentada nos matches da AV2</span><span className={`validation-pill ${llm.citation_valid ? "" : "validation-pill--warn"}`}>{llm.citation_valid ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}{llm.citation_valid ? "Citações validadas" : "Verifique as citações"}</span></div><p className="llm-question"><strong>Pergunta:</strong> {llm.question}</p><div className="answer-text">{llm.answer}</div><div className="answer-meta"><span>Busca: {labels[algorithm]}</span><span>Contexto: {llm.context_chunk_ids.length} chunk(s) com match exato</span><span>{llm.provider} · {llm.model}</span>{llm.generation_time_ns !== null && <span>Geração: {formatNs(llm.generation_time_ns)}</span>}</div>{llm.citations.length > 0 && <div className="llm-citations"><strong>Citações usadas</strong>{llm.citations.map((citation) => <code key={citation}>[{citation}]</code>)}</div>}</section>;
 }
 
 function InteractiveComparison({ results, equivalent }: { results: StringMatchingResponse[]; equivalent: boolean }) {

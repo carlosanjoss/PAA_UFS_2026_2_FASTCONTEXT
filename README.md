@@ -1350,6 +1350,12 @@ chunks, mostra ocorrências, offsets, comparações e tempos e permite uma compa
 interativa dos quatro métodos. O dashboard lê apenas os artefatos persistidos e
 não executa benchmarks quando é aberto.
 
+Na busca textual, a opção **Resposta com LLM** aplica o pipeline RAG somente
+depois do casamento exato: os chunks que contêm o padrão tornam-se o contexto
+da pergunta, e a resposta apresenta provedor, modelo e citações validadas. Essa
+etapa é opcional, não altera posições, comparações ou tempos dos algoritmos e não
+faz parte do benchmark oficial da AV2.
+
 ### Rotas
 
 ```text

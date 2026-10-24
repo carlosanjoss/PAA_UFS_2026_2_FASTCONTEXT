@@ -24,7 +24,7 @@ Abra `http://127.0.0.1:8000/` e confirme:
 - o navegador está com zoom em 100%;
 - nenhum serviço de outro projeto está ocupando a porta 8000.
 
-Se o LLM local não estiver disponível, a AV2 continua funcionando. Não dependa da geração com Ollama para demonstrar processamento de cadeias.
+Se o LLM local não estiver disponível, a busca exata e os experimentos da AV2 continuam funcionando. A interface mostrará a indisponibilidade sem ocultar as métricas algorítmicas.
 
 ## 2. Abertura — 1 minuto
 
@@ -59,7 +59,9 @@ Abra **Busca textual**.
 1. Selecione `OAuth2`.
 2. Selecione **Boyer-Moore**.
 3. Escolha 5 chunks exibidos.
-4. Clique em **Buscar no corpus**.
+4. Mantenha **Resposta com LLM** ativada.
+5. Use a pergunta `Como OAuth2 é utilizado no FastAPI?`.
+6. Clique em **Buscar no corpus**.
 
 ### Resultado esperado
 
@@ -73,9 +75,19 @@ Abra **Busca textual**.
 
 Os tempos desta tela variam, pois são produzidos durante a interação.
 
+Quando o provedor estiver disponível, mostre também:
+
+- a resposta fundamentada nos chunks que contêm `OAuth2`;
+- o provedor e o modelo utilizados;
+- o tempo de geração separado do tempo do algoritmo;
+- as citações e o selo de validação;
+- os IDs dos chunks usados como contexto.
+
 ### O que explicar
 
 > O backend percorre o corpus completo e calcula todas as ocorrências. O limite atua somente na quantidade de cards enviados para a interface. A busca preserva caixa, encontra sobreposições e retorna offsets do texto original. O destaque é construído com componentes React, sem injetar HTML, e converte o texto em pontos de código para manter compatibilidade com os offsets Unicode do Python.
+
+> A LLM entra somente depois da busca exata. Os chunks que possuem correspondência tornam-se o contexto do RAG. Portanto, a LLM não encontra posições, não modifica comparações e não participa do benchmark. Se ela falhar, os resultados de Boyer-Moore, KMP, Naive ou Rabin-Karp continuam válidos e visíveis.
 
 ### Comparação interativa
 
@@ -94,6 +106,8 @@ Todos devem informar 103 ocorrências e as mesmas posições. Explique:
 - `websocket`: útil para mostrar que a busca diferencia maiúsculas e minúsculas.
 - `FASTCONTEXT_AV2_ABSENT_SENTINEL_7F3C91`: padrão ausente, deve retornar zero.
 - Um padrão vazio: a API deve rejeitar a requisição.
+
+Para o padrão ausente, destaque que a LLM não é chamada: sem correspondência exata, não existe contexto autorizado para a resposta.
 
 ## 5. Metodologia experimental — 1 minuto
 
@@ -198,13 +212,17 @@ Não nas métricas. O corpus inteiro é processado antes do corte; o limite redu
 
 Não. O endpoint lê e valida arquivos CSV e JSON congelados. Se um artefato obrigatório estiver ausente, retorna erro 503 informativo.
 
+### A LLM faz parte do algoritmo da AV2?
+
+Não. Ela é uma etapa posterior e opcional. O algoritmo encontra os chunks e as posições exatas; o RAG usa uma quantidade limitada desses chunks para responder à pergunta com citações. As métricas de string matching são calculadas antes da geração.
+
 ### Como a corretude foi verificada?
 
 Os quatro algoritmos seguem o mesmo contrato e devem produzir as mesmas posições. Há testes automatizados para ocorrências reais, padrões vazios, algoritmos desconhecidos, sobreposição, Unicode, artefatos experimentais e preservação das rotas da AV1.
 
 ## 10. Plano de contingência
 
-- Se o LLM estiver indisponível, explique que é uma dependência externa da AV1 e prossiga com a AV2.
+- Se o LLM estiver indisponível, mostre o aviso da própria AV2 e explique que a busca exata permanece operacional.
 - Se a porta 8000 estiver ocupada, encerre apenas o processo identificado ou execute o build pela porta 8010 e abra `http://127.0.0.1:8010/`.
 - Se a rede estiver indisponível, a demonstração local continua funcionando porque os dados e o frontend compilado estão no repositório.
 - Não execute `run_benchmarks.py` durante a apresentação.
