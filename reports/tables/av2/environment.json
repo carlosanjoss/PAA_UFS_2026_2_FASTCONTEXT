@@ -1,0 +1,52 @@
+{
+  "project": "FastContext AV2",
+  "captured_at": "2026-10-23T21:00:00.744730-03:00",
+  "python": {
+    "version": "3.11.9",
+    "implementation": "CPython",
+    "virtual_environment": true
+  },
+  "system": {
+    "os": "Windows",
+    "release": "10",
+    "architecture": "AMD64",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz",
+    "logical_processors": 12,
+    "ram_gib": 15.78
+  },
+  "git": {
+    "commit": "31a4e4992864980c02d2c49460f66af84a44e4b7",
+    "branch": "feature/av2-benchmark-analysis"
+  },
+  "packages": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.4.6",
+    "psutil": "7.2.2",
+    "pytest": "9.1.1",
+    "ruff": "0.16.6",
+    "mypy": "1.20.2",
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.5",
+    "python-dotenv": "1.2.3"
+  },
+  "experimental_matrix": {
+    "scenarios": 24,
+    "algorithms": [
+      "boyer-moore",
+      "kmp",
+      "naive",
+      "rabin-karp"
+    ],
+    "raw_measurements": 480,
+    "summary_records": 96,
+    "memory_measurements": 96,
+    "repetitions": 5
+  },
+  "notes": [
+    "Benchmarks executed locally in CPython.",
+    "AV1 experimental results were not modified.",
+    "Timing and memory were measured separately.",
+    "Memory reflects Python allocations tracked by tracemalloc.",
+    "No personal directories or usernames are recorded."
+  ]
+}
