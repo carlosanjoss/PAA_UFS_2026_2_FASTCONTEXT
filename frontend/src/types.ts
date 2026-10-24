@@ -135,7 +135,7 @@ export interface StringMatchingResponse {
   total_time_ns: number;
   returned_chunks: number;
   matches: StringMatchingChunk[];
-  llm: StringMatchingLLMResult;
+  llm?: StringMatchingLLMResult;
 }
 
 export interface StringMatchingRequest {

@@ -56,6 +56,7 @@ export function StringMatchingPage() {
 
   const primary = results.find((result) => result.algorithm === algorithm) ?? results[0] ?? null;
   const equivalent = useMemo(() => results.length > 1 ? haveEquivalentPositions(results) : null, [results]);
+  const llmResult = primary?.llm ?? (primary && useLlm ? legacyBackendFallback(question) : null);
 
   const runSearch = async () => {
     const normalizedPattern = pattern.trim();
@@ -144,7 +145,7 @@ export function StringMatchingPage() {
             <div><span>Padrão</span><strong className="mono-value">{primary.pattern}</strong></div>
           </section>
 
-          {primary.llm.status !== "disabled" && <LLMAnswerCard llm={primary.llm} algorithm={primary.algorithm} />}
+          {llmResult && llmResult.status !== "disabled" && <LLMAnswerCard llm={llmResult} algorithm={primary.algorithm} />}
 
           {results.length > 1 && <InteractiveComparison results={results} equivalent={Boolean(equivalent)} />}
 
@@ -163,6 +164,21 @@ function LLMAnswerCard({ llm, algorithm }: { llm: StringMatchingLLMResult; algor
     return <section className="panel av2-llm-fallback"><div className="panel-heading"><div><h2>Resposta com LLM</h2><p>A busca exata foi concluída normalmente, mas a etapa generativa não produziu resposta.</p></div><AlertTriangle size={19} /></div><div className="method-note"><AlertTriangle size={18} /><p>{llm.fallback_reason ?? "A geração está indisponível."}</p></div></section>;
   }
   return <section className="answer-card av2-llm-answer"><div className="answer-topline"><span><Bot size={17} /> Resposta fundamentada nos matches da AV2</span><span className={`validation-pill ${llm.citation_valid ? "" : "validation-pill--warn"}`}>{llm.citation_valid ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}{llm.citation_valid ? "Citações validadas" : "Verifique as citações"}</span></div><p className="llm-question"><strong>Pergunta:</strong> {llm.question}</p><div className="answer-text">{llm.answer}</div><div className="answer-meta"><span>Busca: {labels[algorithm]}</span><span>Contexto: {llm.context_chunk_ids.length} chunk(s) com match exato</span><span>{llm.provider} · {llm.model}</span>{llm.generation_time_ns !== null && <span>Geração: {formatNs(llm.generation_time_ns)}</span>}</div>{llm.citations.length > 0 && <div className="llm-citations"><strong>Citações usadas</strong>{llm.citations.map((citation) => <code key={citation}>[{citation}]</code>)}</div>}</section>;
+}
+
+function legacyBackendFallback(question: string): StringMatchingLLMResult {
+  return {
+    status: "error",
+    question,
+    answer: null,
+    provider: null,
+    model: null,
+    citations: [],
+    citation_valid: null,
+    generation_time_ns: null,
+    context_chunk_ids: [],
+    fallback_reason: "O backend em execução ainda não oferece resposta com LLM na AV2. Reinicie o servidor FastAPI e tente novamente.",
+  };
 }
 
 function InteractiveComparison({ results, equivalent }: { results: StringMatchingResponse[]; equivalent: boolean }) {
