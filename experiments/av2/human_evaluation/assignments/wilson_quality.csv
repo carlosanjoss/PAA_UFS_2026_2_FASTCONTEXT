@@ -1,0 +1,347 @@
+﻿blind_id,question,answer,correctness,completeness,clarity,hallucination_present,notes
+Q-18196F22C04A,How can I use lifespan events to initialize and clean up shared resources in FastAPI?,"You can use the `lifespan` parameter of the `FastAPI` app to initialize and clean up shared resources during the application's startup and shutdown. This is achieved by defining an asynchronous function named `lifespan` that uses `yield` to define the startup and shutdown logic. During the startup, you can initialize resources such as database connections or loading shared machine learning models. After the application finishes handling requests, you can clean up these resources. This approach ensures that the resources are set up once before the application starts receiving requests and are cleaned up once after the application finishes handling requests, effectively managing the application's lifecycle. ()",,,,,
+Q-2FE587F8407F,How can I run work after returning a response using BackgroundTasks in FastAPI?,"You can run work after returning a response using `BackgroundTasks` in FastAPI by declaring a parameter in a *path operation function* or dependency function with the type `BackgroundTasks`. This allows you to schedule the execution of background tasks after the response is sent. For example, you can use it to send email notifications or process data after a request, ensuring that the client does not have to wait for the background task to complete before receiving the response. This is particularly useful for operations that need to happen after a request but are not critical for the client to wait for, such as sending an email notification or processing a file. provides more details on this.",,,,,
+Q-1D5B2781C528,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,"To manage multiple WebSocket clients and disconnected connections in a FastAPI application, you can catch the `WebSocketDisconnect` exception when a client disconnects. This exception is raised when a client closes the WebSocket connection. You can handle this exception to manage the state of the WebSocket connection and broadcast messages to other connected clients. For example, when a client disconnects, you can broadcast a message to all other connected clients indicating that a client has left the chat. This can be done by catching the `WebSocketDisconnect` exception and sending a message to all connected clients. For more robust and scalable solutions, consider using a library like [encode/broadcaster](https://github.com/encode/broadcaster).",,,,,
+Q-CA27E85E3BF1,How can I customize the response status code of a FastAPI endpoint?,"You can customize the response status code of a FastAPI endpoint by returning a `Response` object directly in your path operation function. This allows you to set the `status_code` parameter to the desired HTTP status code. For example, you can use a `JSONResponse` to return a response with a specific status code, such as 201 for ""Created"" when creating new items. Additionally, you can use a `Response` parameter in your path operation function and set the `status_code` in that temporary response object. This can be achieved as shown in the documentation for.",,,,,
+Q-F2EE575A1013,How do I add middleware to a FastAPI application?,"To add middleware to a FastAPI application, you can use the `app.add_middleware()` method. This method allows you to integrate middleware into your FastAPI application in a straightforward manner, ensuring that the internal middlewares handle server errors and custom exception handlers correctly.
+
+```Python
+from fastapi import FastAPI
+from unicorn import UnicornMiddleware
+
+app = FastAPI()
+
+app.add_middleware(UnicornMiddleware, some_config=""rainbow"")
+```
+
+This code snippet demonstrates how to add the `UnicornMiddleware` to your FastAPI application. The `app.add_middleware()` method is used to integrate the middleware, and it accepts the middleware class as the first argument along with any additional arguments needed by the middleware.",,,,,
+Q-FE55EDA6032B,How can I use lifespan events to initialize and clean up shared resources in FastAPI?,"You can use lifespan events in FastAPI to initialize and clean up shared resources by defining the `lifespan` parameter of the `FastAPI` app. This parameter allows you to define an asynchronous function `lifespan()` that includes the `yield` keyword. Inside this function, you can perform the initialization and cleanup of shared resources such as database connections, machine learning models, or any other resource that needs to be shared among requests and needs to be cleaned up after the application has handled requests.
+
+Here is an example of how you can define the `lifespan` function:
+
+```python
+async def lifespan(app):
+async def load_model():
+# Simulate loading a machine learning model
+pass
+
+async def unload_model():
+# Simulate unloading a machine learning model
+pass
+
+yield
+await unload_model()
+```
+
+In this example, the `load_model` function is called to initialize the shared resource, and the `unload_model` function is called to clean up the shared resource. The `yield` keyword is used to indicate the start of the resource initialization and cleanup process. The `lifespan` function is executed once, before the application starts handling requests, and once after the application finishes handling requests, right before the application shuts down.
+
+For more details, you can refer to the documentation in which provides a detailed explanation of how to use the `lifespan` parameter for initializing and cleaning up shared resources in FastAPI.",,,,,
+Q-D1E9E74DC772,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,"To manage multiple WebSocket clients and disconnected connections in a FastAPI application, you can catch the `WebSocketDisconnect` exception that is raised when a client disconnects. This exception can be caught and handled to manage the state of the WebSocket connections. FastAPI provides the `WebSocketDisconnect` exception from the `fastapi` module, which you can import directly from `fastapi`:
+
+```python
+from fastapi import WebSocketDisconnect
+```
+
+When a client disconnects, a `WebSocketDisconnect` exception is raised, you can catch it and handle it accordingly. This allows you to manage the state of the WebSocket connections and broadcast messages to other connected clients. For example, when a client disconnects, you can broadcast a message like ""Client #1596980209979 left the chat"" to inform other clients about the disconnection.
+
+Additionally, FastAPI provides the `WebSocketState` enumeration for the possible states of a WebSocket connection, which can be useful for managing the lifecycle of WebSocket connections. For more robust and scalable solutions, you can refer to the `encode/broadcaster` library, which is mentioned in the documentation as an alternative for handling multiple WebSocket connections and broadcasting messages.",,,,,
+Q-6DF86D333693,How do I add dependencies to a path operation decorator when I do not need their return values?,"To add dependencies to a path operation decorator when you do not need their return values, you can add a list of `Depends()` to the path operation decorator. These dependencies will be executed/solved, but their values will not be passed to your path operation function. This can be useful for ensuring that certain dependencies are executed while avoiding unnecessary parameters in your code, which might cause editor/tooling errors. ()",,,,,
+Q-0EB406B5475E,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","When deploying a FastAPI application, you should consider the following deployment concepts:
+
+- **Startup**: Ensure your application starts correctly by handling dependencies and configurations. You can manage this by configuring your server program to run on startup, such as using the `fastapi` command for Uvicorn.
+
+- **Restarts**: To manage application restarts, you can use mechanisms provided by your server program, such as Uvicorn, to handle the process gracefully. This ensures that your application can be restarted without losing any ongoing connections.
+
+- **Replication**: The number of processes running can be managed at the cluster level using distributed container management systems like Kubernetes. For a single container scenario, you can have a single Uvicorn process per container, as managing replication at the container level can add unnecessary complexity.
+
+- **Memory**: To manage memory usage, you can build a Docker image from scratch, installing your dependencies and running a single Uvicorn process. This approach helps in controlling the memory footprint of your application.
+
+- **HTTPS**: For securing your application, you should use HTTPS. This can be achieved by configuring your server program to use HTTPS, such as Uvicorn, and setting up SSL certificates. You can refer to the documentation for more details on how to set up HTTPS with Uvicorn.
+
+The main point is, none of these are rules written in stone. You can use these ideas to evaluate your own use case and decide what is the best approach for your system.",,,,,
+Q-0873BD683878,How should I handle errors and raise HTTP exceptions in FastAPI?,"To handle errors and raise HTTP exceptions in FastAPI, you can override the default exception handlers. This can be done by importing the `HTTPException` from `fastapi` and using it with `@app.exception_handler(HTTPException)` to decorate the exception handler. This allows you to customize the error responses, such as returning a plain text response instead of a JSON response. Additionally, you can override the default exception handlers for request validation exceptions by importing `RequestValidationError` and using it with `@app.exception_handler(RequestValidationError)`. This ensures that you can customize the error messages and provide more detailed information to the client.",,,,,
+Q-CFBBBEB50E7F,How can I run work after returning a response using BackgroundTasks in FastAPI?,"You can run work after returning a response using `BackgroundTasks` in FastAPI by importing `BackgroundTasks` and defining a parameter in your *path operation function* with a type declaration of `BackgroundTasks`. This allows you to schedule the execution of background tasks after the response is sent. For example, in the tutorial, messages are written to a log file after the response is sent, and another background task is generated at the *path operation function* to write a message using the `email` path parameter.",,,,,
+Q-A7C66348AF8B,How can I declare and validate query parameters in FastAPI?,"You can declare and validate query parameters in FastAPI by using the `Query` function along with a Pydantic model. First, declare the query parameters in a Pydantic model, and then declare the parameter as `Query`. FastAPI will extract the data for each field from the query parameters in the request and give you the Pydantic model you defined. This approach leverages type hints to provide editor support, automatic data conversion, data validation, and automatic documentation. For example, in your code, you can do this as shown in the [tutorial - Query Parameters with a Pydantic Model](tutorial/query-param-models.md) section. and provide additional context on type hints and their benefits.",,,,,
+Q-3CF88D4315D8,How can I customize or extend the generated OpenAPI schema in FastAPI?,"To customize or extend the generated OpenAPI schema in FastAPI, you can use the `custom_openapi()` function to generate the OpenAPI schema and then modify it as needed. This function allows you to add custom properties or modify the existing schema. For example, you can add a custom logo by modifying the `info` ""object"" in the OpenAPI schema. This can be achieved by using the ReDoc extension, as shown in the documentation. You can add a custom logo by adding a `x-logo` property to the `info` object in the OpenAPI schema. This can be done by using the ReDoc extension, as demonstrated in.",,,,,
+Q-0254CD4E6278,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,"To implement OAuth2 password authentication with bearer tokens in FastAPI, you can use the `OAuth2PasswordBearer` class. This class is part of the `fastapi.security` module and is used to handle OAuth2 password authentication.
+
+First, you need to import the `OAuth2PasswordBearer` class and use it as a dependency with `Depends` in the *path operation* for `/token*. Here is an example of how you can do this:
+
+```python
+from fastapi.security import OAuth2PasswordBearer
+
+# Create an instance of OAuth2PasswordBearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=""token"")
+
+# Use it in a path operation
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+# Your logic to validate the token and return the user
+pass
+```
+
+For more details on OAuth2 scopes and how to integrate them with FastAPI, you can refer to the documentation provided in the [FastAPI docs about Security](https://fastapi.tiangolo.com/tutorial/security/).",,,,,
+Q-4B1124AE59D1,How can I create a custom exception handler in FastAPI?,"You can create a custom exception handler in FastAPI by using the `@app.exception_handler()` decorator. For example, if you have a custom exception `UnicornException`, you can handle it globally by adding a custom exception handler as shown in the documentation:
+
+```python
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.exception_handler(UnicornException)
+async def unicorn_exception_handler(request: Request, exc: UnicornException):
+return JSONResponse(
+status_code=418,
+content={""message"": f""Oops! {exc.detail}""},
+)
+```
+
+This custom exception handler will be triggered when the `UnicornException` is raised, and it will return a JSON response with a custom message. This is based on the documentation found in.",,,,,
+Q-87F7A4806FC9,How can I create a custom exception handler in FastAPI?,"To create a custom exception handler in FastAPI, you can use the `@app.exception_handler()` decorator. This decorator allows you to define a custom exception handler for specific exceptions. For example, if you have a custom exception `UnicornException` that you want to handle globally, you can add a custom exception handler with `@app.exception_handler()`.
+
+Here's an example of how to do this:
+
+```python
+from fastapi import FastAPI, Request
+from fastapi.exceptions import UnicornException
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.exception_handler(UnicornException)
+async def unicorn_exception_handler(request: Request, exc: UnicornException):
+return JSONResponse(
+status_code=418,
+content={""message"": f""Oops! {exc.args[0]} There goes a rainbow...""}
+)
+```
+
+This example is based on the documentation from,,, and.",,,,,
+Q-9041DFBF2A98,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,"Yes, FastAPI dependencies can add tasks to the same BackgroundTasks object.",,,,,
+Q-624076E33A21,How can I customize or extend the generated OpenAPI schema in FastAPI?,"To customize or extend the generated OpenAPI schema in FastAPI, you can use the `openapi_extra` parameter. This parameter allows you to add additional data to the automatically generated OpenAPI schema for a path operation. For example, you can declare additional information for the request body without using Pydantic models, and FastAPI will still include this information in the OpenAPI schema. This can be done by defining a dictionary in `openapi_extra` and merging it with the automatically generated schema, as shown in the documentation for and.",,,,,
+Q-E30473030C0F,How do I add middleware to a FastAPI application?,"To add middleware to a FastAPI application, you can use the `app.add_middleware()` method. This method allows you to integrate ASGI middlewares into your FastAPI application, ensuring that the internal middlewares handle server errors and custom exception handlers properly. Here is an example of how to use `app.add_middleware()`:
+
+```Python
+from fastapi import FastAPI
+from unicorn import UnicornMiddleware
+
+app = FastAPI()
+
+app.add_middleware(UnicornMiddleware, some_config=""rainbow"")
+```
+
+This code snippet demonstrates how to add the `UnicornMiddleware` to your FastAPI application. The `app.add_middleware()` method takes the middleware class as the first argument and any additional arguments to be passed to the middleware.",,,,,
+Q-B3AAAF664B75,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","For startup, restarts, replication, memory, and HTTPS, you should consider the following deployment concepts:
+
+* Security - HTTPS
+* Running on startup
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Previous steps before starting
+
+These concepts are important for ensuring your application is secure, stable, scalable, and efficient. The provided context supports this.",,,,,
+Q-3DB61BC7ED8C,How can I create and validate JWT access tokens in FastAPI?,"To create and validate JWT access tokens in FastAPI, you can follow these steps:
+
+1. **Install `PyJWT`**: First, you need to install the `PyJWT` library to generate and verify JWT tokens. You can do this by running the command provided in the documentation:
+
+
+
+2. **Generate a Secret Key**: You need a secret key to sign the JWT tokens. Use the following command to generate a secure random secret key:
+
+
+
+3. **Define Algorithm and Expiration**: Define the algorithm used to sign the JWT token and set the expiration time. For example, you can use `""HS256""` for the algorithm and set the expiration to 1 week.
+
+4. **Create a Utility Function**: Create a utility function to generate a new access token. This function will use the secret key and the expiration time to create a JWT token.
+
+5. **Handle JWT Tokens**: In your FastAPI application, handle JWT tokens by importing the necessary modules, creating a secret key, and defining the algorithm and expiration. Then, create a utility function to generate access tokens.
+
+6. **Return Scopes in JWT Token**: If you are using scopes, modify the token path operation to return the scopes requested. Use the `OAuth2PasswordRequestForm` to include the scopes received in the request and add them to the JWT token.
+
+By following these steps, you can create and validate JWT access tokens in your FastAPI application.",,,,,
+Q-9C455BF6EEDC,How do I create a basic FastAPI application and define my first path operation?,"To create a basic FastAPI application and define your first path operation, you can follow these steps:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get(""/"")
+async def read_root():
+return {""message"": ""Hello, this is a basic FastAPI application with a path operation.""}
+```
+
+This example is supported by the documentation from the section ""Include a *path operation* { #include-a-path-operation }"" in the tutorial/bigger-applications-23 source.",,,,,
+Q-F4349E113664,How can I create and validate JWT access tokens in FastAPI?,"To create and validate JWT access tokens in FastAPI, you can use the `OAuth2PasswordBearer` class for token creation and validation. Here is a simplified example:
+
+```python
+from fastapi import FastAPI, Depends
+from fastapi.security import OAuth2PasswordBearer
+from pydantic import BaseModel
+from datetime import timedelta
+import jwt
+
+app = FastAPI()
+
+# Define the OAuth2PasswordBearer class
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=""token"")
+
+# Define the user model
+class User(BaseModel):
+username: str
+email: EmailStr
+full_name: str
+disabled: bool = False
+
+# Define the user database
+users_db = {
+""johndoe"": {
+""username"": ""johndoe"",
+""email"": ""johndoe@example.com"",
+""full_name"": ""John Doe"",
+""disabled"": False
+}
+}
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+credentials_exception = Exception(""Could not validate credentials"")
+try:
+payload = jwt.decode(token, ""secret"", algorithms=[""HS256""])
+username: str = payload.get(""sub"")
+if username is None:
+raise credentials_exception
+token_data = TokenData(username=username)
+except jwt.PyJWTError:
+raise credentials_exception
+user = users_db.get(token_data.username)
+if user is None:
+raise credentials_exception
+return user
+
+@app.post(""/token"")
+async def create_token(user: User = Depends(get_current_user)):
+token_expires = timedelta(minutes=30)
+token = jwt.encode(
+{
+""sub"": user[""username""],
+""exp"": datetime.utcnow() + token_expires
+},
+""secret"",
+algorithm=""HS256""
+)
+return {""access_token"": token, ""token_type"": ""bearer""}
+
+@app.get(""/users/me"")
+async def read_users_me(current_user: User = Depends(get_current_user)):
+return current_user
+```
+
+For more advanced usage, you can refer to the [Advanced User Guide](tutorial/security/oauth2-jwt-13) for OAuth2 scopes.",,,,,
+Q-1E8D9E1F2CB4,How should I handle errors and raise HTTP exceptions in FastAPI?,"To handle errors and raise HTTP exceptions in FastAPI, you can override the default exception handlers. This can be done by importing the `HTTPException` from `fastapi` and using it with `@app.exception_handler(HTTPException)` to decorate the exception handler. This allows you to customize the error responses, such as returning a plain text response instead of a JSON response. Additionally, you can override the default exception handlers for request validation exceptions by importing `RequestValidationError` and using it with `@app.exception_handler(RequestValidationError)`. This ensures that you can handle and customize validation errors effectively.",,,,,
+Q-B4E08D9314FD,How can I use lifespan events to initialize and clean up shared resources in FastAPI?,"You can use lifespan events to initialize and clean up shared resources in FastAPI by defining the `startup` and `shutdown` logic using the `lifespan` parameter of the `FastAPI` app. This can be achieved by defining an `async` function named `lifespan()` with `yield` statements. During the `startup` phase, you can initialize shared resources like a database connection pool or a machine learning model. After the `yield`, you can clean up these resources during the `shutdown` phase. For more details, you can refer to the documentation on [Lifespan Events](advanced/events-0).",,,,,
+Q-A89C0D37A903,How can I run work after returning a response using BackgroundTasks in FastAPI?,"You can run work after returning a response using `BackgroundTasks` in FastAPI by importing `BackgroundTasks` and defining a parameter in your *path operation function* with a type declaration of `BackgroundTasks`. This allows you to schedule the execution of background tasks after the response is sent. For example, in the tutorial provided, messages are written to a log file after the response is sent, and another background task is generated at the *path operation function* to write a message using the `email` path parameter.",,,,,
+Q-9EDAD2C0F943,How do I define a request body using a Pydantic model in FastAPI?,"To define a request body using a Pydantic model in FastAPI, you can use the `pydantic` model directly in the `request_body` parameter of the endpoint function. Pydantic models are automatically validated, so you don't need to write any additional validation code.
+
+Here's an example:
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Item(BaseModel):
+name: str
+description: str = None
+price: float
+tax: float = None
+
+@app.post(""/items/"")
+async def create_item(item: Item):
+return item
+```
+
+This example defines a `Item` Pydantic model and uses it as the request body for the `/items/` endpoint. The `Item` model includes fields for `name`, `description`, `price`, and `tax`, with `description` and `tax` being optional.
+
+The `pydantic` model is used directly in the endpoint function, and FastAPI will automatically validate the incoming request body against the `Item` model.",,,,,
+Q-F9A34BBA2AAF,How do I create a WebSocket endpoint in FastAPI?,"To create a WebSocket endpoint in FastAPI, you can define a parameter of type `WebSocket`. Here is an example of how you can define a WebSocket endpoint:
+
+```python
+from fastapi import FastAPI, WebSocket
+from fastapi.websockets import WebSocketDisconnect
+
+app = FastAPI()
+
+@app.websocket(""/ws"")
+async def websocket_endpoint(websocket: WebSocket):
+await websocket.accept()
+try:
+while True:
+data = await websocket.receive_text()
+await websocket.send_text(f""Message text was: {data}"")
+except WebSocketDisconnect:
+pass
+```
+
+This example defines a WebSocket endpoint at the `/ws` path. The `WebSocket` parameter is used to handle the WebSocket connection. The `accept` method is called to accept the connection, and the `receive_text` and `send_text` methods are used to receive and send text data. The `WebSocketDisconnect` exception is handled to gracefully close the connection.",,,,,
+Q-7B463F9B76FA,What are workers and when should I use multiple worker processes to run FastAPI?,"In the context of running FastAPI, workers refer to the number of processes that handle incoming requests. You should use multiple worker processes when you want to take advantage of multiple cores and handle more requests, especially in a deployment scenario where replication of processes is important. For more details, refer to the documentation on and.",,,,,
+Q-9388AA92B1B2,What are workers and when should I use multiple worker processes to run FastAPI?,Workers in the context of running FastAPI are multiple processes of the same application that are run simultaneously to distribute all the requests among them. This is beneficial when you have more clients than what a single process can handle and you have multiple cores in the server's CPU. You should use multiple worker processes to run FastAPI when you want to take advantage of multiple cores and to be able to handle more requests. This concept is discussed in.,,,,,
+Q-43F6BA4A6893,How do I create a WebSocket endpoint in FastAPI?,"To create a WebSocket endpoint in FastAPI, you can define a parameter of type `WebSocket` in your route function. Here is an example of how you can set up a WebSocket endpoint:
+
+```python
+from fastapi import FastAPI, WebSocket
+from fastapi.websockets import WebSocketDisconnect
+
+app = FastAPI()
+
+@app.websocket(""/ws"")
+async def websocket_endpoint(websocket: WebSocket):
+await websocket.accept()
+try:
+while True:
+data = await websocket.receive_text()
+await websocket.send_text(f""You said: {data}"")
+except WebSocketDisconnect:
+pass
+```
+
+This code sets up a WebSocket endpoint at the `/ws` path. When a client connects to this endpoint, the `websocket_endpoint` function is called. Inside the function, the client can send messages to the server, and the server can send messages back to the client. The `WebSocketDisconnect` exception is handled to gracefully close the connection when the client disconnects.",,,,,
+Q-DC1F16DC6DF4,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,FastAPI dependencies can add tasks to the same BackgroundTasks object.,,,,,
+Q-251ED07B512C,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","For startup, restarts, replication, memory, and HTTPS, you should consider the following deployment concepts:
+
+* Security - HTTPS: 
+* Running on startup: 
+* Restarts: 
+* Replication (the number of processes running): 
+* Memory: 
+* Previous steps before starting: 
+
+Understanding these ideas and how to apply them should give you the intuition necessary to take any decisions when configuring and tweaking your deployments.",,,,,
+Q-BDAFDC18BB90,How can I create a custom exception handler in FastAPI?,"You can create a custom exception handler in FastAPI by using the `@app.exception_handler()` decorator. This decorator allows you to define a function that will be called whenever a specific exception is raised in any of your FastAPI routes. For example, if you have a custom exception `UnicornException`, you can handle it globally by adding a custom exception handler as shown in the documentation:",,,,,
+Q-219C7F03B83E,How can I declare and validate query parameters in FastAPI?,"To declare and validate query parameters in FastAPI, you can use the `Query` function from the `fastapi` module. Here's how you can do it:
+
+```python
+from fastapi import FastAPI, Query
+
+app = FastAPI()
+
+@app.get(""/items/"")
+async def read_items(q: str | None = None):
+return {""q"": q}
+```
+
+For additional validation, you can use `Query` inside `Annotated`:
+
+```python
+from fastapi import FastAPI, Query, Annotated
+
+app = FastAPI()
+
+@app.get(""/items/"")
+async def read_items(q: Annotated[str | None, Query(max_length=50)] = None):
+return {""q"": q}
+```
+
+This way, FastAPI will validate the data to ensure that the max length is 50 characters, and it will show a clear error for the client when the data is not valid. Additionally, it will document the parameter in the OpenAPI schema, making it visible in the automatic docs UI.",,,,,
+Q-8909A53BE73B,How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?,"To configure trusted hosts or HTTPS redirection middleware in FastAPI, you can use the `--forwarded-allow-ips` CLI Option. This option allows you to specify from which IPs the application should trust the forwarded headers sent by the proxy. By configuring this option, you can ensure that your application server trusts the headers and correctly handles HTTPS redirections. Refer to the documentation for more details:",,,,,

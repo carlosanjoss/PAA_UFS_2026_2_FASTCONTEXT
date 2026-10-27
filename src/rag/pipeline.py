@@ -292,8 +292,11 @@ class RAGPipeline:
                 >= self._max_truncation_retries
             ):
                 raise LLMTruncatedResponseError(
-                    "Generation remained truncated "
-                    f"after {retry_count} retries."
+                    "Generation remained truncated after "
+                    f"{retry_count} retries with "
+                    f"max_tokens={current_config.max_tokens} "
+                    "(max_retry_tokens="
+                    f"{self._max_retry_tokens})."
                 )
 
             next_max_tokens = min(
@@ -306,8 +309,13 @@ class RAGPipeline:
                 <= current_config.max_tokens
             ):
                 raise LLMTruncatedResponseError(
-                    "Generation reached the maximum "
-                    "retry token limit."
+                    "Generation reached the maximum retry "
+                    "token limit: max_retry_tokens="
+                    f"{self._max_retry_tokens} does not exceed "
+                    f"max_tokens={current_config.max_tokens}, so "
+                    "no retry can increase the token budget. "
+                    "Configure max_retry_tokens greater than "
+                    "max_tokens."
                 )
 
             retry_count += 1

@@ -24,8 +24,8 @@ rag_experiment:
     think: false
     seed: 42
     citation_retries: 1
-    max_truncation_retries: 1
-    max_retry_tokens: 256
+    max_truncation_retries: 2
+    max_retry_tokens: 1024
 
   warmup:
     enabled: true

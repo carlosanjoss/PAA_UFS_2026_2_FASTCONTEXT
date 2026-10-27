@@ -1,0 +1,5 @@
+scenario_id,pattern_id,pattern_category,scale,corpus_fraction,algorithm,repetition,input_count,total_characters,pattern_length,occurrences,comparisons,preprocessing_ns,search_ns,algorithm_total_ns,wall_time_ns
+S006,P-OAUTH2,medium,corpus,1.0,boyer-moore,1,1305,766904,6,103,139057,809000,23931300,24740300,27587300
+S006,P-OAUTH2,medium,corpus,1.0,kmp,1,1305,766904,6,103,767939,1132100,65163700,66295800,71471100
+S006,P-OAUTH2,medium,corpus,1.0,naive,1,1305,766904,6,103,761958,0,165105600,165105600,168407200
+S006,P-OAUTH2,medium,corpus,1.0,rabin-karp,1,1305,766904,6,103,618,4079600,329719200,333798800,337414600

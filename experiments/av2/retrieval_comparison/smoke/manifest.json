@@ -1,0 +1,21 @@
+{
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "corpus_chunks": 1305,
+  "query_count": 1,
+  "top_k": 5,
+  "candidate_depth": 20,
+  "repetitions": 1,
+  "warmup": 0,
+  "conditions": [
+    "semantic",
+    "literal",
+    "hybrid"
+  ],
+  "semantic_index_source": "persisted",
+  "judgment_pool": "data/ground_truth/annotation_template.csv",
+  "judgment_pool_sha256": "2832cc5801e84780eca5756a848d2b7e4e5146813295c69593846ab2d56f3f6e",
+  "ground_truth_sha256": "abb8fd7aaa905fd0d934ef53f7c07efdf3059f6f428c08d74770d74b18224e76",
+  "pattern_catalog_sha256": "fa72c6ceef3f7f58e4a5d805c6b7b120f15dc6ea6c823169893bd0ba67beb3b0",
+  "quality_interpretation": "Pooled positive-label estimates. Unjudged hits are not known negatives. Precision bounds vary their relevance. Recall, MRR and Hit Rate use only known positives.",
+  "latency_interpretation": "Warm runs only. Semantic and hybrid reuse the persisted index. Hybrid time includes semantic and literal retrieval plus fusion."
+}

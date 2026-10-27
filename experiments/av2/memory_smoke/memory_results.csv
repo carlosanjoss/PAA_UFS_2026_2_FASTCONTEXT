@@ -1,0 +1,5 @@
+scenario_id,algorithm,peak_memory_bytes,peak_memory_mb
+S006,boyer-moore,231856,0.221115
+S006,kmp,264244,0.252003
+S006,naive,227404,0.216869
+S006,rabin-karp,230736,0.220047

@@ -1,0 +1,4 @@
+condition,queries,repetitions_per_query,mean_time_ms,pooled_precision_at_k,pooled_recall_at_k,known_mrr_at_k,known_hit_rate_at_k,mean_precision_lower_bound,mean_precision_upper_bound,unjudged_results,queries_with_unjudged_results
+semantic,1,1,103.0429,0.6,0.375,0.5,1.0,0.6,0.6,0,0
+literal,1,1,28.6998,0.0,0.0,0.0,0.0,0.0,0.8,4,1
+hybrid,1,1,67.4619,0.0,0.0,0.0,0.0,0.0,0.0,0,0

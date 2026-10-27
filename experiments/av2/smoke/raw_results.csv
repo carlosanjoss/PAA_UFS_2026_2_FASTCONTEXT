@@ -1,0 +1,9 @@
+scenario_id,pattern_id,pattern_category,scale,corpus_fraction,algorithm,repetition,input_count,total_characters,pattern_length,occurrences,comparisons,preprocessing_ns,search_ns,algorithm_total_ns,wall_time_ns
+S004,P-OAUTH2,medium,corpus,0.25,boyer-moore,1,327,217234,6,24,39441,446100,13935400,14381500,15986800
+S004,P-OAUTH2,medium,corpus,0.25,kmp,1,327,217234,6,24,217576,503800,27151400,27655200,29449000
+S004,P-OAUTH2,medium,corpus,0.25,naive,1,327,217234,6,24,216066,0,64845400,64845400,66692000
+S004,P-OAUTH2,medium,corpus,0.25,rabin-karp,1,327,217234,6,24,144,2983500,211703400,214686900,220518400
+S004,P-OAUTH2,medium,corpus,0.25,kmp,2,327,217234,6,24,217576,577700,32125200,32702900,34771500
+S004,P-OAUTH2,medium,corpus,0.25,naive,2,327,217234,6,24,216066,0,85296400,85296400,88295600
+S004,P-OAUTH2,medium,corpus,0.25,rabin-karp,2,327,217234,6,24,144,1293000,106007400,107300400,108865700
+S004,P-OAUTH2,medium,corpus,0.25,boyer-moore,2,327,217234,6,24,39441,265800,8850300,9116100,10248500

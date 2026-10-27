@@ -1,0 +1,139 @@
+
+{
+  "schema_version": 1,
+  "experiment": "av2_literal_retrieval_rag",
+  "ground_truth_file": "data/ground_truth/ground_truth.final.json",
+  "expected_queries": 30,
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "selection_policy": {
+    "method": "question_only_predefined",
+    "case_sensitive": true,
+    "exact_substring": true,
+    "allow_overlaps": true,
+    "normalization": "none",
+    "ground_truth_relevant_chunks_used": false,
+    "description": "Each pattern is an exact substring of its associated question. No relevance judgments or corpus matches are consulted during pattern selection."
+  },
+  "queries": [
+    {
+      "query_id": "q01",
+      "patterns": ["path operation"]
+    },
+    {
+      "query_id": "q02",
+      "patterns": ["query parameters"]
+    },
+    {
+      "query_id": "q03",
+      "patterns": ["Pydantic"]
+    },
+    {
+      "query_id": "q04",
+      "patterns": ["status code"]
+    },
+    {
+      "query_id": "q05",
+      "patterns": ["HTTP exceptions"]
+    },
+    {
+      "query_id": "q06",
+      "patterns": ["Depends"]
+    },
+    {
+      "query_id": "q07",
+      "patterns": ["dependency"]
+    },
+    {
+      "query_id": "q08",
+      "patterns": ["dependencies"]
+    },
+    {
+      "query_id": "q09",
+      "patterns": ["dependency"]
+    },
+    {
+      "query_id": "q10",
+      "patterns": ["OAuth2"]
+    },
+    {
+      "query_id": "q11",
+      "patterns": ["JWT"]
+    },
+    {
+      "query_id": "q12",
+      "patterns": ["OAuth2"]
+    },
+    {
+      "query_id": "q13",
+      "patterns": ["API key"]
+    },
+    {
+      "query_id": "q14",
+      "patterns": ["CORS"]
+    },
+    {
+      "query_id": "q15",
+      "patterns": ["middleware"]
+    },
+    {
+      "query_id": "q16",
+      "patterns": ["HTTPS"]
+    },
+    {
+      "query_id": "q17",
+      "patterns": ["BackgroundTasks"]
+    },
+    {
+      "query_id": "q18",
+      "patterns": ["BackgroundTasks"]
+    },
+    {
+      "query_id": "q19",
+      "patterns": ["WebSocket"]
+    },
+    {
+      "query_id": "q20",
+      "patterns": ["WebSocket"]
+    },
+    {
+      "query_id": "q21",
+      "patterns": ["Docker"]
+    },
+    {
+      "query_id": "q22",
+      "patterns": ["workers"]
+    },
+    {
+      "query_id": "q23",
+      "patterns": ["replication"]
+    },
+    {
+      "query_id": "q24",
+      "patterns": ["proxy"]
+    },
+    {
+      "query_id": "q25",
+      "patterns": ["TestClient"]
+    },
+    {
+      "query_id": "q26",
+      "patterns": ["override dependencies"]
+    },
+    {
+      "query_id": "q27",
+      "patterns": ["lifespan"]
+    },
+    {
+      "query_id": "q28",
+      "patterns": ["exception handler"]
+    },
+    {
+      "query_id": "q29",
+      "patterns": ["APIRouter"]
+    },
+    {
+      "query_id": "q30",
+      "patterns": ["OpenAPI"]
+    }
+  ]
+}
