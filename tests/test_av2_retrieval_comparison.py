@@ -20,9 +20,9 @@ from experiments.av2.run_retrieval_comparison import (
 )
 from src.retrieval.base import Retriever
 from src.retrieval.models import (
-    RetrievedChunk,
     RetrievalMetrics,
     RetrievalResult,
+    RetrievedChunk,
 )
 
 

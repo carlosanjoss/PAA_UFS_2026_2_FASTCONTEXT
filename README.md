@@ -1389,6 +1389,22 @@ combinações de memória. Os tempos são descritivos, com cinco repetições; a
 foi medida separadamente com `tracemalloc`. Entradas sintéticas não representam a
 documentação real, e casamento exato não equivale a recuperação semântica ou RAG.
 
+O mesmo endpoint também consolida os novos artefatos de comparação da AV2:
+
+- 450 medições de recuperação para 30 perguntas nas condições semântica, literal
+  e híbrida;
+- 90 respostas RAG produzidas com a mesma configuração do modelo;
+- 180 linhas anônimas de qualidade e 180 de fundamentação, na escala 1–5;
+- precisão, recall, MRR, hit rate, latência, validade estrutural de citações,
+  correção, completude, clareza, fundamentação e marcação de alucinação.
+
+Os registros anônimos recebidos contêm duas linhas por resposta, mas cada par
+possui notas e observações idênticas. Por transparência, o dashboard informa 360
+linhas submetidas e 180 julgamentos efetivamente distintos; a coincidência não é
+tratada como concordância entre avaliadores independentes. A API pública expõe
+somente agregados e métricas por consulta, nunca respostas completas, observações,
+identificadores cegos ou identidade de avaliador.
+
 Detalhes de arquitetura e reprodução: `docs/av2/WEB_INTEGRATION.md`.
 
 Roteiro demonstrativo, resultados esperados e perguntas prováveis da banca:

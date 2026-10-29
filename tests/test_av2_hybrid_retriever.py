@@ -3,18 +3,15 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import pytest
 
 from src.retrieval.base import Retriever
 from src.retrieval.hybrid_retriever import HybridRetriever
 from src.retrieval.models import (
-    RetrievedChunk,
     RetrievalMetrics,
     RetrievalResult,
+    RetrievedChunk,
 )
-
 
 QUESTION = "Explain OAuth2"
 

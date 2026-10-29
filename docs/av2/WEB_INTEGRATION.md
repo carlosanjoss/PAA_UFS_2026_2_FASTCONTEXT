@@ -16,8 +16,11 @@ React/TypeScript
                                  │
 FastAPI                          ├─ experiments/av2/final/*.csv
   ├─ router de string matching   ├─ experiments/av2/memory_probe/*.csv
-  ├─ loader experimental         ├─ reports/tables/av2/*
-  └─ APIs preservadas da AV1     └─ data/av2/*.json
+  ├─ loader experimental         ├─ experiments/av2/retrieval_comparison/*
+  ├─ agregador RAG/anônimo       ├─ experiments/av2/rag_comparison/*
+  └─ APIs preservadas da AV1     ├─ experiments/av2/human_evaluation/*
+                                 ├─ reports/tables/av2/*
+                                 └─ data/av2/*.json
 ```
 
 O corpus é carregado uma vez por processo pelo dependency provider com cache.
@@ -67,11 +70,24 @@ Retorna metadados derivados, 8 padrões, 24 cenários, 96 resumos temporais, 96
 registros de memória, 96 speedups e o ambiente sanitizado. As 480 linhas brutas
 são contadas para validação da matriz, mas não são enviadas ao navegador.
 
+Também retorna três blocos tipados:
+
+- `retrieval`: 450 medições agregadas em 90 combinações, qualidade no top-5,
+  latência, categorias e limites de precisão para resultados não julgados;
+- `rag`: 90 gerações, latência, contagem e validade estrutural das citações;
+- `human_evaluation`: médias anônimas por condição e uma auditoria explícita da
+  duplicação dos pares recebidos.
+
+O contrato deliberadamente não serializa respostas completas, contexto
+recuperado, observações, `blind_id` ou qualquer identidade de avaliador.
+
 ## Frontend
 
 - `StringMatchingPage.tsx`: busca real, comparação exploratória, evidências e
   resposta RAG opcional fundamentada somente nos matches exatos.
-- `AV2ExperimentsPage.tsx`: sete gráficos, filtros, tabela, CSV e ambiente.
+- `AV2ExperimentsPage.tsx`: benchmark de cadeias, filtros, tabela, CSV e ambiente.
+- `AV2RAGDashboard.tsx`: recuperação, geração RAG, avaliação humana, filtro por
+  categoria, visão integrada e explicações metodológicas.
 - Os tipos AV1 e AV2 permanecem separados em `types.ts`.
 - As páginas usam lazy loading e o mesmo design system da AV1.
 - Comparações interativas são rotuladas como exploratórias; resultados oficiais
@@ -108,4 +124,11 @@ npm run dev
 - Comparações de Rabin-Karp não incluem operações de rolling hash.
 - A resposta da LLM é uma etapa posterior e não integra as métricas controladas
   dos quatro algoritmos de casamento.
+- Itens não julgados não são considerados negativos; os limites de precisão
+  tornam essa incerteza visível.
+- Validade de citação é uma verificação estrutural e não comprova correção factual
+  nem fundamentação.
+- O pacote anônimo contém pares com notas e observações idênticas. Portanto, as
+  360 linhas correspondem a 180 julgamentos efetivamente distintos e não fornecem
+  evidência de concordância entre avaliadores independentes.
 - Resultados dependem das entradas e implementações avaliadas.

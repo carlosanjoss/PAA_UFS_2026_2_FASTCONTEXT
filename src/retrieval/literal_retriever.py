@@ -48,10 +48,10 @@ def load_question_patterns(
     )
 
     if not isinstance(catalog, dict):
-        raise ValueError("Pattern catalog must be a JSON object.")
+        raise TypeError("Pattern catalog must be a JSON object.")
 
     if not isinstance(ground_truth, dict):
-        raise ValueError("Ground truth must be a JSON object.")
+        raise TypeError("Ground truth must be a JSON object.")
 
     if catalog.get("schema_version") != 1:
         raise ValueError("Unsupported pattern catalog schema.")
@@ -59,7 +59,7 @@ def load_question_patterns(
     policy = catalog.get("selection_policy")
 
     if not isinstance(policy, dict):
-        raise ValueError("Missing pattern selection policy.")
+        raise TypeError("Missing pattern selection policy.")
 
     expected_policy = {
         "method": "question_only_predefined",
@@ -79,7 +79,7 @@ def load_question_patterns(
     metadata = ground_truth.get("metadata", {})
 
     if not isinstance(metadata, dict):
-        raise ValueError("Invalid ground truth metadata.")
+        raise TypeError("Invalid ground truth metadata.")
 
     if (
         catalog.get("corpus_fingerprint")
@@ -93,10 +93,10 @@ def load_question_patterns(
     catalog_queries = catalog.get("queries")
 
     if not isinstance(ground_truth_queries, list):
-        raise ValueError("Invalid ground truth query list.")
+        raise TypeError("Invalid ground truth query list.")
 
     if not isinstance(catalog_queries, list):
-        raise ValueError("Invalid pattern catalog query list.")
+        raise TypeError("Invalid pattern catalog query list.")
 
     if len(catalog_queries) != catalog.get("expected_queries"):
         raise ValueError(
@@ -107,7 +107,7 @@ def load_question_patterns(
 
     for entry in ground_truth_queries:
         if not isinstance(entry, dict):
-            raise ValueError("Invalid ground truth query entry.")
+            raise TypeError("Invalid ground truth query entry.")
 
         query_id = entry.get("query_id")
         question = entry.get("question")
@@ -130,13 +130,13 @@ def load_question_patterns(
 
     for entry in catalog_queries:
         if not isinstance(entry, dict):
-            raise ValueError("Invalid pattern catalog entry.")
+            raise TypeError("Invalid pattern catalog entry.")
 
         query_id = entry.get("query_id")
         patterns = entry.get("patterns")
 
         if not isinstance(query_id, str):
-            raise ValueError("Invalid pattern query ID.")
+            raise TypeError("Invalid pattern query ID.")
 
         if query_id in seen_ids:
             raise ValueError("Duplicate pattern query ID.")

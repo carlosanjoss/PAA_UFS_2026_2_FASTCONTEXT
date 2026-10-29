@@ -9,9 +9,9 @@ from typing import Any
 
 from src.retrieval.base import Retriever
 from src.retrieval.models import (
-    RetrievedChunk,
     RetrievalMetrics,
     RetrievalResult,
+    RetrievedChunk,
 )
 
 

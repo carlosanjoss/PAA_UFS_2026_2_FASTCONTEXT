@@ -276,9 +276,73 @@ def test_frozen_experiments_have_expected_matrix() -> None:
     assert response.metadata.timing_measurements == 480
     assert response.metadata.timing_combinations == 96
     assert response.metadata.memory_combinations == 96
+    assert response.metadata.retrieval_measurements == 450
+    assert response.metadata.retrieval_combinations == 90
+    assert response.metadata.rag_generations == 90
+    assert response.metadata.human_evaluation_ratings == 360
     assert len(response.summary) == 96
     assert len(response.memory) == 96
     assert len(response.speedups) == 96
+    assert len(response.retrieval.conditions) == 3
+    assert len(response.retrieval.queries) == 90
+    assert len(response.rag.conditions) == 3
+    assert len(response.rag.queries) == 90
+
+
+def test_retrieval_rag_and_human_metrics_match_persisted_artifacts() -> None:
+    response = load_av2_experiments()
+    retrieval = {row.condition: row for row in response.retrieval.conditions}
+    rag = {row.condition: row for row in response.rag.conditions}
+    human = {row.condition: row for row in response.human_evaluation.conditions}
+
+    assert retrieval["semantic"].mean_time_ms == pytest.approx(24.4455733333)
+    assert retrieval["semantic"].pooled_precision_at_k == pytest.approx(0.76)
+    assert retrieval["literal"].unjudged_results == 35
+    assert rag["hybrid"].citation_valid_rate == pytest.approx(23 / 30)
+    assert rag["semantic"].mean_generation_time_ms == pytest.approx(13579.3863067)
+    assert human["hybrid"].mean_correctness == pytest.approx(4.2)
+    assert human["hybrid"].hallucination_rate == pytest.approx(4 / 30)
+
+
+def test_human_evaluation_reports_duplicate_pairs_without_claiming_independence(
+) -> None:
+    evaluation = load_av2_experiments().human_evaluation
+
+    assert evaluation.quality_ratings == 180
+    assert evaluation.groundedness_ratings == 180
+    assert evaluation.effective_quality_judgments == 90
+    assert evaluation.effective_groundedness_judgments == 90
+    assert evaluation.duplicate_score_pairs == 180
+    assert evaluation.duplicate_note_pairs == 180
+    assert evaluation.independent_ratings_confirmed is False
+    assert all(item.exact_agreement_rate == 1 for item in evaluation.agreement)
+
+
+def test_experiments_api_does_not_expose_answers_or_evaluator_data(
+    web_client: TestClient,
+) -> None:
+    payload = web_client.get("/api/av2/experiments").json()
+    forbidden_keys = {
+        "answer",
+        "retrieved_context",
+        "annotator",
+        "evaluator",
+        "blind_id",
+        "notes",
+    }
+
+    def visit(value: object) -> None:
+        if isinstance(value, dict):
+            assert forbidden_keys.isdisjoint(value)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(payload["retrieval"])
+    visit(payload["rag"])
+    visit(payload["human_evaluation"])
 
 
 def test_main_experiments_endpoint_returns_frozen_data(
@@ -287,6 +351,7 @@ def test_main_experiments_endpoint_returns_frozen_data(
     response = web_client.get("/api/av2/experiments")
     assert response.status_code == 200
     assert response.json()["metadata"]["timing_measurements"] == 480
+    assert response.json()["metadata"]["human_evaluation_ratings"] == 360
     assert len(response.json()["summary"]) == 96
 
 

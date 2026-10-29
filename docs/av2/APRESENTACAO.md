@@ -178,7 +178,75 @@ No conjunto completo dos 24 cenários:
 - KMP obteve o menor tempo médio em 9 cenários;
 - KMP venceu todos os seis cenários sintéticos repetitivos/sobrepostos.
 
-## 8. Conclusão — 1 minuto
+## 8. Recuperação para RAG — 2 minutos
+
+Role até **Recuperação para RAG**. Mostre primeiro os três indicadores e depois
+os gráficos de qualidade e latência.
+
+### O que dizer
+
+> Este experimento usa as mesmas 30 perguntas nas condições semântica, literal
+> e híbrida. Cada consulta foi repetida cinco vezes, totalizando 450 medições. A
+> condição semântica teve a menor latência média, 24,45 ms, e precisão@5 de 76%.
+> A híbrida obteve precisão@5 de 71,33%, mas levou 62,69 ms porque executa as duas
+> estratégias e faz a fusão. A literal foi intermediária em tempo, porém teve
+> menor qualidade conhecida.
+
+Explique as quatro métricas sem misturá-las:
+
+- precisão@5: proporção do top-5 que era relevante;
+- recall@5: proporção da relevância conhecida que foi recuperada;
+- MRR@5: recompensa o primeiro resultado relevante em posição alta;
+- hit rate@5: proporção de perguntas com pelo menos um acerto.
+
+No gráfico **Incerteza por itens não julgados**, diga:
+
+> A recuperação literal produziu 35 itens ainda não julgados. Eles não podem ser
+> tratados automaticamente como negativos. Por isso mostramos um limite inferior
+> e uma faixa possível de precisão.
+
+Troque o filtro de categoria para demonstrar que ele recalcula as barras usando
+somente as perguntas selecionadas.
+
+## 9. Geração RAG — 2 minutos
+
+Mostre as 90 respostas, o modelo, o tempo de geração e a validade das citações.
+
+### O que dizer
+
+> O modelo e sua configuração permanecem iguais; muda o contexto recuperado. A
+> geração semântica foi a mais rápida, com média de 13,58 segundos. A validade
+> estrutural das citações foi 70% na semântica, 56,67% na literal e 76,67% na
+> híbrida.
+
+> Validade de citação não é sinônimo de resposta correta. Ela confirma apenas que
+> os IDs citados estavam entre os chunks fornecidos ao modelo. A avaliação humana
+> é uma etapa separada.
+
+## 10. Avaliação humana anônima — 2 minutos
+
+Mostre os gráficos de qualidade, alucinação e a tabela integrada.
+
+### O que dizer
+
+> Nas médias recebidas, a condição híbrida teve correção 4,20 de 5,
+> fundamentação 4,27 de 5 e a menor taxa de marcação de alucinação, 13,33%. A
+> semântica teve correção 4,17, fundamentação 4,23 e alucinação em 20%. A literal
+> apresentou as menores médias e 26,67% de marcação de alucinação. São resultados
+> descritivos para estas 30 perguntas; não há teste de significância.
+
+Em seguida, abra a **Auditoria do pacote de avaliações** e seja explícito:
+
+> O pacote possui 360 linhas: 180 de qualidade e 180 de fundamentação. Entretanto,
+> para cada resposta, as duas linhas têm exatamente as mesmas notas e as mesmas
+> observações. Portanto, existem 180 julgamentos efetivamente distintos. Não vou
+> apresentar essa coincidência como concordância entre avaliadores independentes,
+> porque os dados recebidos não sustentam essa afirmação.
+
+Isso demonstra rastreabilidade metodológica. Não mostre nomes, identificadores
+cegos, respostas completas ou observações individuais.
+
+## 11. Conclusão — 1 minuto
 
 ### O que dizer
 
@@ -186,7 +254,12 @@ No conjunto completo dos 24 cenários:
 
 > As conclusões são descritivas e específicas deste corpus, desta máquina e destas implementações. Busca exata responde onde uma cadeia aparece; recuperação semântica e RAG respondem outra classe de problema.
 
-## 9. Perguntas prováveis da banca
+> No experimento downstream, a semântica ofereceu o melhor equilíbrio de rapidez
+> e qualidade de recuperação, enquanto a híbrida apresentou as melhores médias
+> humanas neste conjunto, ao custo de maior latência. Isso mostra que o melhor
+> método depende da métrica prioritária.
+
+## 12. Perguntas prováveis da banca
 
 ### Por que não comparar diretamente AV1 e AV2?
 
@@ -220,7 +293,19 @@ Não. Ela é uma etapa posterior e opcional. O algoritmo encontra os chunks e as
 
 Os quatro algoritmos seguem o mesmo contrato e devem produzir as mesmas posições. Há testes automatizados para ocorrências reais, padrões vazios, algoritmos desconhecidos, sobreposição, Unicode, artefatos experimentais e preservação das rotas da AV1.
 
-## 10. Plano de contingência
+### Por que há 360 linhas, mas somente 180 julgamentos distintos?
+
+Cada item foi incluído duas vezes no pacote recebido, porém os dois registros têm
+notas e observações idênticas. O sistema preserva a contagem de linhas para
+rastreabilidade e informa a contagem efetiva separadamente. Sem independência
+comprovada, não calculamos nem alegamos concordância real entre avaliadores.
+
+### Citação válida significa resposta verdadeira?
+
+Não. Significa apenas que o identificador citado pertence ao contexto entregue à
+LLM. Correção, fundamentação e alucinação são dimensões diferentes.
+
+## 13. Plano de contingência
 
 - Se o LLM estiver indisponível, mostre o aviso da própria AV2 e explique que a busca exata permanece operacional.
 - Se a porta 8000 estiver ocupada, encerre apenas o processo identificado ou execute o build pela porta 8010 e abra `http://127.0.0.1:8010/`.

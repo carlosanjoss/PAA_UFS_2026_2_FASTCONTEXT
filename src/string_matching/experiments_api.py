@@ -11,6 +11,12 @@ from typing import Any, Literal, cast
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+from src.string_matching.comparison_artifacts import (
+    AV2HumanEvaluation,
+    AV2RAGComparison,
+    AV2RetrievalComparison,
+    load_av2_comparison_artifacts,
+)
 from src.utils.config import PROJECT_ROOT
 
 router = APIRouter(prefix="/api/av2/experiments", tags=["AV2 - Experiments"])
@@ -29,6 +35,10 @@ class AV2ExperimentMetadata(BaseModel):
     memory_combinations: int
     corpus_chunks: int
     repetitions: int
+    retrieval_measurements: int
+    retrieval_combinations: int
+    rag_generations: int
+    human_evaluation_ratings: int
     generated_from: list[str]
 
 
@@ -107,6 +117,9 @@ class AV2ExperimentsResponse(BaseModel):
     summary: list[AV2SummaryRow]
     memory: list[AV2MemoryRow]
     speedups: list[AV2SpeedupRow]
+    retrieval: AV2RetrievalComparison
+    rag: AV2RAGComparison
+    human_evaluation: AV2HumanEvaluation
     environment: dict[str, Any]
 
 
@@ -159,6 +172,7 @@ def load_av2_experiments(
     pattern_payload = _read_json(paths["patterns"])
     scenario_payload = _read_json(paths["scenarios"])
     environment_payload = _read_json(paths["environment"])
+    comparison = load_av2_comparison_artifacts(repository_root)
 
     patterns = [AV2Pattern(**item) for item in pattern_payload["patterns"]]
     scenarios = [
@@ -209,10 +223,18 @@ def load_av2_experiments(
         memory_combinations=len(memory_probe_rows),
         corpus_chunks=int(pattern_payload["corpus"]["chunk_count"]),
         repetitions=next(iter(repetitions)),
+        retrieval_measurements=comparison.retrieval.metadata.raw_measurements,
+        retrieval_combinations=len(comparison.retrieval.queries),
+        rag_generations=comparison.rag.metadata.generation_count,
+        human_evaluation_ratings=(
+            comparison.human_evaluation.quality_ratings
+            + comparison.human_evaluation.groundedness_ratings
+        ),
         generated_from=[
             str(path.relative_to(repository_root)).replace("\\", "/")
             for path in paths.values()
-        ],
+        ]
+        + comparison.generated_from,
     )
 
     return AV2ExperimentsResponse(
@@ -222,6 +244,9 @@ def load_av2_experiments(
         summary=summary,
         memory=memory,
         speedups=speedups,
+        retrieval=comparison.retrieval,
+        rag=comparison.rag,
+        human_evaluation=comparison.human_evaluation,
         environment=_sanitize_environment(environment_payload),
     )
 

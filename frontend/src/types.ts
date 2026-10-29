@@ -170,7 +170,88 @@ export interface AV2ExperimentMetadata {
   memory_combinations: number;
   corpus_chunks: number;
   repetitions: number;
+  retrieval_measurements: number;
+  retrieval_combinations: number;
+  rag_generations: number;
+  human_evaluation_ratings: number;
   generated_from: string[];
+}
+
+export type AV2RetrievalCondition = "semantic" | "literal" | "hybrid";
+
+export interface AV2RetrievalConditionRow {
+  condition: AV2RetrievalCondition;
+  queries: number;
+  repetitions_per_query: number;
+  mean_time_ms: number;
+  pooled_precision_at_k: number;
+  pooled_recall_at_k: number;
+  known_mrr_at_k: number;
+  known_hit_rate_at_k: number;
+  mean_precision_lower_bound: number;
+  mean_precision_upper_bound: number;
+  unjudged_results: number;
+  queries_with_unjudged_results: number;
+}
+
+export interface AV2RetrievalQueryRow {
+  query_id: string;
+  category: string;
+  condition: AV2RetrievalCondition;
+  repetitions: number;
+  mean_time_ms: number;
+  std_time_ms: number;
+  pooled_precision_at_k: number;
+  pooled_recall_at_k: number;
+  known_mrr_at_k: number;
+  known_hit_rate_at_k: number;
+  precision_lower_bound: number;
+  precision_upper_bound: number;
+  unjudged_count: number;
+  judged_count: number;
+  known_positive_count: number;
+}
+
+export interface AV2RAGConditionRow {
+  condition: AV2RetrievalCondition;
+  generations: number;
+  mean_generation_time_ms: number;
+  std_generation_time_ms: number;
+  citation_valid_count: number;
+  citation_valid_rate: number;
+  mean_citation_count: number;
+  mean_known_relevant_citations: number;
+  citation_retry_count: number;
+}
+
+export interface AV2RAGQueryRow {
+  query_id: string;
+  category: string;
+  condition: AV2RetrievalCondition;
+  generation_time_ms: number;
+  citation_valid: boolean;
+  citation_count: number;
+  citation_retry_count: number;
+  known_relevant_citations: number;
+  answer_length_chars: number;
+}
+
+export interface AV2HumanConditionRow {
+  condition: AV2RetrievalCondition;
+  responses: number;
+  quality_ratings: number;
+  groundedness_ratings: number;
+  mean_correctness: number;
+  mean_completeness: number;
+  mean_clarity: number;
+  hallucination_rate: number;
+  mean_groundedness: number;
+}
+
+export interface AV2HumanAgreementRow {
+  metric: string;
+  exact_agreement_rate: number;
+  mean_absolute_difference: number;
 }
 
 export interface AV2Pattern {
@@ -248,6 +329,54 @@ export interface AV2ExperimentsResponse {
   summary: AV2SummaryRow[];
   memory: AV2MemoryRow[];
   speedups: AV2SpeedupRow[];
+  retrieval: {
+    metadata: {
+      query_count: number;
+      top_k: number;
+      candidate_depth: number;
+      repetitions: number;
+      warmup: number;
+      raw_measurements: number;
+      conditions: AV2RetrievalCondition[];
+      semantic_index_source: string;
+      quality_interpretation: string;
+      latency_interpretation: string;
+    };
+    conditions: AV2RetrievalConditionRow[];
+    queries: AV2RetrievalQueryRow[];
+  };
+  rag: {
+    metadata: {
+      query_count: number;
+      generation_count: number;
+      model: string;
+      top_k: number;
+      temperature: number;
+      seed: number;
+      conditions: AV2RetrievalCondition[];
+      evaluation_note: string;
+    };
+    conditions: AV2RAGConditionRow[];
+    queries: AV2RAGQueryRow[];
+  };
+  human_evaluation: {
+    status: "complete";
+    scale_min: number;
+    scale_max: number;
+    quality_ratings: number;
+    groundedness_ratings: number;
+    effective_quality_judgments: number;
+    effective_groundedness_judgments: number;
+    unique_responses: number;
+    ratings_per_response: number;
+    duplicate_score_pairs: number;
+    duplicate_note_pairs: number;
+    independent_ratings_confirmed: boolean;
+    conditions: AV2HumanConditionRow[];
+    agreement: AV2HumanAgreementRow[];
+    source_archive_sha256: string;
+    methodology_note: string;
+  };
   environment: {
     project: string;
     captured_at: string;
