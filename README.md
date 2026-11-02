@@ -351,7 +351,7 @@ O projeto expõe comandos via CLI.
 ### Verificar saúde
 
 ```bash
-fastcontext health
+fastcontext health.
 ```
 
 ### Listar algoritmos
