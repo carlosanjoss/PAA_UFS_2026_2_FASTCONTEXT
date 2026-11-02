@@ -496,7 +496,7 @@ Configuração:
 Total:
 
 ```text
-30 × 4 × 4 × 5 = 2400 execuções
+30 × 4 × 4 × 5 = 2400 execuções.
 ```
 
 Frações:
