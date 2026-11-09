@@ -1,6 +1,6 @@
 # Roteiro de apresentação — FastContext AV1 + AV2
 
-Este roteiro foi preparado para uma demonstração de aproximadamente 12 a 15 minutos. Os valores temporais abaixo pertencem ao benchmark oficial persistido; os tempos exibidos na busca ao vivo variam entre execuções e devem ser apresentados como medições interativas.
+Este roteiro foi preparado para uma demonstração de aproximadamente 15 a 18 minutos. Os valores temporais abaixo pertencem ao benchmark oficial persistido; os tempos exibidos na busca ao vivo variam entre execuções e devem ser apresentados como medições interativas.
 
 ## 1. Preparação antes de apresentar
 
@@ -17,10 +17,11 @@ cd ..
 
 Abra `http://127.0.0.1:8000/` e confirme:
 
-- as cinco abas aparecem no menu;
+- as seis abas aparecem no menu;
 - `http://127.0.0.1:8000/docs` mostra as rotas da AV1 e da AV2;
 - a aba **Busca textual** encontra `OAuth2`;
 - a aba **Experimentos AV2** carrega os gráficos;
+- a aba **Modelos RAG** mostra 180 tentativas, 179 respostas completas e 596 julgamentos;
 - o navegador está com zoom em 100%;
 - nenhum serviço de outro projeto está ocupando a porta 8000.
 
@@ -246,7 +247,42 @@ Em seguida, abra a **Auditoria do pacote de avaliações** e seja explícito:
 Isso demonstra rastreabilidade metodológica. Não mostre nomes, identificadores
 cegos, respostas completas ou observações individuais.
 
-## 11. Conclusão — 1 minuto
+## 11. Comparação Qwen2.5 3B × Llama 3.2 3B — 3 minutos
+
+Abra **Modelos RAG** e mostre primeiro os seis indicadores auditados.
+
+### O que dizer
+
+> Esta comparação usa 90 prompts congelados, três condições e dois modelos,
+> totalizando 180 tentativas. Obtivemos 179 respostas completas e um truncamento.
+> A avaliação humana contém 596 julgamentos e 415 comparações válidas por
+> critério. A página lê os arquivos persistidos; não chama os modelos ao abrir.
+
+Filtre primeiro **Sem RAG** e compare a latência. Depois ative **RAG otimizado**
+e **RAG semântico** para mostrar conformidade das citações. Explique:
+
+> Conformidade de citação é uma métrica automática estrutural. Correção,
+> completude, clareza, groundedness e alucinação são avaliações humanas. Os dois
+> grupos ficam separados porque uma citação formalmente válida não garante uma
+> resposta correta.
+
+Troque o seletor de métrica humana e mostre o gráfico de concordância. Não use
+as diferenças visuais para declarar vencedor:
+
+> Os resultados são descritivos para estes modelos quantizados, estas perguntas
+> e este corpus. Não realizamos teste de significância ou adjudicação.
+
+Role até **Recuperação semântica** e mostre o fluxo:
+
+- `BAAI/bge-small-en-v1.5`;
+- embeddings normalizados de 384 dimensões;
+- FAISS `IndexFlatIP`;
+- Top-5 chunks congelados igualmente para os dois modelos.
+
+Não abra arquivos administrativos durante a apresentação. A API expõe somente
+agregados e preserva identificadores e registros cegos nos artefatos locais.
+
+## 12. Conclusão — 1 minuto
 
 ### O que dizer
 
@@ -259,7 +295,7 @@ cegos, respostas completas ou observações individuais.
 > humanas neste conjunto, ao custo de maior latência. Isso mostra que o melhor
 > método depende da métrica prioritária.
 
-## 12. Perguntas prováveis da banca
+## 13. Perguntas prováveis da banca
 
 ### Por que não comparar diretamente AV1 e AV2?
 
@@ -305,7 +341,19 @@ comprovada, não calculamos nem alegamos concordância real entre avaliadores.
 Não. Significa apenas que o identificador citado pertence ao contexto entregue à
 LLM. Correção, fundamentação e alucinação são dimensões diferentes.
 
-## 13. Plano de contingência
+### Qual modelo venceu a comparação Qwen × Llama?
+
+Não há base para declarar um vencedor universal. Há diferenças descritivas por
+condição e critério, mas não foi realizado teste de significância. O dashboard
+foi desenhado para permitir a leitura de cada métrica sem converter o conjunto
+observado em uma alegação geral.
+
+### Por que groundedness não aparece no No-RAG?
+
+Porque groundedness avalia a aderência ao contexto recuperado. Na condição
+No-RAG não existe contexto fornecido, portanto essa dimensão não se aplica.
+
+## 14. Plano de contingência
 
 - Se o LLM estiver indisponível, mostre o aviso da própria AV2 e explique que a busca exata permanece operacional.
 - Se a porta 8000 estiver ocupada, encerre apenas o processo identificado ou execute o build pela porta 8010 e abra `http://127.0.0.1:8010/`.

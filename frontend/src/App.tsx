@@ -27,6 +27,11 @@ const AV2ExperimentsPage = lazy(() =>
     default: module.AV2ExperimentsPage,
   })),
 );
+const RAGModelComparisonPage = lazy(() =>
+  import("./pages/RAGModelComparisonPage").then((module) => ({
+    default: module.RAGModelComparisonPage,
+  })),
+);
 
 export function App() {
   const [view, setView] = useState<AppView>("overview");
@@ -57,6 +62,7 @@ export function App() {
         {view === "experiments" && <ExperimentsPage metrics={metrics} error={dataError} />}
         {view === "string-matching" && <StringMatchingPage />}
         {view === "av2-experiments" && <AV2ExperimentsPage />}
+        {view === "rag-models" && <RAGModelComparisonPage />}
       </Suspense>
     </AppShell>
   );

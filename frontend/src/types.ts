@@ -1,6 +1,6 @@
 export type Algorithm = "linear" | "indexed" | "optimized" | "semantic";
 export type StringMatchingAlgorithm = "naive" | "kmp" | "boyer-moore" | "rabin-karp";
-export type AppView = "overview" | "ask" | "experiments" | "string-matching" | "av2-experiments";
+export type AppView = "overview" | "ask" | "experiments" | "string-matching" | "av2-experiments" | "rag-models";
 
 export interface HealthComponent {
   name: string;
@@ -386,4 +386,110 @@ export interface AV2ExperimentsResponse {
     experimental_matrix: Record<string, unknown>;
     notes: string[];
   };
+}
+
+export type RAGModelRole = "baseline" | "candidate";
+export type RAGCondition = "no_rag" | "optimized" | "semantic";
+export type RAGHumanCriterion = "correctness" | "completeness" | "clarity" | "groundedness" | "hallucination_present";
+
+export interface RAGModelDescriptor {
+  role: RAGModelRole;
+  model: string;
+  parameter_size: string;
+  quantization: string;
+  context_length: number;
+}
+
+export interface RAGAutomaticMetricRow {
+  role: RAGModelRole;
+  model: string;
+  condition: RAGCondition;
+  planned: number;
+  success: number;
+  truncated: number;
+  success_rate: number;
+  generation_mean_ms: number;
+  generation_median_ms: number;
+  citation_accepted_n: number | null;
+  citation_compliance_rate: number | null;
+  with_valid_citation_n: number | null;
+  valid_citation_presence_rate: number | null;
+  citation_retry_mean: number | null;
+}
+
+export interface RAGHumanMetricRow {
+  role: RAGModelRole;
+  model: string;
+  condition: RAGCondition;
+  criterion: RAGHumanCriterion;
+  responses: number;
+  mean_score: number;
+  exact_agreement_n: number;
+  exact_agreement_rate: number;
+  mean_absolute_disagreement: number;
+  discordant_items: number;
+}
+
+export interface RAGPairedHumanMetricRow {
+  condition: RAGCondition;
+  criterion: RAGHumanCriterion;
+  planned_pairs: number;
+  both_complete: number;
+  missing_pair: number;
+  mean_candidate_minus_baseline: number;
+  candidate_better: number;
+  baseline_better: number;
+  ties: number;
+}
+
+export interface RAGAgreementMetricRow {
+  dimension: "qualidade" | "fundamentacao";
+  criterion: RAGHumanCriterion;
+  item_pairs: number;
+  exact_agreement_n: number;
+  exact_agreement_rate: number;
+  mean_absolute_difference: number;
+}
+
+export interface RAGModelComparisonResponse {
+  metadata: {
+    attempts: number;
+    complete_answers: number;
+    truncated_answers: number;
+    frozen_prompts: number;
+    human_judgments: number;
+    valid_criterion_comparisons: number;
+    planned_criterion_comparisons: number;
+    missing_criterion_comparisons: number;
+    reviewers: number;
+    descriptive_only: boolean;
+    generated_from: string[];
+  };
+  models: RAGModelDescriptor[];
+  conditions: RAGCondition[];
+  retrieval: {
+    model: string;
+    embedding_dimension: number;
+    normalized: boolean;
+    index_type: string;
+    top_k: number;
+    reference: string;
+    reference_url: string;
+    faiss_reference_url: string;
+  };
+  generation: {
+    provider: string;
+    temperature: number;
+    initial_max_tokens: number;
+    max_retry_tokens: number;
+    max_truncation_retries: number;
+    seed: number;
+    think: boolean;
+  };
+  automatic_metrics: RAGAutomaticMetricRow[];
+  human_metrics: RAGHumanMetricRow[];
+  paired_human_metrics: RAGPairedHumanMetricRow[];
+  agreement_metrics: RAGAgreementMetricRow[];
+  automatic_methodology_note: string;
+  human_methodology_note: string;
 }

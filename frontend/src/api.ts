@@ -4,6 +4,7 @@ import type {
   MetricsResponse,
   QueryRequest,
   QueryResponse,
+  RAGModelComparisonResponse,
   StringMatchingAlgorithmsResponse,
   StringMatchingRequest,
   StringMatchingResponse,
@@ -42,4 +43,5 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   av2Experiments: () => request<AV2ExperimentsResponse>("/api/av2/experiments"),
+  ragModelComparison: () => request<RAGModelComparisonResponse>("/api/rag/model-comparison"),
 };

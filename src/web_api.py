@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from src.app.health import check_application_health
 from src.app.presentation import build_retrieval_trace
 from src.app.runtime import get_application
+from src.rag.model_comparison_api import router as rag_model_comparison_router
 from src.rag.providers.base import GenerationConfig, LLMProviderError
 from src.retrieval.models import RetrievalResult
 from src.retrieval.registry import RetrieverRegistryError
@@ -61,6 +62,7 @@ app.add_middleware(
 )
 app.include_router(string_matching_router)
 app.include_router(av2_experiments_router)
+app.include_router(rag_model_comparison_router)
 
 
 @lru_cache(maxsize=4)

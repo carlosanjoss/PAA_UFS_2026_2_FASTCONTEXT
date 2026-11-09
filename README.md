@@ -1344,8 +1344,8 @@ manuais disponíveis são:
 
 ### Interface
 
-A aplicação web possui cinco áreas: as três páginas da AV1, **Busca textual** e
-**Experimentos AV2**. A busca textual executa os algoritmos reais sobre os 1.305
+A aplicação web possui seis áreas: as três páginas da AV1, **Busca textual**,
+**Experimentos AV2** e **Modelos RAG**. A busca textual executa os algoritmos reais sobre os 1.305
 chunks, mostra ocorrências, offsets, comparações e tempos e permite uma comparação
 interativa dos quatro métodos. O dashboard lê apenas os artefatos persistidos e
 não executa benchmarks quando é aberto.
@@ -1409,3 +1409,46 @@ Detalhes de arquitetura e reprodução: `docs/av2/WEB_INTEGRATION.md`.
 
 Roteiro demonstrativo, resultados esperados e perguntas prováveis da banca:
 `docs/av2/APRESENTACAO.md`.
+
+---
+
+## 42. Comparação auditada de modelos RAG
+
+A aba **Modelos RAG** compara `qwen2.5:3b` (baseline) e `llama3.2:3b`
+(candidato) sobre os mesmos 90 prompts congelados, nas condições `no_rag`,
+`optimized` e `semantic`. O dashboard lê exclusivamente os artefatos em
+`experiments/rag_model_comparison_results/`; abrir a página não executa
+inferência nem modifica os resultados.
+
+Indicadores auditados apresentados pela API:
+
+- 180 tentativas de geração;
+- 179 respostas completas e 1 truncamento;
+- 90 prompts congelados;
+- 596 julgamentos humanos;
+- 415 comparações válidas de 420 planejadas por critério;
+- 5 avaliadores no protocolo cego.
+
+Os filtros de modelo, condição e métrica atualizam gráficos de latência,
+conformidade estrutural de citações, correção, completude, clareza,
+groundedness, alucinação e concordância exata. Métricas automáticas e humanas
+são apresentadas em blocos separados. Todos os resultados são descritivos e
+não constituem teste de significância estatística.
+
+A recuperação semântica utiliza `BAAI/bge-small-en-v1.5`, vetores normalizados
+de 384 dimensões e FAISS `IndexFlatIP`, com seleção Top-5. A referência do
+modelo de embeddings é Xiao et al., *C-Pack: Packed Resources For General
+Chinese Embeddings*, SIGIR 2024, arXiv:2309.07597.
+
+### Endpoint agregado
+
+```text
+GET /api/rag/model-comparison
+```
+
+O endpoint valida as contagens auditadas antes de responder e mantém em cache
+os artefatos imutáveis durante o processo. Ele não expõe textos de respostas,
+observações, alocações, chaves cegas ou identificadores de avaliadores.
+
+Relatório, arquitetura dos dados e limitações:
+`docs/RAG_MODEL_COMPARISON.md`.

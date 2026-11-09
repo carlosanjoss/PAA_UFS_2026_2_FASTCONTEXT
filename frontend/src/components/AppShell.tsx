@@ -5,6 +5,7 @@ import {
   Braces,
   FileSearch,
   FlaskConical,
+  GitCompareArrows,
   LayoutDashboard,
   Menu,
   X,
@@ -21,6 +22,10 @@ const av1Navigation: Array<{ id: AppView; label: string; description: string; ic
 const av2Navigation: Array<{ id: AppView; label: string; description: string; icon: typeof Activity }> = [
   { id: "string-matching", label: "Busca textual", description: "Algoritmos da AV2", icon: FileSearch },
   { id: "av2-experiments", label: "Experimentos AV2", description: "24 cenários medidos", icon: FlaskConical },
+];
+
+const evaluationNavigation: Array<{ id: AppView; label: string; description: string; icon: typeof Activity }> = [
+  { id: "rag-models", label: "Modelos RAG", description: "Qwen × Llama", icon: GitCompareArrows },
 ];
 
 interface AppShellProps {
@@ -74,6 +79,20 @@ export function AppShell({ activeView, health, onNavigate, children }: AppShellP
           })}
           <span className="nav-caption nav-caption--section">AV2 · Cadeias</span>
           {av2Navigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                className={`nav-item ${activeView === item.id ? "nav-item--active" : ""}`}
+                onClick={() => navigate(item.id)}
+              >
+                <Icon size={19} />
+                <span><strong>{item.label}</strong><small>{item.description}</small></span>
+              </button>
+            );
+          })}
+          <span className="nav-caption nav-caption--section">Avaliação · LLMs</span>
+          {evaluationNavigation.map((item) => {
             const Icon = item.icon;
             return (
               <button
