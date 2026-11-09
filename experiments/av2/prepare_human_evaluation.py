@@ -20,7 +20,7 @@ from src.utils.config import PROJECT_ROOT
 CONDITIONS = ("semantic", "literal", "hybrid")
 ANNOTATORS = ("carlos", "yann", "wilson", "matheus", "gabriela")
 SEED = 42
-EXPECTED_SHA256 = "d8bad807ba4bc5a72ceb4a1f9d0b5fd6b12045b7e11aa405cf0917fa8e85d4c5"
+EXPECTED_SHA256 = "b31975a86c626bef89243877a5793e218cae922e1e3eae34dd63d2407341dd09"
 INPUT = PROJECT_ROOT / "experiments/av2/rag_comparison/final/generations.csv"
 OUTPUT = PROJECT_ROOT / "experiments/av2/human_evaluation"
 CODEBOOK = PROJECT_ROOT / "data/rag_evaluation/evaluation_codebook.md"
@@ -47,8 +47,9 @@ REQUIRED_FIELDS = {
 
 
 def sha256(path: Path) -> str:
-    """Fingerprint exact input bytes, not normalized CSV data."""
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """Fingerprint CSV bytes using the repository's canonical LF endings."""
+    canonical_bytes = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(canonical_bytes).hexdigest()
 
 
 def read_frozen(path: Path, expected_sha256: str) -> list[dict[str, str]]:
@@ -103,7 +104,7 @@ def read_frozen(path: Path, expected_sha256: str) -> list[dict[str, str]]:
             raise ValueError("Representação inesperada de contexto vazio")
         for field in ("valid_citations", "invalid_citations"):
             if not isinstance(json.loads(row[field]), list):
-                raise ValueError(f"Campo JSON inválido: {field}")
+                raise TypeError(f"Campo JSON inválido: {field}")
         meta = json.loads(row["generation_metadata"])
         if (str(meta.get("requested_seed")) != "42"
                 or float(meta.get("requested_temperature", -1)) != 0.0

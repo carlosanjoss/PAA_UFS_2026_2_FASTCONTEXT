@@ -1,6 +1,6 @@
 # AV2 × RAG — Avaliação humana cega
 
-SHA-256 de generations.csv: `d8bad807ba4bc5a72ceb4a1f9d0b5fd6b12045b7e11aa405cf0917fa8e85d4c5`
+SHA-256 canônico (LF) de generations.csv: `b31975a86c626bef89243877a5793e218cae922e1e3eae34dd63d2407341dd09`
 
 SHA-256 da rubrica AV1 original: `b0e5c564898c91da072da19e87850cda46c149bc296bf19a4a9a0fcc1c1845d4`
 

@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import itertools
 from collections import Counter
 from pathlib import Path
@@ -56,6 +55,15 @@ def test_fails_when_source_tampered(tmp_path: Path) -> None:
         read_frozen(path, EXPECTED_SHA256)
 
 
+def test_frozen_hash_is_portable_between_lf_and_crlf(tmp_path: Path) -> None:
+    lf_path = tmp_path / "lf.csv"
+    crlf_path = tmp_path / "crlf.csv"
+    lf_path.write_bytes(b"column\nvalue\n")
+    crlf_path.write_bytes(b"column\r\nvalue\r\n")
+
+    assert sha256(lf_path) == sha256(crlf_path)
+
+
 def test_fails_without_official_codebook(tmp_path: Path) -> None:
     source = INPUT
     rows = read_frozen(source, EXPECTED_SHA256)
@@ -89,6 +97,6 @@ def test_generated_files_are_blinded_and_non_destructive(tmp_path: Path) -> None
         assert len(load_rows(destination / "assignments" / f"{name}_quality.csv")) == 36
         grounded_path = destination / "assignments" / f"{name}_groundedness.csv"
         assert len(load_rows(grounded_path)) == 36
-    assert hashlib.sha256(source.read_bytes()).hexdigest() == EXPECTED_SHA256
+    assert sha256(source) == EXPECTED_SHA256
     with pytest.raises(FileExistsError):
         generate(rows, destination, codebook, sha256(source))
