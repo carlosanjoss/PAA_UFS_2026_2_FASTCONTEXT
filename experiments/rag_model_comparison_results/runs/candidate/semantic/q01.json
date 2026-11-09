@@ -1,0 +1,63 @@
+{
+  "answer": "Create a basic FastAPI application and define your first path operation by following these steps:\n\n1. Import `FastAPI` and create an `app` instance.\n2. Write a path operation decorator using decorators like `@app.get(\"/\")`.\n3. Define a path operation function; for example, `def root(): ...`.\n4. Run the development server using the command `fastapi dev`.\n\nHere's an example code snippet that demonstrates this:\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/\")\ndef read_root():\n    return {\"Hello\": \"World\"}\n```\nThis code creates a basic FastAPI application with a single path operation at the root URL (`\"/\"`) that returns a JSON response with the message \"Hello World\". [deployment/docker-7]",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "advanced/sub-applications-3",
+    "advanced/sub-applications-2",
+    "tutorial/first-steps-33",
+    "deployment/docker-7",
+    "tutorial/bigger-applications-23"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:28:20+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 161,
+    "eval_duration": 4345529000,
+    "invalid_citations": [],
+    "load_duration": 5823779400,
+    "prompt_eval_count": 1029,
+    "prompt_eval_duration": 5486494000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 15663204100,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "deployment/docker-7"
+    ]
+  },
+  "generation_time_ms": 15665.4771,
+  "generation_time_ns": 15665477100,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "58ddaaf5b521dc5ba68f30d94cd3a9b31f0fd410a2f3a487af6f48b623dbe3f7",
+  "provider": "ollama",
+  "query_id": "q01",
+  "question": "How do I create a basic FastAPI application and define my first path operation?",
+  "record_sha256": "53585e7ad043074886f79b1b2a1ec2dfbe44cee58df9b3f5a672fcb5c9fcdb05",
+  "run_id": "semantic|q01",
+  "run_key": "candidate|semantic|q01",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "deployment/docker-7"
+  ]
+}

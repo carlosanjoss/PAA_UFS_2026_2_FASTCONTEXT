@@ -1,0 +1,63 @@
+{
+  "answer": "You can define a request body using a Pydantic model in FastAPI by declaring the parameter as `Body` and defining the Pydantic model with the fields you want to receive. For example, you can use the following code snippet from [tutorial/body-9]:\n\n```python\nfrom fastapi import FastAPI, Body\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\n@app.post(\"/items/\")\nasync def create_item(item: Item = Body(...)):\n    return item\n```\n\nIn this example, `Item` is a Pydantic model with fields `name`, `description`, `price`, and `tax`. The `Body(...)` decorator is used to indicate that the `item` parameter should be taken from the request body.",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/body-8",
+    "tutorial/request-form-models-1",
+    "tutorial/body-9",
+    "tutorial/cookie-param-models-1",
+    "tutorial/body-nested-models-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:30:19+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 154,
+    "eval_duration": 2833722000,
+    "invalid_citations": [],
+    "load_duration": 3772700,
+    "prompt_eval_count": 1530,
+    "prompt_eval_duration": 1175665000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 4023497800,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/body-9"
+    ]
+  },
+  "generation_time_ms": 17294.6833,
+  "generation_time_ns": 17294683300,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "a04f363631af8ae7dfcdf4e0b90d6afd88d9e8447493004ec4b552f24c999531",
+  "provider": "ollama",
+  "query_id": "q03",
+  "question": "How do I define a request body using a Pydantic model in FastAPI?",
+  "record_sha256": "e8fd7b12440259c757655874dee164d495da8baf1ecd93a50ab9e075d37a5112",
+  "run_id": "semantic|q03",
+  "run_key": "baseline|semantic|q03",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/body-9"
+  ]
+}

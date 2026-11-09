@@ -1,0 +1,899 @@
+blind_id,question,answer,correctness,completeness,clarity,hallucination_present,notes
+Q0005,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,"You should use the `root_path` parameter when creating your FastAPI app to configure your application.
+
+This allows FastAPI to handle the specific case where a proxy adds a path prefix to your application, and it's also used internally when mounting sub-applications.
+
+",5,5,5,0,Correct answer: root_path is the proper way to configure FastAPI behind a proxy with path prefix. Accurate and complete.
+Q0009,How do I define a request body using a Pydantic model in FastAPI?,"You can define a request body using a Pydantic model in FastAPI by using the `Body` parameter with the `model` parameter set to your Pydantic model. 
+
+For example:
+```python
+from fastapi import Body
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str
+
+@app.post(""/items/"")
+async def create_item(item: Item = Body(...)):
+    return item
+```
+",2,3,4,1,"Incorrect: FastAPI uses the Pydantic model directly as a parameter, not Body(model=...). Body() is for singular values. Hallucination: Body(model=...) pattern does not exist."
+Q0013,How can I protect an endpoint using an API key in FastAPI?,"You can use the `HTTPBearerAuth` class from FastAPI to protect an endpoint with an API key. Create an instance of `HTTPBearerAuth` and pass it to the `auth` parameter of the endpoint decorator. Then, in the `on_request` method of the `HTTPBearerAuth` instance, verify the API key in the `Authorization` header. 
+
+Example:
+```python
+from fastapi import FastAPI, HTTPBearer, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+app = FastAPI()
+
+security = HTTPBearer()
+
+@app.post(""/protected"")
+async def protected_endpoint(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if credentials.credentials == ""your_api_key"":
+        return {""message"": ""Access granted""}
+    else:
+        return {""message"": ""Access denied""}
+```",2,3,3,1,HTTPBearerAuth does not exist in FastAPI. Should use HTTPBearer or APIKeyHeader/APIKeyCookie. Example has wrong import and usage.
+Q0018,How do I include and organize APIRouter instances in a larger FastAPI application?,"You can include APIRouter instances in a larger FastAPI application by using the `app` object and its `router` method. Organize them using a hierarchical structure, such as `app / users / orders / products`. 
+
+For example:
+```python
+from fastapi import FastAPI, APIRouter
+
+app = FastAPI()
+
+users_router = APIRouter()
+orders_router = APIRouter()
+products_router = APIRouter()
+
+app.include_router(users_router, prefix=""/users"")
+app.include_router(orders_router, prefix=""/users/orders"")
+app.include_router(products_router, prefix=""/users/orders/products"")
+```",2,3,3,1,app.router method does not exist. Should use app.include_router(). Example code uses correct include_router but text describes wrong method.
+Q0021,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,"To manage multiple WebSocket clients and disconnected connections in a FastAPI application, you can catch the `WebSocketDisconnect` exception that is raised when a client disconnects. This exception can be caught and handled to manage the state of the WebSocket connections and broadcast messages to other connected clients. Here is an example of how you can handle this:
+
+```python
+from fastapi import FastAPI, WebSocket
+from fastapi.websockets import WebSocketDisconnect
+
+app = FastAPI()
+
+@app.websocket(""/ws"")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Process the received data
+            print(f""Received: {data}"")
+            await websocket.send_text(f""Message typed: {data}"")
+    except WebSocketDisconnect:
+        print(""Client disconnected"")
+        await websocket.close()
+```
+
+This example demonstrates catching the `WebSocketDisconnect` exception and handling it to manage the state of the WebSocket connections and broadcast messages to other connected clients.",5,5,5,0,Correct: WebSocketDisconnect exception handling is the proper way. Example code is accurate.
+Q0024,How do I add middleware to a FastAPI application?,"You can add middleware to a FastAPI application by using the `@app.middleware(""http"")` decorator on top of a function. The middleware function receives the `request` and a function `call_next` that will receive the `request` as a parameter. You can then further modify the `response` before returning it.
+
+```python
+from fastapi.middleware import Middleware
+from fastapi import Request
+
+@app.middleware(""http"")
+async def middleware_function(request: Request, call_next):
+    # Your middleware code here
+    response = await call_next(request)
+    # Modify the response here
+    return response
+```
+
+",5,4,4,0,Correct middleware pattern. Missing mention of app.add_middleware() as alternative.
+Q0025,How can I protect an endpoint using an API key in FastAPI?,"You can protect an endpoint using an API key in FastAPI by using the `APIKeyCookie` or `APIKeyHeader` security scheme. 
+
+For example, to use `APIKeyCookie`, you can create a `FastAPI` application with the following code:
+
+```python
+from fastapi import FastAPI, Depends
+from fastapi.security import APIKeyCookie
+
+app = FastAPI()
+
+@app.get(""/protected"")
+async def protected_route(cookie: str = Depends(APIKeyCookie)):
+    return {""message"": ""Hello, World!""}
+```
+
+Similarly, to use `APIKeyHeader`, you can create a `FastAPI` application with the following code:
+
+```python
+from fastapi import FastAPI, Depends
+from fastapi.security import APIKeyHeader
+
+app = FastAPI()
+
+app.state.api_key_header = APIKeyHeader(name=""Authorization"", scheme=""Bearer"")
+
+@app.get(""/protected"")
+async def protected_route(header: str = Depends(app.state.api_key_header)):
+    return {""message"": ""Hello, World!""}
+```
+
+",4,4,4,0,Correct security schemes. APIKeyCookie example missing API key validation logic; APIKeyHeader example has odd app.state usage.
+Q0030,How should I handle errors and raise HTTP exceptions in FastAPI?,Use the `raise_from_exception` decorator to propagate exceptions as HTTP errors. Utilize the `HTTPException` class for custom error responses.,1,1,2,1,raise_from_exception decorator does not exist in FastAPI. Should use HTTPException directly or custom exception handlers.
+Q0033,How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?,"To configure trusted hosts or HTTPS redirection middleware in FastAPI, you can use the `TrustedHostMiddleware` and `HTTPSRedirectMiddleware` middleware classes.
+
+For `TrustedHostMiddleware`, you can specify the allowed hosts using the `allowed_hosts` argument:
+
+```python
+from fastapi.middleware.trustedhost import TrustedHost
+
+app = FastAPI()
+
+app.add_middleware(
+    TrustedHost,
+    allowed_hosts=[""example.com"", ""*.example.com""]
+)
+```
+
+For `HTTPSRedirectMiddleware`, you can enforce that all incoming requests must be `https` or `wss` by using the middleware as follows:
+
+```python
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+
+app = FastAPI()
+
+app.add_middleware(HTTPSRedirectMiddleware)
+```
+
+The `TrustedHostMiddleware` also allows you to redirect non-www versions of the allowed hosts to their www counterparts by setting the `www_redirect` argument to `True`.
+
+The `HTTPSRedirectMiddleware` ensures that all incoming requests are redirected to the secure scheme (`https` or `wss`) if they are not already secure.
+
+The following citations are used:
+- ",5,5,4,0,Correct middleware classes and usage. Good examples provided.
+Q0034,How do I add dependencies to a path operation decorator when I do not need their return values?,"You can use the `response_model` parameter of the `Path` operation to specify dependencies without requiring their return values. 
+
+Alternatively, you can use the `response_model` parameter with the `exclude` parameter to exclude specific dependencies from being returned. 
+
+You can also use the `Depends` function from FastAPI to specify dependencies that do not need to be returned.",1,1,2,1,"Completely wrong: response_model is for response validation, not for dependencies. Should use dependencies parameter in decorator or Depends() without using return value."
+Q0035,How do I include and organize APIRouter instances in a larger FastAPI application?,"To include and organize `APIRouter` instances in a larger FastAPI application, you can use the `include_router()` method, which allows you to add each `APIRouter` to the main `FastAPI` application, including all the routes from that router as part of it .
+
+You can import the `APIRouter` instance and create an instance the same way you would with the class `FastAPI` . Then, you can include the `APIRouter` in another `APIRouter` using `router.include_router(other_router)` .
+
+Additionally, you can add *path operations* directly to the `FastAPI` app using `app.include_router()` . This allows you to keep the original routers and path operations active, and combines the router prefixes, dependencies, tags, responses, and other metadata when handling requests and generating OpenAPI .
+
+It's also worth noting that you can create the *path operations* for a module using `APIRouter`, and keep it organized as part of the same FastAPI application/web API .",5,5,4,0,Correct: include_router() is the proper method. Good explanation of hierarchical organization.
+Q0040,How can I override dependencies during FastAPI tests?,"To override dependencies during FastAPI tests, you can use the `app.dependency_overrides` attribute. This attribute is a simple `dict` that allows you to specify a dependency override for testing purposes. You put the original dependency as a key and your dependency override as the value. FastAPI will then call the override instead of the original dependency. You can set a dependency override for a dependency used anywhere in your FastAPI application. To reset your overrides, you can set `app.dependency_overrides` to be an empty `dict`. For example, you can set a dependency override for a dependency used in a path operation function, a path operation decorator, or a `.include_router()` call. FastAPI will still be able to override it. ",5,5,4,0,Correct: app.dependency_overrides dict is the proper way to override dependencies in tests.
+Q0044,How can I create a custom exception handler in FastAPI?,"To create a custom exception handler in FastAPI, you can use the `@app.exception_handler()` decorator. This decorator allows you to define a custom exception handler for specific exceptions. For example, to handle `RequestValidationError`, you can import `RequestValidationError` and use it with `@app.exception_handler(RequestValidationError)` to decorate the exception handler. Here's how you can do it:
+
+```python
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=418,
+        content={""message"": f""Oops! {request.url.path} did something. There goes a rainbow...""}
+    )
+```
+
+This custom exception handler will be triggered when a request contains invalid data, and it will return a custom JSON response with a specific message. Refer to the documentation for more details: .",5,5,4,0,Correct: @app.exception_handler() decorator. Good example with RequestValidationError.
+Q0046,How can I run work after returning a response using BackgroundTasks in FastAPI?,"You can run work after returning a response using `BackgroundTasks` by creating a task and passing it to the `run_in_background` method. 
+
+```python
+from fastapi import BackgroundTasks
+from fastapi.responses import JSONResponse
+
+async def my_task(bt: BackgroundTasks):
+    # Run some work here
+    bt.add_task(my_long_running_task, 5)
+
+async def my_long_running_task(seconds: int):
+    # This is a long-running task
+    await asyncio.sleep(seconds)
+
+async def my_route():
+    bt = BackgroundTasks()
+    return JSONResponse(content={""message"": ""Task started""}, status_code=202)
+    bt.add_task(my_long_running_task, 5)
+```
+
+In this example, `my_task` is a function that takes a `BackgroundTasks` object as an argument. It adds a task to the `BackgroundTasks` object, which is `my_long_running_task`. The `my_long_running_task` function is a long-running task that sleeps for the specified number of seconds.",2,3,3,1,"BackgroundTasks has add_task() method, not run_in_background(). Example code incorrectly creates BackgroundTasks instance manually."
+Q0049,How can I declare and validate query parameters in FastAPI?,"You can declare and validate query parameters in FastAPI by declaring them in a Pydantic model and using the `Query` annotation. For example:
+
+```Python
+from fastapi import Query
+
+q: str | None = Query(None, alias=""q"")
+```
+
+This will declare a query parameter named ""q"" with a default value of `None`. You can also add additional validation and metadata to the parameter using the `alias` and `description` parameters.
+
+As shown in , you can create a Pydantic model to declare related query parameters and reuse it in multiple places.
+
+Additionally, you can declare multiple path and query parameters at the same time, and they will be detected by name, as shown in .",3,3,3,0,"Query parameter declaration is correct but example shows Query as annotation on bare variable, not in function parameter. References to are placeholder citations."
+Q0050,How can I create and validate JWT access tokens in FastAPI?,"To create and validate JWT access tokens in FastAPI, you can follow the steps outlined in the provided documentation. Here's a summary of the process:
+
+1. **Import the necessary modules**: Import the required modules for JWT creation and validation.
+
+2. **Generate a random secret key**: Use the `openssl rand -hex 32` command to generate a secure random secret key. This key will be used to sign the JWT tokens.
+
+3. **Define the algorithm and expiration**: Set the algorithm used to sign the JWT token to `""HS256""` and define the expiration time for the token.
+
+4. **Create a utility function for token generation**: Define a utility function to generate a new access token. This function will use the secret key and the expiration time to create a JWT token.
+
+Here's a snippet of how you might implement this in a FastAPI application:
+
+```python
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from pydantic import ValidationError
+from datetime import datetime, timedelta
+
+app = FastAPI()
+
+# Define the OAuth2 scheme
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=""token"")
+
+# Define the secret key and algorithm
+SECRET_KEY = ""[tutorial/security/oauth2-jwt-0]""
+ALGORITHM = ""HS256""
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Utility function to generate a new access token
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({""exp"": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+# Example of a utility function to validate a JWT token
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=401, detail=""Could not validate credentials""
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get(""sub"") is None:
+            raise credentials_exception
+        username: str = payload.get(""sub"")
+        return {""username"": username}
+    except JWTError:
+        raise credentials_exception
+
+# Example route that requires a valid JWT token
+@app.get(""/protected"")
+async def protected_route(current_user: dict = Depends(get_current_user)):
+    return {""message"": f""Welcome back, {current_user['username']}!""}
+```
+
+This example demonstrates how to create and validate JWT access tokens in a FastAPI application. The `create_access_token` function generates a JWT token, and the `get_current_user` function validates the JWT token. The `protected_route` is an example route that requires a valid JWT token for access.
+
+For more details and comprehensive implementation, refer to the documentation in the provided tutorials and features.",5,5,4,0,"Correct JWT implementation with python-jose. Good detail on secret key, algorithm, expiration. Placeholder citation [tutorial/security/oauth2-jwt-0]."
+Q0052,How can I override dependencies during FastAPI tests?,You can override dependencies during FastAPI tests by setting the `app.dependency_overrides` attribute to a dictionary with the original dependency as the key and your override function as the value. ,5,4,4,0,Correct but very brief. Missing example code.
+Q0055,How can I protect an endpoint using an API key in FastAPI?,"To protect an endpoint using an API key in FastAPI, you can use the `Depends` function along with the `APIKeyCookie` security scheme to verify the API key before allowing access to the endpoint. Here's a basic example:
+
+```python
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import APIKeyCookie
+
+router = APIRouter()
+
+API_KEY = ""my_api_key""
+
+def get_api_key(api_key: APIKeyCookie = Depends()):
+    if api_key != API_KEY:
+        raise HTTPException(status_code=403, detail=""Invalid API key"")
+    return api_key
+
+@router.get(""/protected-endpoint"")
+async def read_protected_endpoint(get_api_key=Depends(get_api_key)):
+    return {""message"": ""This is a protected endpoint""}
+```
+
+This example is documented in the FastAPI documentation, which can be referenced for more details.",5,5,4,0,Correct pattern: custom dependency with APIKeyCookie and HTTPException for invalid key.
+Q0058,How do I add middleware to a FastAPI application?,"You can add middleware to a **FastAPI** application using the `app.add_middleware()` method. 
+
+```Python
+from fastapi import FastAPI
+from unicorn import UnicornMiddleware
+
+app = FastAPI()
+
+app.add_middleware(UnicornMiddleware, some_config=""rainbow"")
+```
+
+",5,4,4,0,Correct: app.add_middleware() is valid. Example uses fictional UnicornMiddleware but pattern is right.
+Q0060,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,"FastAPI applications can manage multiple WebSocket clients and disconnected connections using the `websockets` library, which is a built-in library for WebSocket support in FastAPI. The `websockets` library provides a `Client` class that can handle multiple connections and automatically reconnects to disconnected clients. Additionally, FastAPI's built-in support for WebSockets allows for efficient handling of WebSocket connections using asynchronous programming.",2,2,3,1,"Wrong: ""websockets library"" is not built into FastAPI. FastAPI uses Starlette WebSocket. No Client class for managing connections."
+Q0062,How can a FastAPI application manage multiple WebSocket clients and disconnected connections?,"Use a dictionary to map client IDs to WebSocket clients, and manage connection states to reconnect or handle disconnections.",3,2,3,0,Partially correct pattern but extremely brief. Missing WebSocketDisconnect handling and broadcasting logic.
+Q0070,How do I test FastAPI endpoints using TestClient?,"You can use the `TestClient` object to test FastAPI endpoints by creating a `TestClient` instance and calling its `assert_in_json` or `assert_in` methods on the endpoint you want to test, with the expected response data. For example:
+```python
+from fastapi.testclient import TestClient
+
+app = FastAPI()
+
+client = TestClient(app)
+
+response = client.get(""/endpoint"")
+assert response.json() == {""message"": ""Hello World""}
+```
+",2,2,3,1,TestClient has no assert_in_json or assert_in methods. Should use response.json() and standard assert.
+Q0071,How can I customize or extend the generated OpenAPI schema in FastAPI?,"You can customize or extend the generated OpenAPI schema in FastAPI by using the `OpenAPI` object's `items` and `properties` attributes. You can also use the `ResponseModel` and `Schema` annotations to define custom schema for specific responses. Additionally, you can use the `APIRouter`'s `openapi` attribute to override the default OpenAPI schema.",2,2,2,1,Wrong: OpenAPI object does not have items/properties attributes for customization. Should use custom_openapi() function or openapi_extra parameter.
+Q0073,How can I run work after returning a response using BackgroundTasks in FastAPI?,Use BackgroundTasks to run work asynchronously after returning a response.,4,1,3,0,Correct concept but far too brief - no code example or explanation of how to use it.
+Q0074,How do I add middleware to a FastAPI application?,"To add middleware to a FastAPI application, you can use the `@app.middleware()` decorator. For example:
+```python
+from fastapi import FastAPI, Request
+from fastapi.middleware import HTTPBasicAuthMiddleware
+
+app = FastAPI()
+
+@app.middleware()
+async def http_basic_auth_middleware(request: Request, call_next):
+    # authentication logic here
+    return call_next(request)
+
+app.add_middleware(HTTPBasicAuthMiddleware)
+```
+Alternatively, you can also use the `@app.middleware()` decorator with a function that returns a middleware instance:
+```python
+from fastapi import FastAPI
+from fastapi.middleware import HTTPBasicAuthMiddleware
+
+app = FastAPI()
+
+def http_basic_auth_middleware():
+    return HTTPBasicAuthMiddleware()
+
+app.add_middleware(http_basic_auth_middleware)
+```",3,3,3,1,"@app.middleware() requires ""http"" argument. HTTPBasicAuthMiddleware does not exist in fastapi.middleware. Second example pattern is also wrong."
+Q0077,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,"Yes, FastAPI dependencies can add tasks to the same `BackgroundTasks` object. ",5,2,4,0,Correct statement but extremely brief - no explanation or example.
+Q0081,How can I create a custom exception handler in FastAPI?,"You can add a custom exception handler with `@app.exception_handler()`: {* ../../docs_src/handling_errors/tutorial003_py310.py hl[5:7,13:18,24] *}",4,2,3,0,"Correct reference to @app.exception_handler() but answer is just a citation placeholder, no explanation."
+Q0082,How do I include and organize APIRouter instances in a larger FastAPI application?,"You can include and organize `APIRouter` instances in a larger FastAPI application by using the `.include_router()` method, as shown in the example: 
+
+```python
+router.include_router(other_router)
+```
+
+This allows you to include the routes from another `APIRouter` in the main `FastAPI` application, while still keeping the original `APIRouter` and its routes active. ",5,4,4,0,Correct: router.include_router() for nested routers. Good explanation.
+Q0084,How can one FastAPI dependency depend on another dependency?,"You can create a dependency that depends on another dependency by declaring the dependent dependency as a parameter in the dependent dependency function. For example, a dependency can depend on another dependency by assigning the value returned by the dependent dependency to a parameter. ",5,4,4,0,Correct: sub-dependencies via function parameters. Could use more detail.
+Q0085,How can I create a custom exception handler in FastAPI?,"You can create a custom exception handler in FastAPI by defining a function that takes an exception instance as an argument, and then raising a new exception or returning a response. 
+
+For example:
+```python
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request, exc):
+    return {""error"": exc.status_code, ""message"": exc.detail}
+```
+This will catch all HTTP exceptions and return a JSON response with the status code and error message.",5,4,4,0,Correct pattern with @app.exception_handler(HTTPException). Good example.
+Q0087,How do I test FastAPI endpoints using TestClient?,"To test FastAPI endpoints using the `TestClient`, you can follow these steps:
+
+1. First, you need to install the `httpx` library, which is a dependency for the `TestClient`. You can install it using the command:
+
+```console
+$ uv add httpx
+```
+
+2. Once `httpx` is installed, you can import the `TestClient` from `fastapi.testclient`:
+
+```python
+from fastapi.testclient import TestClient
+```
+
+3. Create a `TestClient` instance by passing your FastAPI application to it. Here's an example:
+
+```python
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+app = FastAPI()
+client = TestClient(app)
+```
+
+4. You can then use the `TestClient` object to make requests to your FastAPI application. For example, to get the root URL of your application, you can do:
+
+```python
+response = client.get(""/"")
+assert response.status_code == 200
+```
+
+5. For more complex scenarios, you can create test functions with names starting with `test_` to use `pytest`. These test functions can call the `TestClient` object to make requests and assert the expected responses.
+
+6. You can also use `async def` functions inside your test functions if your FastAPI application uses `async def` functions. However, the calls to the client should be normal calls, not using `await`.
+
+7. Notice that the testing functions are normal `def`, not `async def`, and the calls to the client are also normal calls, not using `await`. This allows you to use `pytest` directly without complications.
+
+Refer to the [FastAPI docs for Testing](https://fastapi.tiangolo.com/tutorial/testing/) for more details.",5,5,5,0,"Excellent detailed answer with installation, import, instantiation, and usage examples. Correct about sync/async."
+Q0089,How do I create a basic FastAPI application and define my first path operation?,"Create a FastAPI application, define a route with `router`, and use the `@router.post` decorator to define a path operation.",3,2,3,0,Too brief. Mentions router but basic app uses @app.get() directly. Missing app = FastAPI() and run command.
+Q0091,How can I apply a dependency to every path operation in a FastAPI application?,Use the `dependencies` parameter in the `APIRouter` or `APIRouter.include_router` method to apply a dependency to every path operation.,5,4,4,0,Correct: dependencies parameter in APIRouter or include_router. Could mention app.dependencies too.
+Q0092,How can I create and validate JWT access tokens in FastAPI?,"You can create and validate JWT access tokens in FastAPI by using the `JWT` library and the `OAuth2PasswordBearer` class. 
+
+To create a JWT token, you can use the `jwt` library to encode the payload and sign it with a secret key. 
+
+To validate a JWT token, you can use the `OAuth2PasswordBearer` class to verify the token's signature and payload.
+
+Here's an example of how you can create and validate JWT access tokens in FastAPI:
+
+```python
+from fastapi import FastAPI, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from pyjwt import jwt_decode
+from passlib.context import CryptContext
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+# Create a secret key for signing JWT tokens
+secret_key = ""your_secret_key_here""
+
+# Create a password context for hashing passwords
+pwd_context = CryptContext(schemes=[""bcrypt""], default=""bcrypt"")
+
+# Create an OAuth2 password bearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=""token"")
+
+# Define a function to create a JWT token
+def create_token(user_id: str):
+    payload = {""user_id"": user_id}
+    return jwt_encode(payload, secret_key)
+
+# Define a function to validate a JWT token
+def validate_token(token: str):
+    try:
+        payload = jwt_decode(token, secret_key, algorithms=[""HS256""])
+        return payload[""user_id""]
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail=""Token has expired"")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail=""Invalid token"")
+
+@app.post(""/token"")
+async def login_for_token(username: str = ""your_username_here"", password: str = ""your_password_here""):
+    # Check if the username and password are valid
+    user_id = validate_username(username)
+    if not user_id:
+        raise HTTPException(status_code=401, detail=""Invalid username or password"")
+
+    # Create a JWT token
+    token = create_token(user_id)
+
+    return {""token"": token}
+
+@app.get(""/protected"")
+async def protected_route(token: str = Depends(oauth2_scheme)):
+    try:
+        user_id = validate_token(token)
+        # Do something with the user ID
+        return {""message"": f""Hello, {user_id}!""}
+    except HTTPException as e:
+        raise e
+```
+
+",4,5,4,0,Correct JWT pattern. Uses pyjwt (import jwt) which is fine. Good complete example with hashing.
+Q0094,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,"When FastAPI runs behind a proxy that adds a path prefix, FastAPI should be configured using the `root_path` parameter. This can be done either by passing the `root_path` parameter when creating the FastAPI app or by setting the `root_path_in_servers=False` parameter to disable the automatic server inclusion in the OpenAPI schema. This configuration allows the application to operate as if it were running at the original path, even when the proxy is adding a path prefix. (advanced/behind-a-proxy-6)",5,5,5,0,"Correct and detailed: root_path parameter, root_path_in_servers=False. Includes citation."
+Q0095,How do I create a WebSocket endpoint in FastAPI?,"You can create a WebSocket endpoint in FastAPI by using the `WebSocket` parameter directly or by importing it from `starlette.websockets`. 
+
+```python
+from fastapi import WebSocket
+
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    await websocket.send_text(""Hello from FastAPI!"")
+```
+
+",5,4,4,0,"Correct: WebSocket parameter, accept(), send_text(). Minimal but accurate."
+Q0096,How can I create and validate JWT access tokens in FastAPI?,"To create and validate JWT access tokens in FastAPI, you can use the `Depends` annotation to specify the validation dependencies. 
+
+Create a random secret key that will be used to sign the JWT tokens. To generate a secure random secret key, use the command: 
+```
+$ openssl rand -hex 32
+```
+Copy the output to the variable `SECRET_KEY`. 
+
+Create a variable `ALGORITHM` with the algorithm used to sign the JWT token and set it to `""HS256""`. 
+
+Create a variable for the expiration of the token. 
+
+Define a Pydantic Model that will be used in the token endpoint for the response. 
+
+Create a utility function to generate a new access token. 
+
+Create a utility function to validate the JWT token. 
+
+Here's an example:
+```python
+from fastapi import FastAPI, Depends
+from pydantic import BaseModel
+from jose import jwt, JWTError
+from jose import jwt as jose_jwt
+from typing import Optional
+
+app = FastAPI()
+
+SECRET_KEY = ""[tutorial/security/oauth2-jwt-0]""
+ALGORITHM = ""HS256""
+
+class JWTPayload(BaseModel):
+    sub: str
+    exp: int
+
+def generate_access_token(payload: dict, expires_delta: Optional[datetime.timedelta] = None) -> str:
+    to_encode = payload.copy()
+    if expires_delta:
+        expire = datetime.datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
+    to_encode.update({""exp"": expire.timestamp()})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def validate_token(token: str) -> JWTPayload:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return JWTPayload(payload[""sub""], payload[""exp""])
+    except JWTError:
+        return None
+
+@app.post(""/token"")
+async def login(form_data: dict = Depends(oauth2_scheme)):
+    access_token = generate_access_token({""sub"": form_data[""username""]})
+    return {""access_token"": access_token}
+
+@app.get(""/protected"")
+async def protected_route(token: str = Depends(validate_token)):
+    return {""message"": ""Hello, world!""}
+```",5,5,4,0,"Correct JWT implementation with openssl key generation, HS256, utility functions. Placeholder citation for SECRET_KEY."
+Q0097,How can I use lifespan events to initialize and clean up shared resources in FastAPI?,Use FastAPI's `on_startup` and `on_shutdown` lifecycle event decorators to initialize and clean up shared resources.,2,2,3,1,on_startup/on_shutdown decorators are deprecated. Should use lifespan parameter with async context manager (yield).
+Q0102,How can I customize the response status code of a FastAPI endpoint?,Use the `status_code` parameter in the `response_model` decorator or directly in the function return.,2,2,2,1,"status_code is parameter of path operation decorator (@app.get(status_code=...)), not response_model. No response_model decorator exists."
+Q0105,How do I create a WebSocket endpoint in FastAPI?,"To create a WebSocket endpoint in FastAPI, use the `ws` module and define a WebSocket endpoint with the `ws` decorator. 
+
+```python
+from fastapi import FastAPI, WebSocket
+
+app = FastAPI()
+
+@app.websocket(""/ws"")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    # Handle WebSocket messages and events here
+    await websocket.send(""Hello from the server!"")
+```
+
+This will create a WebSocket endpoint at the `/ws` path.",1,2,2,1,"No ""ws"" module or ""ws"" decorator in FastAPI. Should use @app.websocket(""/ws"") with WebSocket parameter."
+Q0107,How should FastAPI be configured when it runs behind a proxy that adds a path prefix?,"When FastAPI runs behind a proxy that adds a path prefix, you should configure it using the `root_path` parameter. This allows you to declare a path in your code, such as `/app`, and have the proxy add a path prefix like `/api/v1` to the request. FastAPI will then handle the request as if it was served at the declared path, `/app`, without requiring changes to your application code. This is useful for scenarios where you have a proxy layer that modifies the request path. ",5,5,4,0,Correct explanation of root_path for proxy path prefix. Good example.
+Q0111,How do OAuth2 scopes work with FastAPI Security dependencies?,"OAuth2 scopes work with FastAPI Security dependencies by using the `SecurityScopes` class from `fastapi.security`. This class is used to declare the security scopes for OAuth2 schemes. When declaring OAuth2 scopes, you can use the `Security()` function instead of `Depends()`. If the dependency function doesn't have any scope requirements, you can use `Depends` with the OAuth2 scheme, without the need to use `Security`. This allows for a more fine-grained permission system, following the OAuth2 standard, integrated into your OpenAPI application and API docs. ",5,5,4,0,"Correct: SecurityScopes class, Security() vs Depends(). Good explanation."
+Q0112,How do I add dependencies to a path operation decorator when I do not need their return values?,Use the `Depends` function to inject dependencies without requiring them in the path operation's return type.,5,3,4,0,Correct: Depends() injects without requiring in return type. Very brief.
+Q0114,How do I define a request body using a Pydantic model in FastAPI?,"You can define a request body using a Pydantic model in FastAPI by declaring the parameter as `Form` and specifying the Pydantic model. For example:
+```python
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    price: float
+
+@app.post(""/items/"", response_model=Item)
+async def create_item(item: Item = Form(...)):
+    # ...
+```
+This will extract the data for each field from the form data in the request and give you the Pydantic model `Item` defined. ",1,2,3,1,"Wrong: Pydantic models are used directly as parameters, not with Form(). Form() is for form data fields, not JSON body with Pydantic model."
+Q0119,How do I create a WebSocket endpoint in FastAPI?,"To create a WebSocket endpoint in FastAPI, you can define a route that accepts a `WebSocket` parameter. Here's an example:
+
+```python
+from fastapi import FastAPI, WebSocket
+from fastapi.websockets import WebSocketDisconnect
+
+app = FastAPI()
+
+@app.websocket(""/ws"")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await websocket.send_text(f""You said: {data}"")
+    except WebSocketDisconnect:
+        pass
+```
+
+This example defines a WebSocket route at `/ws` that accepts text messages from clients and sends them back. The `WebSocketDisconnect` exception is handled to gracefully close the connection when the client disconnects.",5,5,5,0,"Correct and complete: WebSocket parameter, accept(), receive_text(), send_text(), WebSocketDisconnect handling."
+Q0120,How do I declare a reusable dependency with Depends in FastAPI?,"To declare a reusable dependency with `Depends` in FastAPI, you can use a function as the parameter to `Depends`. This function will be called with the correct parameters whenever a request is made to a path operation. The function itself does not need to be called directly; instead, you pass it as a parameter to `Depends()`. Here is an example:
+
+```python
+from fastapi import Depends, FastAPI
+
+app = FastAPI()
+
+def get_token_header(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=""Could not validate credentials"",
+        headers={""WWW-Authenticate"": ""Bearer""},
+    )
+    # Your logic to validate the token goes here
+    return credentials_exception
+
+@app.get(""/token"")
+async def get_token(token: str = Depends(get_token_header)):
+    return {""token"": token}
+```
+
+This example is from the documentation and does not require additional citations.",4,4,3,0,Correct concept but example has undefined oauth2_scheme and returns credentials_exception instead of token.
+Q0123,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,"Yes, FastAPI dependencies can add tasks to the same BackgroundTasks object.",5,2,4,0,Correct statement but extremely brief.
+Q0135,How do I add middleware to a FastAPI application?,Add `Middleware` class inheriting from `FastAPI` to configure middleware in your FastAPI application.,1,1,2,1,Completely wrong: Middleware classes do not inherit from FastAPI. Use @app.middleware() or app.add_middleware(MiddlewareClass).
+Q0136,How do I declare a reusable dependency with Depends in FastAPI?,"Declare the dependency function normally, then use `Depends` in route functions to inject it.",5,3,4,0,Correct but very brief. No code example.
+Q0137,What are workers and when should I use multiple worker processes to run FastAPI?,"Workers are **multiple processes** of the same API program, commonly used when you have more clients than a single process can handle and you want to distribute all the requests among them. You should use multiple worker processes to run FastAPI when you have **multiple cores** in the server's CPU to run **multiple processes in parallel** .",5,5,5,0,"Correct and clear explanation of workers, when to use multiple processes."
+Q0139,How can I create a custom exception handler in FastAPI?,"You can create a custom exception handler in FastAPI by using the `@app.exception_handler()` decorator and decorating the exception handler function with the exception type you want to handle. For example:
+
+```python
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException
+
+app = FastAPI()
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(request: Request, exc: RequestValidationError):
+    # Handle the exception here
+    pass
+```
+
+Allowed citation:
+",5,4,4,0,Correct: @app.exception_handler() with RequestValidationError. Good example.
+Q0140,How should I handle errors and raise HTTP exceptions in FastAPI?,"You can override the default exception handlers and raise HTTP exceptions using the `HTTPException` class. For example, to override the `RequestValidationError` exception handler, you can use the `@app.exception_handler(RequestValidationError)` decorator:
+
+{* ../../docs_src/handling_errors/tutorial004_py310.py hl[3:4,9:11,25] *}
+
+You can also override the default exception handlers using the `@app.exception_handler` decorator for other exceptions, such as `HTTPException`.",5,4,4,0,Correct: override exception handlers with @app.exception_handler(). Citation placeholder but conceptually right.
+Q0141,How can I create a custom exception handler in FastAPI?,Create a custom exception handler by defining a function that matches the exception type and FastAPI will automatically use it.,4,2,3,0,Correct concept but too brief - no decorator syntax or example.
+Q0143,How do I implement OAuth2 password authentication with bearer tokens in FastAPI?,"You can use the `fastapi-security` library to implement OAuth2 password authentication with bearer tokens in FastAPI. 
+
+First, install the required library: `pip install fastapi-security`. 
+
+Then, add the following code to your FastAPI app:
+
+```python
+from fastapi import FastAPI, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel
+from passlib.context import CryptContext
+
+app = FastAPI()
+
+# OAuth2 settings
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=""token"")
+
+# Password hashing
+pwd_context = CryptContext(schemes=[""bcrypt""], default=""bcrypt"")
+
+# User model
+class User(BaseModel):
+    username: str
+    email: str
+    full_name: str
+    disabled: bool
+
+# User in-memory storage (replace with a database in a real app)
+users = {
+    ""john"": {
+        ""username"": ""john"",
+        ""email"": ""john@example.com"",
+        ""full_name"": ""John Doe"",
+        ""disabled"": False,
+        ""password"": pwd_context.hash(""password""),
+    }
+}
+
+def get_user(username: str):
+    if username in users:
+        return users[username]
+    return None
+
+async def get_current_user(token: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+    user = get_user(token.credentials)
+    if not user:
+        raise HTTPException(status_code=401, detail=""Invalid credentials"")
+    return user
+
+@app.post(""/token"")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = get_user(form_data.username)
+    if not user:
+        raise HTTPException(status_code=401, detail=""Invalid username or password"")
+    if not pwd_context.verify(form_data.password, user[""password""]):
+        raise HTTPException(status_code=401, detail=""Invalid username or password"")
+    return {""access_token"": user[""username""], ""token_type"": ""bearer""}
+
+@app.get(""/users/me"")
+async def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
+```
+
+This example uses the `bcrypt` password hashing algorithm and stores user credentials in an in-memory dictionary. In a real application, you would replace this with a database.",2,4,3,1,"No ""fastapi-security"" library. FastAPI has built-in security in fastapi.security. Example code is otherwise correct for OAuth2PasswordBearer."
+Q0146,How do OAuth2 scopes work with FastAPI Security dependencies?,"OAuth2 scopes work by declaring a dependency with `Security()` and specifying the OAuth2 scheme, which is then used to enforce the scopes in the `Depends()` function. This allows for fine-grained permission systems, following the OAuth2 standard, integrated into OpenAPI applications and API docs.
+
+You can use OAuth2 scopes directly with **FastAPI**, they are integrated to work seamlessly. You can import `Security()` directly from `fastapi` and use it to declare OAuth2 scopes in your dependencies.
+
+For example, you can use `SecurityScopes` to specify the OAuth2 scheme and its scopes, and then use `Depends()` to enforce the scopes in your dependency function.
+
+You can import `SecurityScopes` from `fastapi.security` and use it to declare OAuth2 scopes in your dependencies.
+
+",5,5,4,0,"Correct: Security() with scopes, SecurityScopes class. Good explanation."
+Q0147,How can I declare and validate query parameters in FastAPI?,"To declare and validate query parameters in FastAPI, you can create a Pydantic model that represents the structure and validation requirements of your query parameters. Here's how you can do it:
+
+```Python
+from fastapi import FastAPI, Query
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class QueryParamsModel(BaseModel):
+    q1: str
+    q2: str
+
+@app.get(""/items/"")
+async def read_items(q1: str = Query(None, min_length=3, max_length=50),
+                      q2: str = Query(None, min_length=3, max_length=50)):
+    return {""q1"": q1, ""q2"": q2}
+```
+
+This example is supported by .",5,5,4,0,Correct: QueryParamModels (FastAPI 0.115+) with Pydantic model and Query(). Good example.
+Q0148,How can I create and validate JWT access tokens in FastAPI?,"You can use the `PyJWT` library to create and validate JWT access tokens in FastAPI. Install it with `pip install pyjwt`. Then, use the `JWTBearer` class from `fastapi.security` to validate tokens.",5,3,3,0,Correct: PyJWT library and JWTBearer (which does not exist - should be OAuth2PasswordBearer or custom). Brief.
+Q0149,How do I create a basic FastAPI application and define my first path operation?,"Create a basic FastAPI application and define your first path operation by following these steps:
+
+1. Import `FastAPI` and create an `app` instance.
+2. Write a path operation decorator using decorators like `@app.get(""/"")`.
+3. Define a path operation function; for example, `def root(): ...`.
+4. Run the development server using the command `fastapi dev`.
+
+Here's an example code snippet that demonstrates this:
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get(""/"")
+def read_root():
+    return {""Hello"": ""World""}
+```
+This code creates a basic FastAPI application with a single path operation at the root URL (`""/""`) that returns a JSON response with the message ""Hello World"". ",5,5,5,0,"Correct and complete: FastAPI import, app instance, @app.get(), function, fastapi dev command."
+Q0150,How can I customize the response status code of a FastAPI endpoint?,"You can customize the response status code of a FastAPI endpoint by using the `status_code` parameter in your path operation function. For example, you can use the `status_code` parameter to return a 200 ""OK"" status code for successful operations and a 201 ""Created"" status code for creating new items. Here is an example:
+
+```python
+from fastapi import FastAPI, status
+
+app = FastAPI()
+
+@app.put(""/items/{item_id}"")
+async def update_item(item_id: int, item: Item, status_code: int = status.HTTP_200_OK):
+    # Your update logic here
+    return {""item_id"": item_id, ""status_code"": status_code}
+```
+
+This example uses the `status` module from FastAPI to set the `status_code` parameter. The `status.HTTP_200_OK` and `status.HTTP_201_CREATED` constants are used to specify the status codes.",2,3,3,1,"status_code is decorator parameter, not function parameter. Example incorrectly puts it in function signature."
+Q0155,How can I override dependencies during FastAPI tests?,"To override dependencies during FastAPI tests, you can use the `app.dependency_overrides` attribute. This attribute is a simple `dict` that allows you to specify a different function as an override for a specific dependency. You put the original dependency (a function) as the key and your dependency override (another function) as the value. FastAPI will then call the override instead of the original dependency. ",5,4,4,0,Correct: app.dependency_overrides dict with original: override mapping.
+Q0157,How can I use lifespan events to initialize and clean up shared resources in FastAPI?,"You can use the `on_event` function from FastAPI's `event` module to define lifespan events. These events are triggered at specific points in the application's lifecycle, such as startup and shutdown. You can use these events to initialize and clean up shared resources, such as databases or file connections.",2,2,3,1,"No ""on_event function from FastAPI event module"". Should use lifespan parameter or @app.on_event(""startup"") decorator (deprecated)."
+Q0159,How do I add middleware to a FastAPI application?,"To add middleware to a FastAPI application, you can use the `@app.middleware(""http"")` decorator on top of a function. The middleware function receives the `request`, a function `call_next` that will receive the `request` as a parameter, and you can then further modify the `response` before returning it. Here is an example:
+
+```python
+from fastapi import FastAPI
+from fastapi.middleware.gzip import GZipMiddleware
+
+app = FastAPI()
+
+@app.middleware(""http"")
+async def add_process_time_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers[""X-Process-Time""] = str(request.time_process)
+    return response
+
+app.add_middleware(GZipMiddleware)
+```
+
+This example uses the `GZipMiddleware` to compress responses and the `add_process_time_header` middleware to add a custom `X-Process-Time` header to each response. Refer to the documentation for more details: .",5,5,4,0,"Correct: @app.middleware(""http"") with request, call_next. Good GZipMiddleware example."
+Q0161,How can I customize the response status code of a FastAPI endpoint?,"You can customize the response status code of a FastAPI endpoint by using the `status_code` parameter in the path operation decorator, or by setting the status code in a `Response` object.
+
+You can pass directly the `int` code, like `404`, or use the shortcut constants in `status`:
+
+`from fastapi import status`
+
+`@app.get()`
+`return {""message"": ""Hello World""}`, `status=404`
+
+Alternatively, you can declare a parameter of type `Response` in your path operation function and set the `status_code` in that temporary response object:
+
+`from fastapi import Response`
+
+`@app.get()`
+`async def read_items(response: Response):`
+`    # ...`
+`    response.status_code = 201`
+`    return {""message"": ""Item created""}`
+
+Or, you can return a `Response` directly and set the additional status code directly:
+
+`from fastapi import JSONResponse`
+
+`@app.get()`
+`async def read_items():`
+`    # ...`
+`    return JSONResponse({""message"": ""Item created""}, status=201)`
+
+`@app.get()`
+`async def read_items():`
+`    # ...`
+`    return JSONResponse({""message"": ""Hello World""}, status=404)`
+
+`@app.get()`
+`async def read_items():`
+`    # ...`
+`    response = Response({""message"": ""Hello World""}, status=404)`
+`    return response`",5,5,5,0,"Correct and comprehensive: status_code in decorator, Response parameter, JSONResponse direct return. Multiple valid approaches."
+Q0162,"What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?","* Running on startup
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Security - HTTPS 
+",5,4,4,0,Correct list of deployment concepts. No elaboration but accurate.
+Q0164,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,"Yes, multiple dependencies can be added to the same `BackgroundTasks` object. This is a feature of FastAPI that allows for efficient management of background tasks.",5,3,4,0,Correct statement. Brief but accurate.
+Q0165,Can FastAPI dependencies add tasks to the same BackgroundTasks object?,"Yes, FastAPI dependencies can add tasks to the same `BackgroundTasks` object. 
+
+",5,2,4,0,"Correct but extremely brief (just ""Yes"")."
+Q0166,How can I declare and validate query parameters in FastAPI?,"You can declare query parameters using the `Query` parameter annotation, and validate them using the `Regex` or `All` validators from Pydantic. 
+
+Example:
+```python
+from fastapi import FastAPI, Query
+from pydantic import Regex, All
+
+app = FastAPI()
+
+@app.get(""/items/"")
+async def read_items(q: str = Query(None, regex=""^.{1,10}$"", description=""Item name"")):
+    return {""item_name"": q}
+```
+In this example, the `q` parameter is declared as a query parameter with a regex validation.",2,3,3,1,"Regex works but ""All"" validator from Pydantic does not exist for Query. Should use multiple Query() calls or Pydantic model validation."
+Q0169,How can I customize or extend the generated OpenAPI schema in FastAPI?,You can extend the generated OpenAPI schema in FastAPI using the parameter `openapi_extra`. ,5,2,3,0,Correct: openapi_extra parameter exists. Very brief.
+Q0173,How do I test FastAPI endpoints using TestClient?,Use the TestClient to send HTTP requests to your FastAPI endpoints for testing.,4,1,3,0,Correct concept but far too brief - no code or details.
+Q0174,How can I customize or extend the generated OpenAPI schema in FastAPI?,"To customize or extend the generated OpenAPI schema in FastAPI, you can use the `custom_openapi()` function to generate the OpenAPI schema and then modify it as needed. This function allows you to add custom properties to the OpenAPI schema, such as a custom logo, by modifying the `info` ""object"" in the schema. For example, you can add a custom logo by setting the `x-logo` property in the `info` object. This customization can be done by modifying the OpenAPI schema directly or by using the `.openapi_schema` property to cache the schema and reuse it for subsequent requests. For more details, refer to the documentation in  and .",5,5,4,0,Correct: custom_openapi() function to modify schema. Good detail on x-logo and caching.
+Q0177,How can I deploy a FastAPI application in a Docker container?,"Build a Docker image with your FastAPI app and its dependencies, then run a container from that image.",5,2,3,0,Correct but extremely brief - no Dockerfile or steps.
+Q0179,How can I protect an endpoint using an API key in FastAPI?,"To protect an endpoint using an API key in FastAPI, you can use the `APIKeyQuery`, `APIKeyHeader`, or `APIKeyCookie` security schemes provided by FastAPI. These schemes allow you to specify that a query parameter, header, or cookie should contain the API key.
+
+For example, you can use the `APIKeyQuery` scheme to require an API key in a query parameter:
+
+```python
+from fastapi import FastAPI, APIRouter, Depends, HTTPException
+from fastapi.security import APIKeyQuery, APIKeyHeader, APIKeyCookie, HTTPBearer
+
+app = FastAPI()
+
+API_KEY_QUERY = APIKeyQuery(name=""api_key"", auto_error=True)
+API_KEY_HEADER = APIKeyHeader(name=""X-API-KEY"", auto_error=True)
+API_KEY_COOKIE = APIKeyCookie(name=""api_key"", auto_error=True)
+
+router = APIRouter()
+
+@router.get(""/protected"")
+async def read_protected(api_key_query: APIKeyQuery = Depends(API_KEY_QUERY),
+                          api_key_header: APIKeyHeader = Depends(API_KEY_HEADER),
+                          api_key_cookie: APIKeyCookie = Depends(API_KEY_COOKIE)):
+    if api_key_query.value or api_key_header.value or api_key_cookie.value:
+        return {""message"": ""Welcome! API Key is valid.""}
+    raise HTTPException(status_code=400, detail=""Invalid API Key"")
+
+app.include_router(router)
+```
+
+In this example, the `read_protected` function is protected by the API key. The API key can be provided via a query parameter, a header, or a cookie. If any of these methods are used to provide the API key, the function returns a welcome message. Otherwise, it raises a 400 Bad Request exception.",5,5,4,0,Correct: all three APIKey schemes. Good complete example with multiple options.

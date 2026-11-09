@@ -1,0 +1,98 @@
+{
+  "assignments": 596,
+  "file_sha256": {
+    "administrativo/alocacao_com_chave.csv": "76f4043901555601f2b1f0714c8317f977d344b3210a31ab7ff223947e5a887b",
+    "avaliadores/LEIA-ME_DISTRIBUICAO.md": "654a744979baea0d9cd1f9c775bfa2dade550d2135e89366abf40dd0f9f52b77",
+    "avaliadores/avaliador_01_fundamentacao.csv": "3a6dad85c17b6fbaa8ab9c68872564535caff86a09fc25975a0c54d3a29cb77b",
+    "avaliadores/avaliador_01_qualidade.csv": "853533f8335bacd3e8ebfd74535728ee2b9866f3a51c46c257451fa210f70bd9",
+    "avaliadores/avaliador_02_fundamentacao.csv": "4442170754c9546e03f0c4b3921ee78afabb6fb2bc1a8e271f158486005f2dde",
+    "avaliadores/avaliador_02_qualidade.csv": "8f8d6e20ec4e990d8d630e6c2848090185c5fa2e134b288800a5c3f6437752a5",
+    "avaliadores/avaliador_03_fundamentacao.csv": "7b9c9e02839d89f49f21448fc988409d3e813165087abcf2ff4b58659627e469",
+    "avaliadores/avaliador_03_qualidade.csv": "1932f774546d575b3b4fb19a8b240797f1ddf68fe5b2a84f91874b0a481e1b32",
+    "avaliadores/avaliador_04_fundamentacao.csv": "155031205e151ab6243e6879fcd9c4178c7046299c16fcf28aa5e3cd4e93e101",
+    "avaliadores/avaliador_04_qualidade.csv": "03b87d7b5587e3799d155dd521dc87117092c53e404e03d18e417c73058b1abd",
+    "avaliadores/avaliador_05_fundamentacao.csv": "1495c40598a0387c0d47650f83a37311695fd34e1346ccc92b196bf31c36fc51",
+    "avaliadores/avaliador_05_qualidade.csv": "3350db5e44448dc4668c86b1b2f107104ca09b39ef48926c3c853e46693486a1"
+  },
+  "grounding_answers_and_context_unmodified": true,
+  "grounding_items": 119,
+  "input_sha256": {
+    "administrativo/chave_cego_admin.csv": "127dc9d5280bef71ceacec5e9aa79cbd376a37e2e80c3392a8d970808e8285cc",
+    "avaliadores/fundamentacao_cega.csv": "c38c28f4f224ae9bc3a2298362b7b8b40cfa8098718ae329af94ef9c52a272d5",
+    "avaliadores/qualidade_cega.csv": "1dabb687183f41e239c464702a35d086d479eb0e0194eabbeb5851d3e99a14b9"
+  },
+  "mask_pattern": "\\[(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+-\\d+\\](?!\\()",
+  "masked_citation_markers_in_unique_quality_items": 118,
+  "pair_counts": {
+    "fundamentacao": {
+      "avaliador_01+avaliador_02": 12,
+      "avaliador_01+avaliador_03": 12,
+      "avaliador_01+avaliador_04": 12,
+      "avaliador_01+avaliador_05": 11,
+      "avaliador_02+avaliador_03": 12,
+      "avaliador_02+avaliador_04": 12,
+      "avaliador_02+avaliador_05": 12,
+      "avaliador_03+avaliador_04": 12,
+      "avaliador_03+avaliador_05": 12,
+      "avaliador_04+avaliador_05": 12
+    },
+    "qualidade": {
+      "avaliador_01+avaliador_02": 18,
+      "avaliador_01+avaliador_03": 18,
+      "avaliador_01+avaliador_04": 18,
+      "avaliador_01+avaliador_05": 18,
+      "avaliador_02+avaliador_03": 18,
+      "avaliador_02+avaliador_04": 18,
+      "avaliador_02+avaliador_05": 18,
+      "avaliador_03+avaliador_04": 17,
+      "avaliador_03+avaliador_05": 18,
+      "avaliador_04+avaliador_05": 18
+    }
+  },
+  "preparation_audit_sha256": "e03b17bf7ad462314ec6e8455441fc86cd7d8e052dc003d7cef21fe687bf4a16",
+  "protocol": "5 avaliadores; 2 julgamentos distintos por item; AV2 1-5 e 0-1",
+  "quality_items": 179,
+  "quality_preserves_other_text": true,
+  "short_pair_grounding": [
+    "avaliador_01",
+    "avaliador_05"
+  ],
+  "short_pair_quality": [
+    "avaliador_03",
+    "avaliador_04"
+  ],
+  "workload_by_reviewer": {
+    "avaliador_01": 119,
+    "avaliador_02": 120,
+    "avaliador_03": 119,
+    "avaliador_04": 119,
+    "avaliador_05": 119
+  },
+  "workloads": {
+    "avaliador_01": {
+      "fundamentacao": 47,
+      "qualidade": 72,
+      "total": 119
+    },
+    "avaliador_02": {
+      "fundamentacao": 48,
+      "qualidade": 72,
+      "total": 120
+    },
+    "avaliador_03": {
+      "fundamentacao": 48,
+      "qualidade": 71,
+      "total": 119
+    },
+    "avaliador_04": {
+      "fundamentacao": 48,
+      "qualidade": 71,
+      "total": 119
+    },
+    "avaliador_05": {
+      "fundamentacao": 47,
+      "qualidade": 72,
+      "total": 119
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "answer": "To create and validate JWT access tokens in FastAPI, you can use the `Depends` annotation to specify the validation dependencies. \n\nCreate a random secret key that will be used to sign the JWT tokens. To generate a secure random secret key, use the command: \n```\n$ openssl rand -hex 32\n```\nCopy the output to the variable `SECRET_KEY`. \n\nCreate a variable `ALGORITHM` with the algorithm used to sign the JWT token and set it to `\"HS256\"`. \n\nCreate a variable for the expiration of the token. \n\nDefine a Pydantic Model that will be used in the token endpoint for the response. \n\nCreate a utility function to generate a new access token. \n\nCreate a utility function to validate the JWT token. \n\nHere's an example:\n```python\nfrom fastapi import FastAPI, Depends\nfrom pydantic import BaseModel\nfrom jose import jwt, JWTError\nfrom jose import jwt as jose_jwt\nfrom typing import Optional\n\napp = FastAPI()\n\nSECRET_KEY = \"[tutorial/security/oauth2-jwt-0]\"\nALGORITHM = \"HS256\"\n\nclass JWTPayload(BaseModel):\n    sub: str\n    exp: int\n\ndef generate_access_token(payload: dict, expires_delta: Optional[datetime.timedelta] = None) -> str:\n    to_encode = payload.copy()\n    if expires_delta:\n        expire = datetime.datetime.utcnow() + expires_delta\n    else:\n        expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)\n    to_encode.update({\"exp\": expire.timestamp()})\n    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)\n    return encoded_jwt\n\ndef validate_token(token: str) -> JWTPayload:\n    try:\n        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])\n        return JWTPayload(payload[\"sub\"], payload[\"exp\"])\n    except JWTError:\n        return None\n\n@app.post(\"/token\")\nasync def login(form_data: dict = Depends(oauth2_scheme)):\n    access_token = generate_access_token({\"sub\": form_data[\"username\"]})\n    return {\"access_token\": access_token}\n\n@app.get(\"/protected\")\nasync def protected_route(token: str = Depends(validate_token)):\n    return {\"message\": \"Hello, world!\"}\n```",
+  "category": "security",
+  "citation_count": 3,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": false,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/security/oauth2-jwt-0",
+    "tutorial/security/oauth2-jwt-8",
+    "tutorial/security/oauth2-jwt-1",
+    "tutorial/security/simple-oauth2-17",
+    "features-8"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:23:51+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 3,
+    "citation_retry_count": 1,
+    "citation_valid": false,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 464,
+    "eval_duration": 15739558000,
+    "invalid_citations": [
+      "datetime.timedelta",
+      "ALGORITHM"
+    ],
+    "load_duration": 5863700,
+    "prompt_eval_count": 2215,
+    "prompt_eval_duration": 38007000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 15802719900,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "tutorial/security/oauth2-jwt-0"
+    ]
+  },
+  "generation_time_ms": 85550.3396,
+  "generation_time_ns": 85550339600,
+  "invalid_citations": [
+    "datetime.timedelta",
+    "ALGORITHM"
+  ],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "4b66679625c6d51523ea8fb0be464f089002c40728f3827af2c23d985a283852",
+  "provider": "ollama",
+  "query_id": "q11",
+  "question": "How can I create and validate JWT access tokens in FastAPI?",
+  "record_sha256": "394a5af31d266672c0e2b669b9dea0fedf7796bff8d35a0f900234fc020ab9b0",
+  "run_id": "optimized|q11",
+  "run_key": "candidate|optimized|q11",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/security/oauth2-jwt-0"
+  ]
+}

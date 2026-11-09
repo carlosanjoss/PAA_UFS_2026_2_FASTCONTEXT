@@ -1,0 +1,63 @@
+{
+  "answer": "To create a custom exception handler in FastAPI, you can use the `@app.exception_handler()` decorator. This decorator allows you to define a custom exception handler for specific exceptions. For example, to handle `RequestValidationError`, you can import `RequestValidationError` and use it with `@app.exception_handler(RequestValidationError)` to decorate the exception handler. Here's how you can do it:\n\n```python\nfrom fastapi import FastAPI, Request, HTTPException\nfrom fastapi.responses import JSONResponse\n\napp = FastAPI()\n\n@app.exception_handler(RequestValidationError)\nasync def validation_exception_handler(request: Request, exc: RequestValidationError):\n    return JSONResponse(\n        status_code=418,\n        content={\"message\": f\"Oops! {request.url.path} did something. There goes a rainbow...\"}\n    )\n```\n\nThis custom exception handler will be triggered when a request contains invalid data, and it will return a custom JSON response with a specific message. Refer to the documentation for more details: [tutorial/handling-errors-8].",
+  "category": "advanced",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "how-to/custom-request-and-route-6",
+    "tutorial/handling-errors-6",
+    "tutorial/dependencies/dependencies-with-yield-5",
+    "tutorial/handling-errors-8",
+    "advanced/advanced-dependencies-11"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:49:01+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 211,
+    "eval_duration": 3968460000,
+    "invalid_citations": [],
+    "load_duration": 4558800,
+    "prompt_eval_count": 2056,
+    "prompt_eval_duration": 1256412000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 5246176000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/handling-errors-8"
+    ]
+  },
+  "generation_time_ms": 20906.5886,
+  "generation_time_ns": 20906588600,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "f817c871013177e07e835a28c4f8f8b8adc209c13a6b9fca1941135955436c63",
+  "provider": "ollama",
+  "query_id": "q28",
+  "question": "How can I create a custom exception handler in FastAPI?",
+  "record_sha256": "2956e6dd42263b7930180af44b29f897de12a8d38ce8734a166d506960866f47",
+  "run_id": "optimized|q28",
+  "run_key": "baseline|optimized|q28",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/handling-errors-8"
+  ]
+}

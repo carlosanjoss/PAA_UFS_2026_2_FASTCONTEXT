@@ -1,0 +1,63 @@
+{
+  "answer": "To override dependencies during FastAPI tests, you can use the `app.dependency_overrides` attribute. This attribute is a simple `dict` that allows you to specify a different function as an override for a specific dependency. You put the original dependency (a function) as the key and your dependency override (another function) as the value. FastAPI will then call the override instead of the original dependency. [advanced/testing-dependencies-3]",
+  "category": "testing",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/testing-dependencies-1",
+    "advanced/testing-dependencies-3",
+    "advanced/async-tests-0",
+    "history-design-future-4",
+    "tutorial/testing-3"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:46:07+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 91,
+    "eval_duration": 1619383000,
+    "invalid_citations": [],
+    "load_duration": 6402000,
+    "prompt_eval_count": 1432,
+    "prompt_eval_duration": 1175820000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 2811235100,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/testing-dependencies-3"
+    ]
+  },
+  "generation_time_ms": 13987.1994,
+  "generation_time_ns": 13987199400,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "1477f7a3a7698a5f8056aa463f9c1fc21287c80a7cd2a76be1219211a9b87f10",
+  "provider": "ollama",
+  "query_id": "q26",
+  "question": "How can I override dependencies during FastAPI tests?",
+  "record_sha256": "64adff2de96362c5bae6b83833eb6aca6aeb2e9a21ffd1b398cc3e9d0e249c85",
+  "run_id": "optimized|q26",
+  "run_key": "baseline|optimized|q26",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/testing-dependencies-3"
+  ]
+}

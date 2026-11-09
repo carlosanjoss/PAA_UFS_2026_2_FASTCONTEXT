@@ -1,0 +1,63 @@
+{
+  "answer": "You can run work after returning a response using `BackgroundTasks` in FastAPI by declaring a parameter in a *path operation function* or dependency function with the type `BackgroundTasks`, and then use it to schedule the execution of background tasks after the response is sent.\n\nYou can import it directly from `fastapi`:\n\n```python\nfrom fastapi import BackgroundTasks\n```\n\nAs shown in [tutorial/background-tasks-4], you can declare a parameter of type `BackgroundTasks` at multiple levels: in a *path operation function*, in a dependency (dependable), in a sub-dependency, etc.\n\n**FastAPI** knows what to do in each case and how to reuse the same object, so that all the background tasks are merged together and are run in the background afterwards:\n\n{* ../../docs_src/background_tasks/tutorial002_an_py310.py hl[13,15,22,25] *}\n\nIn this example, the messages will be written to the `log.txt` file *after* the response is sent.",
+  "category": "background_tasks",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/background-tasks-1",
+    "reference/background-0",
+    "reference/response-0",
+    "tutorial/background-tasks-4",
+    "advanced/response-cookies-2"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:33:59+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 209,
+    "eval_duration": 5860132000,
+    "invalid_citations": [],
+    "load_duration": 6826980500,
+    "prompt_eval_count": 1135,
+    "prompt_eval_duration": 6099007000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 18795296600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/background-tasks-4"
+    ]
+  },
+  "generation_time_ms": 18796.9884,
+  "generation_time_ns": 18796988400,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "d274d03e2689361a37657b2ed647e24527ee0c52e7f58be271da9c815232b0c3",
+  "provider": "ollama",
+  "query_id": "q17",
+  "question": "How can I run work after returning a response using BackgroundTasks in FastAPI?",
+  "record_sha256": "6b166a8f09cd27b23cadc6089bde9e659dfe1ee810a041e16257983752b9bed3",
+  "run_id": "optimized|q17",
+  "run_key": "candidate|optimized|q17",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/background-tasks-4"
+  ]
+}

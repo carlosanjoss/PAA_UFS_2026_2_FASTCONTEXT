@@ -1,0 +1,30 @@
+{
+  "aggregation": "Media simples dos dois julgamentos por resposta e criterio, sem substituir notas originais",
+  "complete_answers": 179,
+  "complete_criterion_comparisons": 415,
+  "criterion_item_records": 835,
+  "dimension_items": 298,
+  "hallucination_interpretation": "Media dos dois indicadores 0/1; 0.5 indica discordancia, nao rotulo definitivo",
+  "human_judgments": 596,
+  "limitations": "Somente analise descritiva. Valores medios de escalas ordinais nao comprovam significancia ou validade factual; ausencia de adjudicacao. Comparacao pareada exclui o Qwen optimized q29 truncado. As duas anotacoes nao representam duas respostas independentes.",
+  "missing_criterion_comparisons": 5,
+  "n_generation_attempts": 180,
+  "output_sha256": {
+    "comparacao_pareada_criterio.csv": "a8183637ceb55549df77e15c7bc380dd50a1c124829f7209bdea3a2a297fb319",
+    "notas_por_resposta_criterio.csv": "62fe3a7284f41c6dbde56d43d3adac73af13dbf3b4e7b22cc8e57312008d5279",
+    "resumo_pareado_criterio.csv": "541a4ba51cfe095c933c73bc05f55f4dffb2d6154c8a0417aa80b376a43db8bb",
+    "resumo_por_modelo_condicao_criterio.csv": "e987e0353fccae29976f242f7c3270ee89e457355481407293cf0b64a6fab6b5"
+  },
+  "planned_criterion_comparisons": 420,
+  "source_sha256": {
+    "agreement_audit": "3365acf7d437851c443d191049f973906638e6002535c4b10a424f1b9441f830",
+    "allocation": "76f4043901555601f2b1f0714c8317f977d344b3210a31ab7ff223947e5a887b",
+    "disagreement": "e61fe0971236e7e8e3a80a28f2b3eb1f2ec20d672bd41f5a986ef6a0fbb3b536",
+    "generation_status": "f2ef71725199373de07e22a3481474cc349fdded704407f9caceaaa44e618e44",
+    "judgments": "bc1a1fd162e96eef22d23fa371bcf91f2dafc8afdfc1a5f96677df20c02f4895",
+    "key": "127dc9d5280bef71ceacec5e9aa79cbd376a37e2e80c3392a8d970808e8285cc",
+    "reviews_audit": "a370533cb7ddccda8d541fac5afdafacb29a63f6b4c4cbb4bee0cbf7de731b9c"
+  },
+  "status": "descegamento_administrativo_descritivo",
+  "truncated_responses": 1
+}

@@ -1,0 +1,63 @@
+{
+  "answer": "To create a dependency that depends on another dependency in FastAPI, you can declare the dependency as a sub-dependency. This means you can create a dependency function that also declares another dependency. For example, in the tutorial/dependencies/sub-dependencies-2 section, a dependency function `get_current_user` is created, which also declares another dependency, `oauth2_scheme`. This is done by passing `oauth2_scheme` as a parameter to the `get_current_user` function.\n\nHere is the relevant part of the code from the tutorial:\n\n[tutorial/dependencies/sub-dependencies-2]\n```python\ndef get_current_user(oauth2_scheme: OAuth2PasswordBearer) -> User:\n    ...\n```\n\nIn this example, `get_current_user` is a dependency that depends on `oauth2_scheme`, which is another dependency. This setup allows `get_current_user` to use the value returned by `oauth2_scheme` as a parameter.",
+  "category": "dependencies",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/dependencies/dependencies-with-yield-2",
+    "tutorial/dependencies/sub-dependencies-2",
+    "tutorial/security/get-current-user-2",
+    "advanced/testing-dependencies-3",
+    "tutorial/background-tasks-4"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:36:56+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 192,
+    "eval_duration": 3584819000,
+    "invalid_citations": [],
+    "load_duration": 4920900,
+    "prompt_eval_count": 1949,
+    "prompt_eval_duration": 1230412000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 4836622100,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/dependencies/sub-dependencies-2"
+    ]
+  },
+  "generation_time_ms": 21154.4349,
+  "generation_time_ns": 21154434900,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "2eb5fdd4251bba1fd36f9407638478a77decc542a389c5245c5303bc2b6500b7",
+  "provider": "ollama",
+  "query_id": "q07",
+  "question": "How can one FastAPI dependency depend on another dependency?",
+  "record_sha256": "0d4663b1c594bdb7020d6c8953110564cd84ef52bc47401cfadd0c12907d1e32",
+  "run_id": "optimized|q07",
+  "run_key": "baseline|optimized|q07",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/dependencies/sub-dependencies-2"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "answer": "You can use the `TestClient` class to test FastAPI applications without creating an actual HTTP and socket connection. To import and use `TestClient`, you can import it directly from `fastapi.testclient` as shown below:\n\n```python\nfrom fastapi.testclient import TestClient\n```\n\nTo use `TestClient`, you need to install `httpx` first. You can add it to your project using:\n\n```console\n$ uv add httpx\n```\n\nThen, you can create a `TestClient` by passing your FastAPI application to it. Here is an example of how to use `TestClient`:\n\n```python\n# Import TestClient\nfrom fastapi.testclient import TestClient\n\n# Initialize your FastAPI application\nfrom fastapi import FastAPI\napp = FastAPI()\n\n# Initialize TestClient\nclient = TestClient(app)\n\n# Use TestClient to make requests\nresponse = client.get(\"/your-endpoint\")\nassert response.status_code == 200\n\n# For more details, you can refer to the FastAPI docs for Testing.\n[reference/testclient-0]\n```",
+  "category": "testing",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "reference/testclient-0",
+    "tutorial/testing-1",
+    "advanced/async-tests-2",
+    "advanced/testing-websockets-0",
+    "advanced/async-tests-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:44:48+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 228,
+    "eval_duration": 4203220999,
+    "invalid_citations": [],
+    "load_duration": 5035600,
+    "prompt_eval_count": 1652,
+    "prompt_eval_duration": 1202331000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 5421669100,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/testclient-0"
+    ]
+  },
+  "generation_time_ms": 24797.9924,
+  "generation_time_ns": 24797992400,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "f093a9be20fd47ab0e307554a6b64e5ae29043ff1447e77261d52a37cfe5b377",
+  "provider": "ollama",
+  "query_id": "q25",
+  "question": "How do I test FastAPI endpoints using TestClient?",
+  "record_sha256": "08c2bb8bffbebb507dac287f4076d1370c21457cd748998d0803a62d4dd0f327",
+  "run_id": "optimized|q25",
+  "run_key": "baseline|optimized|q25",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/testclient-0"
+  ]
+}

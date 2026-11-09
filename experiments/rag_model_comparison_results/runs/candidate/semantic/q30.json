@@ -1,0 +1,63 @@
+{
+  "answer": "You can customize or extend the generated OpenAPI schema in FastAPI by using the `custom_openapi()` function, which allows you to generate the OpenAPI schema using a utility function, and then modify it as needed.\n\nFor example, you can add a custom `x-logo` to the `info` \"object\" in the OpenAPI schema:\n\n```\nfrom fastapi import FastAPI\nfrom fastapi.responses import JSONResponse\n\napp = FastAPI()\n\n@app.get(\"/openapi.json\")\nasync def openapi():\n    schema = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\n            \"title\": \"My API\",\n            \"x-logo\": \"https://example.com/logo.png\"\n        }\n    }\n    return JSONResponse(content=schema, media_type=\"application/json\")\n```\n\nThis will generate an OpenAPI schema with a custom `x-logo` in the `info` object.\n\nYou can also cache the OpenAPI schema using the `.openapi_schema` property, as mentioned in [how-to/extending-openapi-7][how-to/extending-openapi-7].",
+  "category": "advanced",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "how-to/extending-openapi-5",
+    "tutorial/first-steps-10",
+    "how-to/extending-openapi-0",
+    "how-to/extending-openapi-6",
+    "how-to/extending-openapi-7"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T17:33:07+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 227,
+    "eval_duration": 6384156000,
+    "invalid_citations": [],
+    "load_duration": 7415600,
+    "prompt_eval_count": 835,
+    "prompt_eval_duration": 29399000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 6426649000,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "how-to/extending-openapi-7"
+    ]
+  },
+  "generation_time_ms": 24719.9282,
+  "generation_time_ns": 24719928200,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "396b454f34e000453dcd4ab2f10f00eb6259f7537656b9ef5cf9005ef85a6ea3",
+  "provider": "ollama",
+  "query_id": "q30",
+  "question": "How can I customize or extend the generated OpenAPI schema in FastAPI?",
+  "record_sha256": "a781b2d0fa6de2d31e61ad0188bee288ca0c6af3a7acaa60ee8a6a5388ee7bba",
+  "run_id": "semantic|q30",
+  "run_key": "candidate|semantic|q30",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "how-to/extending-openapi-7"
+  ]
+}

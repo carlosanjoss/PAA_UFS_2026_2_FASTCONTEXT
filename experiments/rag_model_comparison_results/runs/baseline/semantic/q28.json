@@ -1,0 +1,63 @@
+{
+  "answer": "You can create a custom exception handler in FastAPI by using the `@app.exception_handler()` decorator. This decorator allows you to define a function that will be called when a specific exception is raised in any of your FastAPI routes. For example, if you have a custom exception `UnicornException`, you can handle it globally by adding a custom exception handler as shown in the documentation:\n\n[tutorial/handling-errors-6]",
+  "category": "advanced",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/handling-errors-6",
+    "tutorial/handling-errors-7",
+    "tutorial/handling-errors-12",
+    "tutorial/handling-errors-8",
+    "tutorial/handling-errors-9"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:49:34+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 88,
+    "eval_duration": 1647715000,
+    "invalid_citations": [],
+    "load_duration": 5011882400,
+    "prompt_eval_count": 1471,
+    "prompt_eval_duration": 7611179000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 14284470500,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/handling-errors-6"
+    ]
+  },
+  "generation_time_ms": 14286.7601,
+  "generation_time_ns": 14286760100,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "012184b3a340fb256b83d95a432484120f549785d257f8bda6e0f1391b95b091",
+  "provider": "ollama",
+  "query_id": "q28",
+  "question": "How can I create a custom exception handler in FastAPI?",
+  "record_sha256": "6e3ae0fe1558a2fd49c62d46ee7785176413600fc0d0284a24aeb30a2926c103",
+  "run_id": "semantic|q28",
+  "run_key": "baseline|semantic|q28",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/handling-errors-6"
+  ]
+}

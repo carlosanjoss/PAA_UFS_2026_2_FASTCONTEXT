@@ -1,0 +1,63 @@
+{
+  "answer": "You can apply a dependency to every path operation in a FastAPI application by using the `global_dependencies` parameter when creating the `FastAPI` application, or by using the `include_router` method with the `global_dependencies` parameter when creating an `APIRouter`. \n\nFor example:\n```python\nfrom fastapi import FastAPI, APIRouter\n\napp = FastAPI(\n    global_dependencies=[\n        {\"type\": \"get\", \"path\": \"/users\", \"operation\": \"get_users\", \"dependencies\": [\"db\"]},\n        {\"type\": \"post\", \"path\": \"/users\", \"operation\": \"create_user\", \"dependencies\": [\"db\"]},\n    ]\n)\n\n# or\n\nrouter = APIRouter(\n    global_dependencies=[\n        {\"type\": \"get\", \"path\": \"/users\", \"operation\": \"get_users\", \"dependencies\": [\"db\"]},\n        {\"type\": \"post\", \"path\": \"/users\", \"operation\": \"create_user\", \"dependencies\": [\"db\"]},\n    ]\n)\napp.include_router(router)\n```\n[tutorial/dependencies/global-dependencies-0]",
+  "category": "dependencies",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-7",
+    "tutorial/dependencies/index-10",
+    "tutorial/dependencies/index-3",
+    "tutorial/dependencies/global-dependencies-0",
+    "tutorial/bigger-applications-23"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:39:55+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 224,
+    "eval_duration": 6352497000,
+    "invalid_citations": [],
+    "load_duration": 6036448500,
+    "prompt_eval_count": 1421,
+    "prompt_eval_duration": 7914625000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 20312039600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/dependencies/global-dependencies-0"
+    ]
+  },
+  "generation_time_ms": 20314.3175,
+  "generation_time_ns": 20314317500,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "2be22a27496c6ecb8d1ceb39c3b4f749a3dfc73128f68274507bde4fdbb2b849",
+  "provider": "ollama",
+  "query_id": "q09",
+  "question": "How can I apply a dependency to every path operation in a FastAPI application?",
+  "record_sha256": "6c64404d8ac8282a8e7b857b8b7ddbdc62ed7372070e8ab86c65351c007f7fba",
+  "run_id": "semantic|q09",
+  "run_key": "candidate|semantic|q09",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/dependencies/global-dependencies-0"
+  ]
+}

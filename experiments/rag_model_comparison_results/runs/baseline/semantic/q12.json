@@ -1,0 +1,63 @@
+{
+  "answer": "OAuth2 scopes work with FastAPI Security dependencies by using the `SecurityScopes` class from `fastapi.security`. This class is used to declare the security scopes for OAuth2 schemes. When declaring OAuth2 scopes, you can use the `Security()` function instead of `Depends()`. If the dependency function doesn't have any scope requirements, you can use `Depends` with the OAuth2 scheme, without the need to use `Security`. This allows for a more fine-grained permission system, following the OAuth2 standard, integrated into your OpenAPI application and API docs. [reference/security/index-6]",
+  "category": "security",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "reference/security/index-6",
+    "advanced/security/oauth2-scopes-0",
+    "reference/security/index-0",
+    "reference/dependencies-2",
+    "advanced/security/oauth2-scopes-7"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:25:43+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 126,
+    "eval_duration": 2393160000,
+    "invalid_citations": [],
+    "load_duration": 6493700,
+    "prompt_eval_count": 1591,
+    "prompt_eval_duration": 1205593000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 3616636000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/security/index-6"
+    ]
+  },
+  "generation_time_ms": 17091.1044,
+  "generation_time_ns": 17091104400,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "269e345f1c291e7a64cf828f5af6a3dbb225e69b35df8159e31abd960c5e3388",
+  "provider": "ollama",
+  "query_id": "q12",
+  "question": "How do OAuth2 scopes work with FastAPI Security dependencies?",
+  "record_sha256": "086b06f912d3bb1cbf7db8724ba94dce7452e43c95b5cab4eecbd30b660620ce",
+  "run_id": "semantic|q12",
+  "run_key": "baseline|semantic|q12",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/security/index-6"
+  ]
+}

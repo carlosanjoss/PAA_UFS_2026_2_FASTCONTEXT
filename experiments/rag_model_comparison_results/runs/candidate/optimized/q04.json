@@ -1,0 +1,63 @@
+{
+  "answer": "You can customize the response status code of a FastAPI endpoint by using the `status_code` parameter in the path operation decorator. You can pass directly the `int` code, or use the shortcut constants from `fastapi.status` to quickly access HTTP status codes.\n\nFor example:\n```python\nfrom fastapi import FastAPI, status\n\napp = FastAPI()\n\n@app.get(\"/items/{item_id}\", status_code=200)\nasync def read_item(item_id: int):\n    # ...\n```\nAlternatively, you can use the `from starlette import status` import to access the `status` module:\n```python\nfrom fastapi import FastAPI\nfrom starlette import status\n\napp = FastAPI()\n\n@app.get(\"/items/{item_id}\", status=status.HTTP_200_OK)\nasync def read_item(item_id: int):\n    # ...\n```\nYou can also use an `IntEnum` to specify the status code:\n```python\nfrom fastapi import FastAPI\nfrom enum import IntEnum\n\nclass StatusCode(IntEnum):\n    OK = 200\n\napp = FastAPI()\n\n@app.get(\"/items/{item_id}\", status_code=StatusCode.OK)\nasync def read_item(item_id: int):\n    # ...\n```\n[reference/status-0]",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/response-change-status-code-0",
+    "tutorial/path-operation-configuration-1",
+    "reference/status-0",
+    "tutorial/response-status-code-0",
+    "tutorial/response-status-code-3"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:32:14+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 255,
+    "eval_duration": 7374126000,
+    "invalid_citations": [],
+    "load_duration": 5743004500,
+    "prompt_eval_count": 1337,
+    "prompt_eval_duration": 7330339000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 20454586700,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/status-0"
+    ]
+  },
+  "generation_time_ms": 20456.4025,
+  "generation_time_ns": 20456402500,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "847e551c643be4623ddf029cf5363ae79dc6d3e6d9fc0b8ff802067688ac7dc1",
+  "provider": "ollama",
+  "query_id": "q04",
+  "question": "How can I customize the response status code of a FastAPI endpoint?",
+  "record_sha256": "6316baeadbf08e8409bfd094d5cb52685c733cd0af67234144814e676e2e66eb",
+  "run_id": "optimized|q04",
+  "run_key": "candidate|optimized|q04",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/status-0"
+  ]
+}

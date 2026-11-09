@@ -1,0 +1,63 @@
+{
+  "answer": "You can include and organize `APIRouter` instances in a larger FastAPI application by using the `.include_router()` method, as shown in the example: \n\n```python\nrouter.include_router(other_router)\n```\n\nThis allows you to include the routes from another `APIRouter` in the main `FastAPI` application, while still keeping the original `APIRouter` and its routes active. [tutorial/bigger-applications-27]",
+  "category": "advanced",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "reference/apirouter-0",
+    "tutorial/bigger-applications-27",
+    "tutorial/bigger-applications-6",
+    "tutorial/bigger-applications-20",
+    "tutorial/frontend-7"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T17:31:24+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 89,
+    "eval_duration": 2716728000,
+    "invalid_citations": [],
+    "load_duration": 6296642700,
+    "prompt_eval_count": 1416,
+    "prompt_eval_duration": 7975120000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 17006078000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/bigger-applications-27"
+    ]
+  },
+  "generation_time_ms": 17009.4192,
+  "generation_time_ns": 17009419200,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "5ab6833afcaa7ff7a00b1952ebbf4a7ff5838f943c9b27f23445fd8f9d45b399",
+  "provider": "ollama",
+  "query_id": "q29",
+  "question": "How do I include and organize APIRouter instances in a larger FastAPI application?",
+  "record_sha256": "05cc7053a155b11af6b57010a059bf8e563f3f2af0874801434a5cba8bc8aa35",
+  "run_id": "optimized|q29",
+  "run_key": "candidate|optimized|q29",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/bigger-applications-27"
+  ]
+}

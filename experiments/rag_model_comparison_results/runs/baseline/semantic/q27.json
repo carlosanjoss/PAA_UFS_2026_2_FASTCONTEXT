@@ -1,0 +1,63 @@
+{
+  "answer": "You can use the `lifespan` parameter of the `FastAPI` app to initialize and clean up shared resources during the application's startup and shutdown. This is achieved by defining an asynchronous function `lifespan()` that includes the `yield` keyword. Inside this function, you can perform the initialization and cleanup of shared resources such as database connections or machine learning models. The `yield` keyword is used to define the startup and shutdown logic. Here is an example of how you can implement this:\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\nasync def lifespan(app):\n    # Startup logic\n    yield\n    # Shutdown logic\n    yield\n\n# Initialize and clean up shared resources in the lifespan function\n```\n\nBy using the `lifespan` parameter, you can ensure that the startup and shutdown logic is executed, allowing you to set up resources that are needed for the whole application and clean them up afterwards. This is particularly useful for resources that are shared among requests and need to be managed accordingly. [advanced/events-0]",
+  "category": "advanced",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "advanced/events-2",
+    "advanced/events-5",
+    "advanced/events-0",
+    "tutorial/server-sent-events-9",
+    "index-27"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:47:25+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 218,
+    "eval_duration": 4074908000,
+    "invalid_citations": [],
+    "load_duration": 4172300,
+    "prompt_eval_count": 2037,
+    "prompt_eval_duration": 1227226000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 5324547000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/events-0"
+    ]
+  },
+  "generation_time_ms": 21033.1539,
+  "generation_time_ns": 21033153900,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "4747efd4ae02239f48c8e62541b784c11d942853bbb68c8bae4ddd289d898c79",
+  "provider": "ollama",
+  "query_id": "q27",
+  "question": "How can I use lifespan events to initialize and clean up shared resources in FastAPI?",
+  "record_sha256": "969ecbe7a4d710e33487bb033778e6701c91ae71120cb6f7239a632845101753",
+  "run_id": "semantic|q27",
+  "run_key": "baseline|semantic|q27",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/events-0"
+  ]
+}

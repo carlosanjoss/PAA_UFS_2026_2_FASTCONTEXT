@@ -1,0 +1,63 @@
+{
+  "answer": "You can override dependencies during FastAPI tests by setting the `app.dependency_overrides` attribute to a dictionary with the original dependency as the key and your override function as the value. [advanced/testing-dependencies-1]",
+  "category": "testing",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "advanced/testing-dependencies-3",
+    "advanced/testing-dependencies-0",
+    "advanced/testing-dependencies-1",
+    "index-42",
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-7"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:46:52+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 46,
+    "eval_duration": 1225053000,
+    "invalid_citations": [],
+    "load_duration": 5763922500,
+    "prompt_eval_count": 967,
+    "prompt_eval_duration": 5365345000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 12362480000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/testing-dependencies-1"
+    ]
+  },
+  "generation_time_ms": 12364.5575,
+  "generation_time_ns": 12364557500,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "37c55e0dc53055b3f4cb12cd6e44819357c680ac28fb5eb2991ded184c464997",
+  "provider": "ollama",
+  "query_id": "q26",
+  "question": "How can I override dependencies during FastAPI tests?",
+  "record_sha256": "14dfff8d30ed452ce7fd53023c7552d874ab41efd062df8855ef7281cbdf5670",
+  "run_id": "semantic|q26",
+  "run_key": "candidate|semantic|q26",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/testing-dependencies-1"
+  ]
+}

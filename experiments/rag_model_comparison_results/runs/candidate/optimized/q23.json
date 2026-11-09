@@ -1,0 +1,63 @@
+{
+  "answer": "* Running on startup\n* Restarts\n* Replication (the number of processes running)\n* Memory\n* Security - HTTPS \n[deployment/concepts-30]",
+  "category": "deployment",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "deployment/server-workers-13",
+    "deployment/docker-21",
+    "deployment/manually-11",
+    "deployment/docker-23",
+    "deployment/concepts-30"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:42:00+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 35,
+    "eval_duration": 1024561999,
+    "invalid_citations": [],
+    "load_duration": 7734721100,
+    "prompt_eval_count": 1165,
+    "prompt_eval_duration": 6389253000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 15168576200,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "deployment/concepts-30"
+    ]
+  },
+  "generation_time_ms": 15171.3523,
+  "generation_time_ns": 15171352300,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "a0eb87a18dd6b77afffd47f434445ce03401dffd57b0a9127cbae3814ec82612",
+  "provider": "ollama",
+  "query_id": "q23",
+  "question": "What deployment concepts should I consider for startup, restarts, replication, memory, and HTTPS?",
+  "record_sha256": "fc0d89a7e71b11fbe3b32925a6ca0fe3945042a40a63750ced2835a049fba8fe",
+  "run_id": "optimized|q23",
+  "run_key": "candidate|optimized|q23",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "deployment/concepts-30"
+  ]
+}

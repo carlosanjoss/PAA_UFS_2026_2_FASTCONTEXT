@@ -1,0 +1,4 @@
+condition,planned_pairs,both_success,only_baseline_success,only_candidate_success,both_truncated,paired_mean_candidate_minus_baseline_ms
+no_rag,30,30,0,0,0,3970.813393
+optimized,30,29,0,1,0,-234.411669
+semantic,30,30,0,0,0,-202.395623

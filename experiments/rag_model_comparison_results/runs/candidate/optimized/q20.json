@@ -1,0 +1,63 @@
+{
+  "answer": "A FastAPI application can manage multiple WebSocket clients and disconnected connections by using the `WebSocket` parameter and catching the `WebSocketDisconnect` exception when a connection is closed. When a connection is closed, the `await websocket.receive_text()` will raise a `WebSocketDisconnect` exception, which can be caught and handled like in the example provided in the documentation. The other clients will receive a message indicating that a client has left the chat.\n\n[advanced/websockets-9]",
+  "category": "websockets",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/websockets-4",
+    "advanced/websockets-9",
+    "deployment/concepts-19",
+    "reference/websockets-0",
+    "deployment/concepts-18"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:37:49+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 94,
+    "eval_duration": 2736706000,
+    "invalid_citations": [],
+    "load_duration": 5935583100,
+    "prompt_eval_count": 1278,
+    "prompt_eval_duration": 6899168000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 15581385600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/websockets-9"
+    ]
+  },
+  "generation_time_ms": 15583.8379,
+  "generation_time_ns": 15583837900,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "0773543351b1e2f9b6b2f06f74f0d60961693de2e620f64e03a4c7709d6c8f9a",
+  "provider": "ollama",
+  "query_id": "q20",
+  "question": "How can a FastAPI application manage multiple WebSocket clients and disconnected connections?",
+  "record_sha256": "27922b25dfc365e676aa5f7a031b08fe96ece11f50d04651dde4e895f99d56fa",
+  "run_id": "optimized|q20",
+  "run_key": "candidate|optimized|q20",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/websockets-9"
+  ]
+}

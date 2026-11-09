@@ -1,0 +1,63 @@
+{
+  "answer": "To create a basic FastAPI application and define your first path operation, you can follow these steps:\n\n1. Create a new Python file, for example, `tutorial001_py310.py`, and import the necessary modules from FastAPI.\n\n2. Define a new path operation using the `router` object. This can be done by creating a new route and defining a function that will handle the HTTP requests for that route.\n\nHere is an example of how you can define your first path operation:\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/\")\nasync def read_root():\n    return {\"message\": \"Hello, FastAPI\"}\n```\n\nIn this example, the path operation is defined at the root URL (`/`) and returns a JSON message when accessed via a GET request.\n\n3. To test that everything works, you can create a path operation to test static files as described in the documentation. This can be done by creating a new path operation that serves static files from a specified directory.\n\n4. Finally, to run your FastAPI application, you can use the `uvicorn` server. You can run your application by executing the following command in your terminal:\n\n```bash\nuvicorn tutorial001_py310:app --reload\n```\n\nThis command will start the development server, and you can access your application by navigating to `http://127.0.0.1:8000` in your web browser.\n\nFor more detailed information, you can refer to the documentation on how to create a path operation to test static files, which can be found in the [how-to/custom-docs-ui-assets-15] section.",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/security/http-basic-auth-0",
+    "tutorial/first-steps-23",
+    "how-to/custom-docs-ui-assets-5",
+    "contributing-0",
+    "how-to/custom-docs-ui-assets-15"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:27:30+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 348,
+    "eval_duration": 6049788000,
+    "invalid_citations": [],
+    "load_duration": 4250900,
+    "prompt_eval_count": 836,
+    "prompt_eval_duration": 19439000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 6079875100,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "how-to/custom-docs-ui-assets-15"
+    ]
+  },
+  "generation_time_ms": 18611.3194,
+  "generation_time_ns": 18611319400,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "516b3ef46f5402d8b2a3d086c15dd5a77c01b088b5abaeca10f465b292f9c089",
+  "provider": "ollama",
+  "query_id": "q01",
+  "question": "How do I create a basic FastAPI application and define my first path operation?",
+  "record_sha256": "547369cf57102e682afd9e4dbaf866880ee1c1af465e6b551f37764e697d12e4",
+  "run_id": "optimized|q01",
+  "run_key": "baseline|optimized|q01",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "how-to/custom-docs-ui-assets-15"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "answer": "You can create and validate JWT access tokens in FastAPI by using the `JWT` library and the `OAuth2PasswordBearer` class. \n\nTo create a JWT token, you can use the `jwt` library to encode the payload and sign it with a secret key. \n\nTo validate a JWT token, you can use the `OAuth2PasswordBearer` class to verify the token's signature and payload.\n\nHere's an example of how you can create and validate JWT access tokens in FastAPI:\n\n```python\nfrom fastapi import FastAPI, HTTPException\nfrom fastapi.security import OAuth2PasswordBearer\nfrom pyjwt import jwt_decode\nfrom passlib.context import CryptContext\nfrom fastapi.responses import JSONResponse\n\napp = FastAPI()\n\n# Create a secret key for signing JWT tokens\nsecret_key = \"your_secret_key_here\"\n\n# Create a password context for hashing passwords\npwd_context = CryptContext(schemes=[\"bcrypt\"], default=\"bcrypt\")\n\n# Create an OAuth2 password bearer\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\n\n# Define a function to create a JWT token\ndef create_token(user_id: str):\n    payload = {\"user_id\": user_id}\n    return jwt_encode(payload, secret_key)\n\n# Define a function to validate a JWT token\ndef validate_token(token: str):\n    try:\n        payload = jwt_decode(token, secret_key, algorithms=[\"HS256\"])\n        return payload[\"user_id\"]\n    except jwt.ExpiredSignatureError:\n        raise HTTPException(status_code=401, detail=\"Token has expired\")\n    except jwt.InvalidTokenError:\n        raise HTTPException(status_code=401, detail=\"Invalid token\")\n\n@app.post(\"/token\")\nasync def login_for_token(username: str = \"your_username_here\", password: str = \"your_password_here\"):\n    # Check if the username and password are valid\n    user_id = validate_username(username)\n    if not user_id:\n        raise HTTPException(status_code=401, detail=\"Invalid username or password\")\n\n    # Create a JWT token\n    token = create_token(user_id)\n\n    return {\"token\": token}\n\n@app.get(\"/protected\")\nasync def protected_route(token: str = Depends(oauth2_scheme)):\n    try:\n        user_id = validate_token(token)\n        # Do something with the user ID\n        return {\"message\": f\"Hello, {user_id}!\"}\n    except HTTPException as e:\n        raise e\n```\n\n[tutorial/security/oauth2-jwt-14]",
+  "category": "security",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/security/simple-oauth2-11",
+    "tutorial/security/first-steps-7",
+    "tutorial/security/oauth2-jwt-13",
+    "tutorial/security/oauth2-jwt-14",
+    "tutorial/security/first-steps-6"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:25:13+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 506,
+    "eval_duration": 15735242000,
+    "invalid_citations": [],
+    "load_duration": 12829400,
+    "prompt_eval_count": 1765,
+    "prompt_eval_duration": 36508000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 15798859300,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "tutorial/security/oauth2-jwt-14"
+    ]
+  },
+  "generation_time_ms": 39966.329,
+  "generation_time_ns": 39966329000,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "3163fe87f293eec759e1d3b0d58b835f5b4c95022c6c25f42e97506f292afe15",
+  "provider": "ollama",
+  "query_id": "q11",
+  "question": "How can I create and validate JWT access tokens in FastAPI?",
+  "record_sha256": "2048c3cc0fb111b8fbd7f0f3402319fb176a4ce7ac7a08e627531ee329f4f139",
+  "run_id": "semantic|q11",
+  "run_key": "candidate|semantic|q11",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/security/oauth2-jwt-14"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "answer": "You can configure CORS to allow requests from specific origins in FastAPI by importing `CORSMiddleware`, creating a list of allowed origins, and adding it as a middleware to your FastAPI application.\n\n* `allow_origins` - A list of origins that should be permitted to make cross-origin requests. E.g. `['https://example.org', 'https://www.example.org']`. You can use `['*']` to allow any origin.\n* `allow_origin_regex` - A regex string to match against origins that should be permitted to make cross-origin requests. e.g. `'https://.*\\.example\\.org'`.\n* `allow_methods` - A list of HTTP methods that should be allowed for cross-origin requests. Defaults to `['GET']`. You can use `['*']` to allow all standard methods.\n* `allow_headers` - A list of HTTP request headers that should be supported for cross-origin requests. Defaults to `[]`. You can use `['*']` to allow all headers. The `Accept`, `Accept-Language`, `Content-Language` and `Content-Type` headers are always allowed for [simple CORS requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests).\n* `allow_credentials` - Indicate that cookies should be supported for cross-origin requests. Defaults to `False`.\n\nFor example:\n```python\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp = FastAPI()\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=['https://example.org', 'https://www.example.org'],\n    allow_methods=['GET', 'POST'],\n    allow_headers=['Content-Type', 'Accept'],\n    allow_credentials=True,\n)\n```\n[tutorial/cors-5]",
+  "category": "middleware_cors",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/cors-4",
+    "tutorial/cors-9",
+    "tutorial/cors-6",
+    "tutorial/cors-5",
+    "tutorial/cors-7"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:30:10+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 366,
+    "eval_duration": 11291806000,
+    "invalid_citations": [],
+    "load_duration": 13720600,
+    "prompt_eval_count": 1299,
+    "prompt_eval_duration": 32219000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 11354493300,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "tutorial/cors-5"
+    ]
+  },
+  "generation_time_ms": 32655.5106,
+  "generation_time_ns": 32655510600,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "adf53b44432db09bb5f44577b435d453fe5a1ccb0d89f2837f96ae0bb8bb62ab",
+  "provider": "ollama",
+  "query_id": "q14",
+  "question": "How do I configure CORS to allow requests from specific origins in FastAPI?",
+  "record_sha256": "3f54b2f697559aa82cbe42503e0039adc0c872e421b43f988c87191ae58a14bc",
+  "run_id": "semantic|q14",
+  "run_key": "candidate|semantic|q14",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/cors-5"
+  ]
+}

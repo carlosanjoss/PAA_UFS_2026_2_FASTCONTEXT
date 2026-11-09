@@ -1,0 +1,63 @@
+{
+  "answer": "You should raise exceptions, including `HTTPException` and `WebSocketException`, to show errors to the client. You can use these exceptions directly from `fastapi` and re-raise the original exception if you catch it in a dependency with `yield` and `except`. \n\n[reference/exceptions-0]",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-4",
+    "reference/exceptions-0",
+    "tutorial/dependencies/dependencies-with-yield-7",
+    "tutorial/dependencies/dependencies-with-yield-5",
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-2"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:33:55+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 64,
+    "eval_duration": 1763233000,
+    "invalid_citations": [],
+    "load_duration": 8402500,
+    "prompt_eval_count": 1499,
+    "prompt_eval_duration": 1482037000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 3267189600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/exceptions-0"
+    ]
+  },
+  "generation_time_ms": 19054.8976,
+  "generation_time_ns": 19054897600,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "191372bb18eb5e8a2f7f2b67d69f81b6a6edb27bc3045139b6710cebbb7bf243",
+  "provider": "ollama",
+  "query_id": "q05",
+  "question": "How should I handle errors and raise HTTP exceptions in FastAPI?",
+  "record_sha256": "3b4eae535f73c024ac0017b028a3a894638eae2a8ee8d686447faaa1f5b293df",
+  "run_id": "optimized|q05",
+  "run_key": "candidate|optimized|q05",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/exceptions-0"
+  ]
+}

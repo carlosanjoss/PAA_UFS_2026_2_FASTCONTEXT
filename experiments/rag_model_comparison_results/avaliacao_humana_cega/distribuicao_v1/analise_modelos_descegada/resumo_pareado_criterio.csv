@@ -1,0 +1,15 @@
+﻿condition,criterion,planned_pairs,both_complete,missing_pair,mean_candidate_minus_baseline,candidate_better,baseline_better,ties
+no_rag,correctness,30,30,0,0.083333,13,11,6
+no_rag,completeness,30,30,0,1.133333,26,2,2
+no_rag,clarity,30,30,0,0.516667,18,4,8
+no_rag,hallucination_present,30,30,0,0.350000,3,15,12
+optimized,correctness,30,29,1,-0.258621,10,10,9
+optimized,completeness,30,29,1,-0.568966,7,17,5
+optimized,clarity,30,29,1,-0.137931,10,10,9
+optimized,hallucination_present,30,29,1,0.120690,1,5,23
+optimized,groundedness,30,29,1,0.068966,5,3,21
+semantic,correctness,30,30,0,-0.166667,7,10,13
+semantic,completeness,30,30,0,-0.533333,4,17,9
+semantic,clarity,30,30,0,-0.350000,6,18,6
+semantic,hallucination_present,30,30,0,0.000000,3,2,25
+semantic,groundedness,30,30,0,-0.083333,6,9,15

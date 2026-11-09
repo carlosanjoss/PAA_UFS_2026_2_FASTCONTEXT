@@ -1,0 +1,63 @@
+{
+  "answer": "You can use the `TestClient` object to test FastAPI endpoints by creating a `TestClient` instance and calling its `assert_in_json` or `assert_in` methods on the endpoint you want to test, with the expected response data. For example:\n```python\nfrom fastapi.testclient import TestClient\n\napp = FastAPI()\n\nclient = TestClient(app)\n\nresponse = client.get(\"/endpoint\")\nassert response.json() == {\"message\": \"Hello World\"}\n```\n[reference/testclient-0]",
+  "category": "testing",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "reference/testclient-0",
+    "tutorial/testing-1",
+    "advanced/async-tests-2",
+    "advanced/testing-websockets-0",
+    "advanced/async-tests-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:45:03+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 105,
+    "eval_duration": 2853125000,
+    "invalid_citations": [],
+    "load_duration": 5565927200,
+    "prompt_eval_count": 1213,
+    "prompt_eval_duration": 6490911000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 14916114800,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/testclient-0"
+    ]
+  },
+  "generation_time_ms": 14918.3327,
+  "generation_time_ns": 14918332700,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "f093a9be20fd47ab0e307554a6b64e5ae29043ff1447e77261d52a37cfe5b377",
+  "provider": "ollama",
+  "query_id": "q25",
+  "question": "How do I test FastAPI endpoints using TestClient?",
+  "record_sha256": "3c1e19151dcca0395a82f5e9301839b0651243dd2366ab592d2bea732ba83e5f",
+  "run_id": "optimized|q25",
+  "run_key": "candidate|optimized|q25",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/testclient-0"
+  ]
+}

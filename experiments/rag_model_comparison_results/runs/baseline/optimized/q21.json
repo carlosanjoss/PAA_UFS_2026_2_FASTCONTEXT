@@ -1,0 +1,63 @@
+{
+  "answer": "To deploy a FastAPI application in a Docker container, you can use Docker Compose in a single server, a Kubernetes cluster, a Docker Swarm Mode cluster, another tool like Nomad, or a cloud service that takes your container image and deploys it. For a simple process, you can build your own image from scratch to run a single Uvicorn process, which is suitable for using a distributed container management system like Kubernetes. For more details, refer to the chapter on FastAPI in Containers - Docker. [deployment/server-workers-14]",
+  "category": "deployment",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "deployment/docker-36",
+    "deployment/server-workers-14",
+    "deployment/concepts-25",
+    "deployment/docker-16",
+    "tutorial/first-steps-30"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:40:07+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 112,
+    "eval_duration": 2020864000,
+    "invalid_citations": [],
+    "load_duration": 4418100,
+    "prompt_eval_count": 1159,
+    "prompt_eval_duration": 1149629000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 3184589200,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "deployment/server-workers-14"
+    ]
+  },
+  "generation_time_ms": 14095.608,
+  "generation_time_ns": 14095608000,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "02b4519f50127600cf020d8e47b11aa23966216e533cd5cbe690c839fb350eef",
+  "provider": "ollama",
+  "query_id": "q21",
+  "question": "How can I deploy a FastAPI application in a Docker container?",
+  "record_sha256": "c82ecb9b5d308ff65370a5d97f569d9e259a08179b24c7a6317a5a8b7d75592b",
+  "run_id": "optimized|q21",
+  "run_key": "baseline|optimized|q21",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "deployment/server-workers-14"
+  ]
+}

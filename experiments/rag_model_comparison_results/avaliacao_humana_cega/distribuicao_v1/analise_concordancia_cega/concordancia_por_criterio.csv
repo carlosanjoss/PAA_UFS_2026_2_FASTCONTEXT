@@ -1,0 +1,6 @@
+﻿dimension,criterion,item_pairs,exact_agreement_n,exact_agreement_pct,mean_absolute_difference,difference_0,difference_1,difference_2,difference_3,difference_4
+fundamentacao,groundedness,119,81,68.0672,0.411765,81,30,6,1,1
+qualidade,clarity,179,101,56.4246,0.458101,101,74,4,0,0
+qualidade,completeness,179,94,52.5140,0.525140,94,78,6,0,1
+qualidade,correctness,179,98,54.7486,0.575419,98,61,18,2,0
+qualidade,hallucination_present,179,165,92.1788,0.078212,165,14,0,0,0

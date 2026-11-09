@@ -1,0 +1,24 @@
+{
+  "consolidated_sha256": "bc1a1fd162e96eef22d23fa371bcf91f2dafc8afdfc1a5f96677df20c02f4895",
+  "distribution_audit_sha256": "421723276d4a6991f135d9cbb916bc2080002e258aea82832870a70a49d67c7c",
+  "evaluation_records": 596,
+  "exact_duplicate_judgment_flags": 0,
+  "independent_assignment_per_item": 2,
+  "inputs_sha256": {
+    "avaliador_01_fundamentacao.csv": "ba834b61802dfb451ff2803e6c22accefd44402f59b3e9de4d69bcc6e4a2fac4",
+    "avaliador_01_qualidade.csv": "47c98808fd195e026beb6e4b8d62211c0260d7c3a6fd2de43b6b4b1015c46db2",
+    "avaliador_02_fundamentacao.csv": "f7240adef8a6b9d5e608f902f1c8d4e8b2ded49f5bec836ab0647813c6c4a5b2",
+    "avaliador_02_qualidade.csv": "da156fffd84332234e58a593f1c638b93f440f8fb5fcf4b08d2bf76b96e6e694",
+    "avaliador_03_fundamentacao.csv": "99ea8ac120ef4aeec0cd49dbcdb3922733c64a6b8c95ab952bddc2bdfcd66cc4",
+    "avaliador_03_qualidade.csv": "4e5870bd1dd078c82579b0c0670f1db4ae9df1457c45883d737dab1b2a2775a1",
+    "avaliador_04_fundamentacao.csv": "3f444f785f652084305ea0a4682c9d7a4adb6e0ab0977dffa7a69ec9cbca4c74",
+    "avaliador_04_qualidade.csv": "62f8bad5e90d24db952ee1b5cce9cc3d5c03ead58611b126c8e3bce9d118a7d4",
+    "avaliador_05_fundamentacao.csv": "ccb9f766e80853a5de1bd518ea75c8c7be526d99621ae9f1c3b2558f5f2f585d",
+    "avaliador_05_qualidade.csv": "dbbf5eb8221a6e893dc369d864c802e937c75b8831f774e5e0668d5dbd2b7e7c"
+  },
+  "model_identification": "Nao incluida no consolidado; chave administrativa separada",
+  "reviewers": 5,
+  "status": "devolutivas_formalmente_completas",
+  "unique_items": 298,
+  "warnings": "Atribuicao a dois avaliadores distintos nao prova independencia efetiva. Julgamentos identicos exigem revisao humana. Nenhuma nota foi inferida."
+}

@@ -1,0 +1,63 @@
+{
+  "answer": "You can define background tasks to be run *after* returning a response. This is useful for operations that need to happen after a request, but that the client doesn't really have to be waiting for the operation to complete before receiving the response. [tutorial/background-tasks-0]",
+  "category": "background_tasks",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "reference/background-0",
+    "tutorial/background-tasks-0",
+    "tutorial/background-tasks-5",
+    "tutorial/background-tasks-4",
+    "tutorial/background-tasks-1"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:34:30+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 58,
+    "eval_duration": 1796904000,
+    "invalid_citations": [],
+    "load_duration": 6396730200,
+    "prompt_eval_count": 1190,
+    "prompt_eval_duration": 6530207000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 14732243500,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/background-tasks-0"
+    ]
+  },
+  "generation_time_ms": 14733.8948,
+  "generation_time_ns": 14733894800,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "5c0c5f56a38e26796208c09d7ebf8be51e9f393442ec8f8592c21ef48f442f69",
+  "provider": "ollama",
+  "query_id": "q17",
+  "question": "How can I run work after returning a response using BackgroundTasks in FastAPI?",
+  "record_sha256": "66685bf5d7fc6b5d53a381e7f2b60fb00cdb7081b32f97a76fa9e46add708ccb",
+  "run_id": "semantic|q17",
+  "run_key": "candidate|semantic|q17",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/background-tasks-0"
+  ]
+}

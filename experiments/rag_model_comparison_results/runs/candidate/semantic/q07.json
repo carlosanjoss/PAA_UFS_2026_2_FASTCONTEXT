@@ -1,0 +1,63 @@
+{
+  "answer": "You can create a dependency that depends on another dependency by using the `Depends()` function with a callable that returns another dependency. For example:\n\n{* ../../docs_src/dependencies/tutorial005_an_py310.py hl[23] *}\n\nThis example shows how FastAPI will solve sub-dependencies.",
+  "category": "dependencies",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": false,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "index-42",
+    "reference/dependencies-1",
+    "tutorial/dependencies/sub-dependencies-0",
+    "tutorial/dependencies/sub-dependencies-3",
+    "tutorial/dependencies/index-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:37:43+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": false,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 59,
+    "eval_duration": 1747378000,
+    "invalid_citations": [
+      "23"
+    ],
+    "load_duration": 5756000,
+    "prompt_eval_count": 1161,
+    "prompt_eval_duration": 1262748000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 3023459900,
+    "truncation_retries": 0,
+    "valid_citations": []
+  },
+  "generation_time_ms": 16431.4433,
+  "generation_time_ns": 16431443300,
+  "invalid_citations": [
+    "23"
+  ],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "63278865f8c30aa2f751ab1c3ff6892f9fc3d94f48c8d934ba641f26684eb6c7",
+  "provider": "ollama",
+  "query_id": "q07",
+  "question": "How can one FastAPI dependency depend on another dependency?",
+  "record_sha256": "e5b18d5ab010a3e1ea2ab725ddd2e6c81bea7942a681785d5dd2f0d18be5b70a",
+  "run_id": "semantic|q07",
+  "run_key": "candidate|semantic|q07",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": []
+}

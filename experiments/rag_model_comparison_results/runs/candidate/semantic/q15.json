@@ -1,0 +1,63 @@
+{
+  "answer": "You can add middleware to a **FastAPI** application using the `app.add_middleware()` method. \n\n```Python\nfrom fastapi import FastAPI\nfrom unicorn import UnicornMiddleware\n\napp = FastAPI()\n\napp.add_middleware(UnicornMiddleware, some_config=\"rainbow\")\n```\n\n[tutorial/middleware-0]",
+  "category": "middleware_cors",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/middleware-0",
+    "advanced/middleware-1",
+    "advanced/middleware-2",
+    "tutorial/cors-4",
+    "tutorial/frontend-8"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:31:00+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 67,
+    "eval_duration": 2064300000,
+    "invalid_citations": [],
+    "load_duration": 6614597500,
+    "prompt_eval_count": 1336,
+    "prompt_eval_duration": 7378486000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 16067008600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/middleware-0"
+    ]
+  },
+  "generation_time_ms": 16069.1998,
+  "generation_time_ns": 16069199800,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "cbf3d987ecb4d4e8c20ce069bdcfc07707ef3029c70030352f4fddd47034fb7a",
+  "provider": "ollama",
+  "query_id": "q15",
+  "question": "How do I add middleware to a FastAPI application?",
+  "record_sha256": "80496b6430bb47760e85e78f5c6f1f7a38bfa7154a6e47ddd8224c30aa68f303",
+  "run_id": "semantic|q15",
+  "run_key": "candidate|semantic|q15",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/middleware-0"
+  ]
+}

@@ -125,3 +125,8 @@ benchmark_final_backup/
 frontend/node_modules/
 frontend/dist/
 frontend/*.tsbuildinfo
+
+# RAG model comparison: transient smoke runs and local recovery copies
+experiments/rag_model_comparison_results/smoke/
+experiments/rag_model_comparison_results/avaliacao_humana_cega/distribuicao_v1/recuperacao_backup/
+experiments/rag_model_comparison_results/avaliacao_humana_cega/distribuicao_v1/avaliadores/*_FILLED.csv

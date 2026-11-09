@@ -1,0 +1,7 @@
+role,model,condition,planned,success,truncated,success_rate,generation_mean_ms_success_only,generation_median_ms_success_only,citation_accepted_n,with_valid_citation_n,citation_retry_mean_success_only
+baseline,qwen2.5:3b,no_rag,30,30,0,1.0,5431.05841,5485.0698,,,
+candidate,llama3.2:3b,no_rag,30,30,0,1.0,9401.871803,8915.68975,,,
+baseline,qwen2.5:3b,optimized,30,29,1,0.966667,19166.623379,17375.046,23,23,0.793103
+candidate,llama3.2:3b,optimized,30,30,0,1.0,18868.118627,16543.02965,28,30,0.166667
+baseline,qwen2.5:3b,semantic,30,30,0,1.0,20949.349417,18962.5521,16,16,0.833333
+candidate,llama3.2:3b,semantic,30,30,0,1.0,20746.953793,18384.01945,24,24,0.3

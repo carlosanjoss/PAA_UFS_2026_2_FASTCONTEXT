@@ -1,0 +1,67 @@
+{
+  "answer": "You can add a `list` of `dependencies` to the path operation decorator instead of declaring a path operation function parameter with `Depends`. These dependencies will be executed/solved the same way as normal dependencies, but their value (if they return any) won't be passed to your path operation function.\n\n{* ../../docs_src/dependencies/tutorial006_an_py310.py hl[19] *}\n\n[tutorial/dependencies/dependencies-in-path-operation-decorators-0]",
+  "category": "dependencies",
+  "citation_count": 2,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": false,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-1",
+    "advanced/security/oauth2-scopes-17",
+    "tutorial/path-operation-configuration-0",
+    "tutorial/first-steps-26"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:38:20+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 2,
+    "citation_retry_count": 1,
+    "citation_valid": false,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 95,
+    "eval_duration": 2758705000,
+    "invalid_citations": [
+      "19"
+    ],
+    "load_duration": 6280200,
+    "prompt_eval_count": 1698,
+    "prompt_eval_duration": 1526540000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 4299192100,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/dependencies/dependencies-in-path-operation-decorators-0"
+    ]
+  },
+  "generation_time_ms": 20795.1253,
+  "generation_time_ns": 20795125300,
+  "invalid_citations": [
+    "19"
+  ],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "f4355cc7d7ab3ca1afd0c9097a7d25a464dc789725946896095f5a2a732681ec",
+  "provider": "ollama",
+  "query_id": "q08",
+  "question": "How do I add dependencies to a path operation decorator when I do not need their return values?",
+  "record_sha256": "0861315cead0c6f285a07708c5a22287446d78b42ee29c1b2718d7db4be54cbd",
+  "run_id": "optimized|q08",
+  "run_key": "candidate|optimized|q08",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-0"
+  ]
+}

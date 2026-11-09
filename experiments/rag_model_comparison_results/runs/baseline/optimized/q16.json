@@ -1,0 +1,63 @@
+{
+  "answer": "To configure the TrustedHostMiddleware or HTTPSRedirectMiddleware in FastAPI, you can import and apply them as middleware to your application. Here's how you can do it:\n\n```python\nfrom fastapi.middleware.trustedhost import TrustedHostMiddleware\nfrom fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware\n\napp = FastAPI()\n\n# Adding TrustedHostMiddleware\napp.add_middleware(TrustedHostMiddleware, allowed_hosts=[\"example.com\", \"localhost\"])\n\n# Adding HTTPSRedirectMiddleware\napp.add_middleware(HTTPSRedirectMiddleware)\n```\n\nRefer to the documentation for more details on these middlewares: [reference/middleware-0]",
+  "category": "middleware_cors",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "reference/middleware-0",
+    "advanced/middleware-0",
+    "tutorial/middleware-1",
+    "tutorial/frontend-8",
+    "tutorial/middleware-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:32:23+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 128,
+    "eval_duration": 2424640000,
+    "invalid_citations": [],
+    "load_duration": 4877842600,
+    "prompt_eval_count": 1301,
+    "prompt_eval_duration": 6680228000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 13993871200,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/middleware-0"
+    ]
+  },
+  "generation_time_ms": 13996.957,
+  "generation_time_ns": 13996957000,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "581a13db43e10695ffd5061155a3c6682852effbe7695af6c53506c6e0c8fc5e",
+  "provider": "ollama",
+  "query_id": "q16",
+  "question": "How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?",
+  "record_sha256": "71e6cae399aea87779ce98433489794a6446445b0d5e03ae4d6e75c270cc66be",
+  "run_id": "optimized|q16",
+  "run_key": "baseline|optimized|q16",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/middleware-0"
+  ]
+}

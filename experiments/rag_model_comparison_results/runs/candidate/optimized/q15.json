@@ -1,0 +1,63 @@
+{
+  "answer": "You can add middleware to a FastAPI application by using the `@app.middleware(\"http\")` decorator on top of a function. The middleware function receives the `request` and a function `call_next` that will receive the `request` as a parameter. You can then further modify the `response` before returning it.\n\n```python\nfrom fastapi.middleware import Middleware\nfrom fastapi import Request\n\n@app.middleware(\"http\")\nasync def middleware_function(request: Request, call_next):\n    # Your middleware code here\n    response = await call_next(request)\n    # Modify the response here\n    return response\n```\n\n[reference/middleware-0]",
+  "category": "middleware_cors",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/middleware-0",
+    "reference/middleware-0",
+    "tutorial/middleware-0",
+    "tutorial/middleware-1",
+    "tutorial/frontend-8"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:31:54+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 134,
+    "eval_duration": 4100787999,
+    "invalid_citations": [],
+    "load_duration": 6418258300,
+    "prompt_eval_count": 1300,
+    "prompt_eval_duration": 7044053000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 17570334200,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/middleware-0"
+    ]
+  },
+  "generation_time_ms": 17572.7429,
+  "generation_time_ns": 17572742900,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "b79996536f1ce2c3b46fead1ef7806859151d08f7394927c0f75290bbf8f2514",
+  "provider": "ollama",
+  "query_id": "q15",
+  "question": "How do I add middleware to a FastAPI application?",
+  "record_sha256": "f11d18c382b97bf7556a3d9d24dbf0bba24b045a6706238cc8cf0b87452f6a70",
+  "run_id": "optimized|q15",
+  "run_key": "candidate|optimized|q15",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/middleware-0"
+  ]
+}

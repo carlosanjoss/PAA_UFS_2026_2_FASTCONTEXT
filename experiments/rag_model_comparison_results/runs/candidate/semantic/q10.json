@@ -1,0 +1,63 @@
+{
+  "answer": "You can implement OAuth2 password authentication with bearer tokens in FastAPI by using the `OAuth2PasswordBearer` class. This class makes FastAPI know that it is a security scheme and is added to OpenAPI.\n\nTo use it, you need to create an instance of the `OAuth2PasswordBearer` class and pass in the `tokenUrl` parameter, which contains the URL that the client will use to send the `username` and `password` to get a token.\n\nHere's an example:\n```python\nfrom fastapi import FastAPI, Depends\nfrom fastapi.security import OAuth2PasswordBearer\n\napp = FastAPI()\n\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\n\n@app.post(\"/token\")\nasync def login(form_data: OAuth2PasswordRequestForm = Depends(oauth2_scheme)):\n    # Your login logic here\n    return {\"access_token\": \"your_token\"}\n```\nIn this example, we create an instance of `OAuth2PasswordBearer` and pass in the `tokenUrl` parameter. We then use the `Depends` function to specify that the `/token` path operation should use the `oauth2_scheme` instance.\n\nThe `OAuth2PasswordRequestForm` class is used to declare the form body with the `username`, `password`, and optional `scope` and `grant_type` fields.\n\nAllowed citation:\n[tutorial/security/first-steps-7]",
+  "category": "security",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "tutorial/security/first-steps-7",
+    "tutorial/security/simple-oauth2-5",
+    "reference/security/index-4",
+    "tutorial/security/first-steps-0",
+    "tutorial/security/simple-oauth2-4"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:21:18+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 286,
+    "eval_duration": 8547630999,
+    "invalid_citations": [],
+    "load_duration": 7692700,
+    "prompt_eval_count": 1352,
+    "prompt_eval_duration": 31552000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 8595231100,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "tutorial/security/first-steps-7"
+    ]
+  },
+  "generation_time_ms": 30298.3355,
+  "generation_time_ns": 30298335500,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "92fd97b172513fa6b131e9ebdad0659f295e92db68a555267bc3e50082907e2e",
+  "provider": "ollama",
+  "query_id": "q10",
+  "question": "How do I implement OAuth2 password authentication with bearer tokens in FastAPI?",
+  "record_sha256": "23f1ceafb75c5c06b5c690cc527ef8387d7a50267f49d99de0c1c4d5ea3fd770",
+  "run_id": "semantic|q10",
+  "run_key": "candidate|semantic|q10",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/security/first-steps-7"
+  ]
+}

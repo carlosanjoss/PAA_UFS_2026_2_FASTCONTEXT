@@ -1,0 +1,63 @@
+{
+  "answer": "Yes, FastAPI dependencies can add tasks to the same `BackgroundTasks` object. [tutorial/background-tasks-1]",
+  "category": "background_tasks",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "reference/background-0",
+    "tutorial/background-tasks-1",
+    "tutorial/background-tasks-7",
+    "tutorial/dependencies/dependencies-with-yield-12",
+    "tutorial/dependencies/global-dependencies-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:35:50+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 26,
+    "eval_duration": 727414000,
+    "invalid_citations": [],
+    "load_duration": 6266128600,
+    "prompt_eval_count": 989,
+    "prompt_eval_duration": 5390411000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 12390575700,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/background-tasks-1"
+    ]
+  },
+  "generation_time_ms": 12392.32,
+  "generation_time_ns": 12392320000,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "3eab9a4f68de8cce4e5d03d44aee7671da26257ac1a5847c508a3ec85e5fdb2e",
+  "provider": "ollama",
+  "query_id": "q18",
+  "question": "Can FastAPI dependencies add tasks to the same BackgroundTasks object?",
+  "record_sha256": "86357d387c28207338d09c534629e778aefb7a146df1357bac77c1edd7e1b77a",
+  "run_id": "optimized|q18",
+  "run_key": "candidate|optimized|q18",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/background-tasks-1"
+  ]
+}

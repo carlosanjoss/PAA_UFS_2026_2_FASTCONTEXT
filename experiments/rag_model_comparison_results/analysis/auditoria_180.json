@@ -1,0 +1,11 @@
+{
+  "analysis_note": "Tempos somente de geracao; medias usam apenas sucessos. Diferencas pareadas usam somente pares com duas respostas completas. Aceitacao de citacao nao comprova suporte factual. Nao foram calculadas metricas de qualidade humana nem testes de significancia.",
+  "expected_attempts": 180,
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_status_sha256": "f2ef71725199373de07e22a3481474cc349fdded704407f9caceaaa44e618e44",
+  "generation_status_summary_sha256": "48d2d083a979f0f4eade1432bc273fe99e6a35a094f1f7643d46763271d26463",
+  "pending": 0,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "successful_answers": 179,
+  "truncation_failures": 1
+}

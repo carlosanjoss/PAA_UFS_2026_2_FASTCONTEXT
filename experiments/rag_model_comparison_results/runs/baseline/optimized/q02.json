@@ -1,0 +1,63 @@
+{
+  "answer": "To declare and validate query parameters in FastAPI, you can create a Pydantic model that represents the structure and validation requirements of your query parameters. Here's how you can do it:\n\n```Python\nfrom fastapi import FastAPI, Query\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass QueryParamsModel(BaseModel):\n    q1: str\n    q2: str\n\n@app.get(\"/items/\")\nasync def read_items(q1: str = Query(None, min_length=3, max_length=50),\n                      q2: str = Query(None, min_length=3, max_length=50)):\n    return {\"q1\": q1, \"q2\": q2}\n```\n\nThis example is supported by [tutorial/query-param-models-0].",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/query-param-models-1",
+    "tutorial/query-params-4",
+    "tutorial/body-multiple-params-4",
+    "tutorial/header-params-2",
+    "tutorial/query-param-models-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:28:39+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 162,
+    "eval_duration": 2973890000,
+    "invalid_citations": [],
+    "load_duration": 5735200,
+    "prompt_eval_count": 1563,
+    "prompt_eval_duration": 1203562000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 4193737000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/query-param-models-0"
+    ]
+  },
+  "generation_time_ms": 18786.856,
+  "generation_time_ns": 18786856000,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "64304fd7ea16f8fb1b6fddfd3d51fc5b687b392715a37f8d4a5deea4554c8775",
+  "provider": "ollama",
+  "query_id": "q02",
+  "question": "How can I declare and validate query parameters in FastAPI?",
+  "record_sha256": "950e6af38ac66bc0eb0d3f6f9482e463db5157df5b72cb3a4158e34353b1dbdc",
+  "run_id": "optimized|q02",
+  "run_key": "baseline|optimized|q02",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/query-param-models-0"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "answer": "You declare a reusable dependency with `Depends` by passing a function as a parameter, without calling it directly. [tutorial/dependencies/index-5]",
+  "category": "dependencies",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "reference/dependencies-1",
+    "tutorial/dependencies/index-5",
+    "index-42",
+    "tutorial/dependencies/sub-dependencies-4",
+    "advanced/advanced-dependencies-5"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:35:32+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 32,
+    "eval_duration": 898819000,
+    "invalid_citations": [],
+    "load_duration": 8058100,
+    "prompt_eval_count": 1674,
+    "prompt_eval_duration": 1346215000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 2261329700,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/dependencies/index-5"
+    ]
+  },
+  "generation_time_ms": 17927.2191,
+  "generation_time_ns": 17927219100,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "78f7187c2f95988183bb9c31cf5c14020ecd705a6c1de23fda55a410c6ae3c65",
+  "provider": "ollama",
+  "query_id": "q06",
+  "question": "How do I declare a reusable dependency with Depends in FastAPI?",
+  "record_sha256": "38f8910f126d4353cd6f3baa01fc6f1a455f9159cd25aa764514a10bd5f88d48",
+  "run_id": "semantic|q06",
+  "run_key": "candidate|semantic|q06",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/dependencies/index-5"
+  ]
+}

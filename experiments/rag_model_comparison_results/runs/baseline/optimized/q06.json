@@ -1,0 +1,63 @@
+{
+  "answer": "To declare a reusable dependency with `Depends` in FastAPI, you can define a function that will be used as a dependency. This function can be called within your path operation function using the `Depends` function. Here is an example:\n\n```python\nfrom fastapi import Depends, FastAPI\n\napp = FastAPI()\n\ndef get_current_active_user(current_user: str = Depends(...)):\n    # Your logic to check if the user is active\n    return current_user\n\n@app.get(\"/users/me/items/\")\nasync def read_items(current_user: str = Depends(get_current_active_user)):\n    # Your logic to read items\n    pass\n```\n\nThis example is derived from the documentation in [reference/dependencies-1].",
+  "category": "dependencies",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "reference/dependencies-1",
+    "reference/dependencies-0",
+    "tutorial/dependencies/index-4",
+    "advanced/security/oauth2-scopes-5",
+    "tutorial/dependencies/index-5"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:36:05+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 148,
+    "eval_duration": 2742241000,
+    "invalid_citations": [],
+    "load_duration": 4350900,
+    "prompt_eval_count": 1684,
+    "prompt_eval_duration": 1202416000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 3960437100,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/dependencies-1"
+    ]
+  },
+  "generation_time_ms": 18777.4461,
+  "generation_time_ns": 18777446100,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "3fda4cfdbe9b43fd8fde984909f50b57f08419ee17e2aa701fb102caa06f7719",
+  "provider": "ollama",
+  "query_id": "q06",
+  "question": "How do I declare a reusable dependency with Depends in FastAPI?",
+  "record_sha256": "fb6ca80715fe0234b20b512e36fd270fcf163f154129000b012f08f62065702a",
+  "run_id": "optimized|q06",
+  "run_key": "baseline|optimized|q06",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/dependencies-1"
+  ]
+}

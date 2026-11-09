@@ -1,0 +1,63 @@
+{
+  "answer": "You can apply a dependency to every path operation in a FastAPI application by adding a list of dependencies to the FastAPI application itself, as described in the section on Global Dependencies [tutorial/dependencies/global-dependencies-0].",
+  "category": "dependencies",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-7",
+    "tutorial/dependencies/dependencies-in-path-operation-decorators-0",
+    "tutorial/dependencies/global-dependencies-0",
+    "tutorial/background-tasks-4",
+    "advanced/security/oauth2-scopes-13"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:40:38+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 46,
+    "eval_duration": 1304211000,
+    "invalid_citations": [],
+    "load_duration": 5696646900,
+    "prompt_eval_count": 1105,
+    "prompt_eval_duration": 5975160000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 12984843500,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "tutorial/dependencies/global-dependencies-0"
+    ]
+  },
+  "generation_time_ms": 12986.34,
+  "generation_time_ns": 12986340000,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "105f667705241c2154eba1d66374cdab653170953522decd3e4f9bc75bdc05bd",
+  "provider": "ollama",
+  "query_id": "q09",
+  "question": "How can I apply a dependency to every path operation in a FastAPI application?",
+  "record_sha256": "49799af9f92f8234c9d2792245201b0df3619fa4e81edc2a436e707e4ebfbe54",
+  "run_id": "optimized|q09",
+  "run_key": "candidate|optimized|q09",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "tutorial/dependencies/global-dependencies-0"
+  ]
+}

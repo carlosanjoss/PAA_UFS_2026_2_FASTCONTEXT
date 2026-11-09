@@ -1,0 +1,63 @@
+{
+  "answer": "To add middleware to a FastAPI application, you can use the `@app.middleware(\"http\")` decorator on top of a function. The middleware function receives the `request`, a function `call_next` that will receive the `request` as a parameter, and you can then further modify the `response` before returning it. Here is an example:\n\n```python\nfrom fastapi import FastAPI\nfrom fastapi.middleware.gzip import GZipMiddleware\n\napp = FastAPI()\n\n@app.middleware(\"http\")\nasync def add_process_time_header(request: Request, call_next):\n    response = await call_next(request)\n    response.headers[\"X-Process-Time\"] = str(request.time_process)\n    return response\n\napp.add_middleware(GZipMiddleware)\n```\n\nThis example uses the `GZipMiddleware` to compress responses and the `add_process_time_header` middleware to add a custom `X-Process-Time` header to each response. Refer to the documentation for more details: [reference/middleware-0].",
+  "category": "middleware_cors",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/middleware-0",
+    "reference/middleware-0",
+    "tutorial/middleware-0",
+    "tutorial/middleware-1",
+    "tutorial/frontend-8"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:31:36+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 205,
+    "eval_duration": 3855570000,
+    "invalid_citations": [],
+    "load_duration": 5953700,
+    "prompt_eval_count": 1695,
+    "prompt_eval_duration": 1202477000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 5076983300,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "reference/middleware-0"
+    ]
+  },
+  "generation_time_ms": 19898.0332,
+  "generation_time_ns": 19898033200,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "b79996536f1ce2c3b46fead1ef7806859151d08f7394927c0f75290bbf8f2514",
+  "provider": "ollama",
+  "query_id": "q15",
+  "question": "How do I add middleware to a FastAPI application?",
+  "record_sha256": "0a2d1a0afaabc66a0bde8fcd430b2a7c70edd78d8692f8d09e6cc6fbd5e6e582",
+  "run_id": "optimized|q15",
+  "run_key": "baseline|optimized|q15",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "reference/middleware-0"
+  ]
+}

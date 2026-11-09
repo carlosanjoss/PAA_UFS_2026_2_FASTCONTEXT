@@ -1,0 +1,63 @@
+{
+  "answer": "Workers are **multiple processes** of the same API program, commonly used when you have more clients than a single process can handle and want to distribute all the requests among them [deployment/concepts-19]. You should use multiple worker processes when you have **multiple cores** in the server's CPU and want to take advantage of them to handle more requests [deployment/concepts-19].",
+  "category": "deployment",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "deployment/concepts-19",
+    "deployment/server-workers-1",
+    "deployment/server-workers-2",
+    "deployment/docker-28",
+    "deployment/server-workers-0"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:41:02+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 78,
+    "eval_duration": 2380977000,
+    "invalid_citations": [],
+    "load_duration": 6740637300,
+    "prompt_eval_count": 1177,
+    "prompt_eval_duration": 6379297000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 15510163600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "deployment/concepts-19"
+    ]
+  },
+  "generation_time_ms": 15512.8913,
+  "generation_time_ns": 15512891300,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "27c488417a5364325ae92c56a332eaaa1aab3ed8c8cb6981a4769bb8d5f1f52b",
+  "provider": "ollama",
+  "query_id": "q22",
+  "question": "What are workers and when should I use multiple worker processes to run FastAPI?",
+  "record_sha256": "0a62ec35040f9e897eb614b23e428c3d0d526ec4cffca4a32e2c86d7e8765392",
+  "run_id": "optimized|q22",
+  "run_key": "candidate|optimized|q22",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "deployment/concepts-19"
+  ]
+}

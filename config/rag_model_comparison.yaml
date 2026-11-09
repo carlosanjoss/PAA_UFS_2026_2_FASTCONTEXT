@@ -1,0 +1,56 @@
+
+model_comparison:
+  baseline:
+    generations_csv: "experiments/rag_results/generations.csv"
+    expected_sha256: "77160C5A3B2F10EA7E76C01B755B289CED4C73ABC325141791400A6EA9B092B4"
+    git_head_sha256_lf: "1cfe629a3eae458cc830c3560a4c85a2b5fb1b7a973f49aea880d50ee48399f2"
+    expected_rows: 90
+    model: "qwen2.5:3b"
+    provider: "ollama"
+
+
+  candidate:
+    model: "llama3.2:3b"
+    provider: "ollama"
+    base_url: "http://localhost:11434"
+
+  corpus:
+    chunks_file: "data/chunks/chunks.jsonl"
+    expected_chunks: 1305
+    expected_fingerprint: "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d"
+
+  queries:
+    ground_truth_file: "data/ground_truth/ground_truth.final.json"
+    expected_count: 30
+
+  conditions:
+    - no_rag
+    - optimized
+    - semantic
+
+  retrieval:
+    top_k: 5
+
+
+  generation:
+    temperature: 0.0
+    max_tokens: 256
+    think: false
+    seed: 42
+    citation_retries: 1
+    max_truncation_retries: 2
+    max_retry_tokens: 1024
+
+
+  warmup:
+    enabled: true
+
+  checkpoint:
+    every_completed_runs: 5
+
+  output:
+    directory: "experiments/rag_model_comparison_results"
+    frozen_prompts: "frozen_prompts.jsonl"
+    generations_csv: "generations_llama32_3b.csv"
+    generations_jsonl: "generations_llama32_3b.jsonl"
+    checkpoint: "checkpoint_llama32_3b.json"

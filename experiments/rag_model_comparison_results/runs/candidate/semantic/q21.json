@@ -1,0 +1,63 @@
+{
+  "answer": "You can deploy a FastAPI application in a Docker container by building a Docker image from scratch, based on the official Python image, and then deploying it to a container management system like Kubernetes or using a cloud service that runs container images. [deployment/docker-5]",
+  "category": "deployment",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "deployment/docker-0",
+    "deployment/server-workers-14",
+    "deployment/docker-20",
+    "deployment/fastapicloud-0",
+    "deployment/docker-5"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:39:39+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 54,
+    "eval_duration": 1637524000,
+    "invalid_citations": [],
+    "load_duration": 6467856100,
+    "prompt_eval_count": 1410,
+    "prompt_eval_duration": 7941482000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 16055333500,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "deployment/docker-5"
+    ]
+  },
+  "generation_time_ms": 16057.4537,
+  "generation_time_ns": 16057453700,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "1ed3ef19be697c9bcfccbba1b2a31cc257562e787758fe9a542ea55de1ebf079",
+  "provider": "ollama",
+  "query_id": "q21",
+  "question": "How can I deploy a FastAPI application in a Docker container?",
+  "record_sha256": "bedcd08ff679462cbd65a81db01027842b6f023ead43124a472fa049dbc6c0ca",
+  "run_id": "semantic|q21",
+  "run_key": "candidate|semantic|q21",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "deployment/docker-5"
+  ]
+}

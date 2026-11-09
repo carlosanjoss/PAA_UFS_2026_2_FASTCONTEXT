@@ -1,0 +1,63 @@
+{
+  "answer": "To create a basic FastAPI application and define your first path operation, you can follow these steps:\n\n1. Initialize a new FastAPI application using `fastapi.App()`.\n2. Define a path operation using the `@app.get()` decorator.\n3. Use the `HTTP Basic Auth` feature to authenticate requests.\n\nHere's an example:\n```python\nfrom fastapi import FastAPI, HTTPBasic, Depends\nfrom fastapi.security import HTTPBasicCredentials\n\napp = FastAPI()\n\n@app.get(\"/path_operation\")\nasync def read_path_operation(credentials: HTTPBasicCredentials = Depends()):\n    # Authenticate the request\n    if credentials.username != \"your_username\" or credentials.password != \"your_password\":\n        raise HTTPException(status_code=401, detail=\"Unauthorized\")\n    # Return a response\n    return {\"message\": \"Hello, World!\"}\n```\nThis example defines a path operation `/path_operation` that requires authentication using `HTTP Basic Auth`. If the credentials are valid, it returns a response. If not, it raises an `HTTPException` with a 401 status code.\n\n[advanced/security/http-basic-auth-0]",
+  "category": "tutorial",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/security/http-basic-auth-0",
+    "tutorial/first-steps-23",
+    "how-to/custom-docs-ui-assets-5",
+    "contributing-0",
+    "how-to/custom-docs-ui-assets-15"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T14:27:46+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 229,
+    "eval_duration": 6505390000,
+    "invalid_citations": [],
+    "load_duration": 5416322600,
+    "prompt_eval_count": 830,
+    "prompt_eval_duration": 4470354000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 16398379600,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/security/http-basic-auth-0"
+    ]
+  },
+  "generation_time_ms": 16402.0511,
+  "generation_time_ns": 16402051100,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "516b3ef46f5402d8b2a3d086c15dd5a77c01b088b5abaeca10f465b292f9c089",
+  "provider": "ollama",
+  "query_id": "q01",
+  "question": "How do I create a basic FastAPI application and define my first path operation?",
+  "record_sha256": "30a182f29f9675644a8e994b945f41f9f04f8ac3920e6469298b9f40a5909566",
+  "run_id": "optimized|q01",
+  "run_key": "candidate|optimized|q01",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/security/http-basic-auth-0"
+  ]
+}

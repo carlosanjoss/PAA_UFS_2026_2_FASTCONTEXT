@@ -1,0 +1,63 @@
+{
+  "answer": "Workers in the context of FastAPI are multiple processes of the same application running simultaneously, which can distribute requests among them. You should use multiple worker processes to run FastAPI when you have more clients than a single process can handle, and your server has multiple cores. This allows you to take advantage of multi-core CPUs and run multiple processes in parallel. This concept is explained in [deployment/concepts-19].",
+  "category": "deployment",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "deployment/concepts-19",
+    "deployment/server-workers-1",
+    "deployment/server-workers-2",
+    "deployment/server-workers-15",
+    "deployment/concepts-18"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:41:13+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 84,
+    "eval_duration": 1556542000,
+    "invalid_citations": [],
+    "load_duration": 4672262700,
+    "prompt_eval_count": 868,
+    "prompt_eval_duration": 4473874000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 10712804500,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "deployment/concepts-19"
+    ]
+  },
+  "generation_time_ms": 10716.5865,
+  "generation_time_ns": 10716586500,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "4075e5615e29a11bd7644f663161fe97599519f3777a58f43f22a2a682c2a7a1",
+  "provider": "ollama",
+  "query_id": "q22",
+  "question": "What are workers and when should I use multiple worker processes to run FastAPI?",
+  "record_sha256": "b8be7f647e0f060218fb4e9d20a8bb4854383878bfc851ea0b39ab869c3ed136",
+  "run_id": "semantic|q22",
+  "run_key": "baseline|semantic|q22",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "deployment/concepts-19"
+  ]
+}

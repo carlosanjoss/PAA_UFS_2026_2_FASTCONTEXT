@@ -1,0 +1,63 @@
+{
+  "answer": "You can extend the generated OpenAPI schema in FastAPI using the parameter `openapi_extra`. [advanced/path-operation-advanced-configuration-6]",
+  "category": "advanced",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 0,
+  "citation_valid": true,
+  "condition": "optimized",
+  "context_chunk_ids": [
+    "advanced/path-operation-advanced-configuration-6",
+    "how-to/extending-openapi-0",
+    "how-to/extending-openapi-7",
+    "tutorial/first-steps-14",
+    "how-to/general-9"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T17:33:47+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 0,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 31,
+    "eval_duration": 893878000,
+    "invalid_citations": [],
+    "load_duration": 6435044900,
+    "prompt_eval_count": 992,
+    "prompt_eval_duration": 5369034000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 12706267500,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/path-operation-advanced-configuration-6"
+    ]
+  },
+  "generation_time_ms": 12708.6476,
+  "generation_time_ns": 12708647600,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "d1f8a513e4c83d39e85cc4eeb5faefe5c47c255822e4e865c03f0934b3cdf8fe",
+  "provider": "ollama",
+  "query_id": "q30",
+  "question": "How can I customize or extend the generated OpenAPI schema in FastAPI?",
+  "record_sha256": "77b63baf00c9df399a3933d189c00b26964751ab7fdba6c7cefb854949319d7d",
+  "run_id": "optimized|q30",
+  "run_key": "candidate|optimized|q30",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/path-operation-advanced-configuration-6"
+  ]
+}

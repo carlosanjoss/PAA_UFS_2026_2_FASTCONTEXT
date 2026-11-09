@@ -1,0 +1,63 @@
+{
+  "answer": "To configure trusted hosts or HTTPS redirection middleware in FastAPI, you can use the `TrustedHostMiddleware` and `HTTPSRedirectMiddleware` middleware classes.\n\nFor `TrustedHostMiddleware`, you can specify the allowed hosts using the `allowed_hosts` argument:\n\n```python\nfrom fastapi.middleware.trustedhost import TrustedHost\n\napp = FastAPI()\n\napp.add_middleware(\n    TrustedHost,\n    allowed_hosts=[\"example.com\", \"*.example.com\"]\n)\n```\n\nFor `HTTPSRedirectMiddleware`, you can enforce that all incoming requests must be `https` or `wss` by using the middleware as follows:\n\n```python\nfrom fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware\n\napp = FastAPI()\n\napp.add_middleware(HTTPSRedirectMiddleware)\n```\n\nThe `TrustedHostMiddleware` also allows you to redirect non-www versions of the allowed hosts to their www counterparts by setting the `www_redirect` argument to `True`.\n\nThe `HTTPSRedirectMiddleware` ensures that all incoming requests are redirected to the secure scheme (`https` or `wss`) if they are not already secure.\n\nThe following citations are used:\n- [advanced/middleware-4]",
+  "category": "middleware_cors",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "advanced/behind-a-proxy-3",
+    "tutorial/cors-4",
+    "advanced/behind-a-proxy-5",
+    "advanced/middleware-4",
+    "advanced/middleware-3"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:33:06+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 512,
+    "eval_count": 237,
+    "eval_duration": 4513308000,
+    "invalid_citations": [],
+    "load_duration": 4258100,
+    "prompt_eval_count": 1643,
+    "prompt_eval_duration": 22110000,
+    "requested_max_tokens": 512,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 4553968600,
+    "truncation_retries": 1,
+    "valid_citations": [
+      "advanced/middleware-4"
+    ]
+  },
+  "generation_time_ms": 25565.9421,
+  "generation_time_ns": 25565942100,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "qwen2.5:3b",
+  "model_role": "baseline",
+  "prompt_sha256": "928962162dfd7027201b330dbfa575a23a258b9f54bef6a8295d0f5311763f09",
+  "provider": "ollama",
+  "query_id": "q16",
+  "question": "How can I configure trusted hosts or HTTPS redirection middleware in FastAPI?",
+  "record_sha256": "fec2b365c0e0774003d011b2c13929fa4c550c9b1de26c2ed758cf1304f59d9a",
+  "run_id": "semantic|q16",
+  "run_key": "baseline|semantic|q16",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/middleware-4"
+  ]
+}

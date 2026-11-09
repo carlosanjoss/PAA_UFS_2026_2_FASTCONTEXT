@@ -1,0 +1,63 @@
+{
+  "answer": "You should use the `root_path` parameter when creating your FastAPI app to configure your application.\n\nThis allows FastAPI to handle the specific case where a proxy adds a path prefix to your application, and it's also used internally when mounting sub-applications.\n\n[advanced/behind-a-proxy-6]",
+  "category": "deployment",
+  "citation_count": 1,
+  "citation_retries": 1,
+  "citation_retry_count": 1,
+  "citation_valid": true,
+  "condition": "semantic",
+  "context_chunk_ids": [
+    "advanced/behind-a-proxy-6",
+    "advanced/sub-applications-6",
+    "advanced/behind-a-proxy-23",
+    "advanced/behind-a-proxy-11",
+    "advanced/behind-a-proxy-22"
+  ],
+  "corpus_fingerprint": "e08b47b55d7237f38bcaba48c79a468a40b92e4f3120e968ae9ece999f5e8c2d",
+  "created_at_utc": "2026-11-07T15:43:21+00:00",
+  "frozen_prompts_sha256": "a8137120a9210faece92145b75bfc74415afd8fd0ab5ef711fd8b619ee22d2bd",
+  "generation_metadata": {
+    "citation_count": 1,
+    "citation_retry_count": 1,
+    "citation_valid": true,
+    "done_reason": "stop",
+    "effective_max_tokens": 256,
+    "eval_count": 63,
+    "eval_duration": 1900770000,
+    "invalid_citations": [],
+    "load_duration": 10111500,
+    "prompt_eval_count": 1575,
+    "prompt_eval_duration": 1366949000,
+    "requested_max_tokens": 256,
+    "requested_seed": 42,
+    "requested_temperature": 0.0,
+    "thinking_enabled": false,
+    "total_duration": 3288190000,
+    "truncation_retries": 0,
+    "valid_citations": [
+      "advanced/behind-a-proxy-6"
+    ]
+  },
+  "generation_time_ms": 18463.6784,
+  "generation_time_ns": 18463678400,
+  "invalid_citations": [],
+  "max_retry_tokens": 1024,
+  "max_tokens": 256,
+  "max_truncation_retries": 2,
+  "model": "llama3.2:3b",
+  "model_role": "candidate",
+  "prompt_sha256": "74ef6a48e2c1d538cf6da6a552ad8031a3b05c7311163b19ecd13cc362361ec6",
+  "provider": "ollama",
+  "query_id": "q24",
+  "question": "How should FastAPI be configured when it runs behind a proxy that adds a path prefix?",
+  "record_sha256": "0e929d478051063cf157335e22f4c2ff845f075d9c203dd5d7693a0831577210",
+  "run_id": "semantic|q24",
+  "run_key": "candidate|semantic|q24",
+  "seed": 42,
+  "source_signature": "87392a4cfc4185dc98af6c80b110b9c825d848bc2b2933b612f102be34efdde0",
+  "temperature": 0.0,
+  "think": false,
+  "valid_citations": [
+    "advanced/behind-a-proxy-6"
+  ]
+}
